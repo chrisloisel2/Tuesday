@@ -5,6 +5,7 @@
 
 .month-section {
   margin-bottom: 20px;
+  width: 100%;
 }
 
 .month-header {
@@ -16,12 +17,28 @@
   font-weight: bold;
 }
 
-.month-items {
+.month-inactive {
+	border-radius: 5px;
+}
+
+.content {
   padding: 10px;
+  width: 95%;
+  height: 100%;
+  scrollbar-width: none;
+  overflow-y: auto;
+}
+
+tr {
+  cursor: pointer;
+  background-color: #fff;
+}
+
+.month-active {
+	border-radius: 5px 5px 0 0;
 }
 
 table {
-  width: 100%;
   border-collapse: collapse;
 }
 
@@ -34,10 +51,6 @@ td {
 
 th {
   background-color: #f8f8f8;
-}
-
-tr:nth-child(even) {
-  background-color: #f2f2f2;
 }
 
 tr:hover {

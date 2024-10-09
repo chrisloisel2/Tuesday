@@ -3,19 +3,16 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100%;
+  width: 100%;
   overflow-y: scroll;
-  padding-top: 10vh;
 }
 
 .rbc-calendar {
   background-color: whitesmoke;
   border-radius: 10px;
   padding: 10px;
-  width: 60vw;
-  margin-bottom: 10vh;
 }
 
 /* Header of the calendar (day names, etc.) */
@@ -51,6 +48,7 @@
 .calendar {
   margin: 20px;
   padding: 10px;
+  width: 100%;
   /* border: 1px solid #ddd; */
 }
 

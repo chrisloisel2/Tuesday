@@ -8,7 +8,7 @@ const ViewLine = ({ board, setview }) => {
 	console.log(board);
 	return (
 		<div>
-			<div className="View-line">
+			<div className="viewline">
 				{
 					board.view && board.view.map((view) => (
 						<div key={view._id} className="view"
