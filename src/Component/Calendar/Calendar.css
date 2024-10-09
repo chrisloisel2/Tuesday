@@ -1,0 +1,140 @@
+/* Calendar container styling */
+.calendar-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow-y: scroll;
+  padding-top: 10vh;
+}
+
+.rbc-calendar {
+  background-color: whitesmoke;
+  border-radius: 10px;
+  padding: 10px;
+  width: 60vw;
+  margin-bottom: 10vh;
+}
+
+/* Header of the calendar (day names, etc.) */
+.rbc-header {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+/* Events style */
+.rbc-event {
+  background-color: #28a745;
+  border: none;
+  border-radius: 4px;
+  padding: 2px;
+}
+
+/* Customize selected date */
+.rbc-active {
+  background-color: #ffeb3b;
+}
+
+/* Hover effect for events */
+.rbc-event:hover {
+  background-color: #218838;
+}
+
+.rbc-agenda-date-cell {
+  background: whitesmoke;
+}
+
+/* Adjust spacing around the calendar */
+.calendar {
+  margin: 20px;
+  padding: 10px;
+  /* border: 1px solid #ddd; */
+}
+
+/* MODAL CREATION FORMATION */
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(1.2px);
+  z-index: 5;
+}
+
+.create-event-modal {
+  z-index: 6;
+  background: whitesmoke;
+  border-radius: 10px;
+  position: absolute;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-body input,
+.modal-body select {
+  margin: 5px 0;
+  height: 2vh;
+}
+
+.button {
+  margin-bottom: 10px;
+}
+
+.du,
+.au {
+  display: flex;
+  height: 2vh;
+  gap: 1vw;
+  width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.du input,
+.au input {
+  width: 50%;
+}
+
+/* Item modal */
+.edit-event-modal {
+  z-index: 6;
+  background: whitesmoke;
+  border-radius: 10px;
+  position: absolute;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 20vh;
+  color: pink;
+}
