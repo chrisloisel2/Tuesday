@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getItemsByFormateur } from "../../Redux/ItemReducer";
+import {
+  getItemsByFormateur,
+  deleteItem,
+  updateItem,
+} from "../../Redux/ItemReducer";
 import "./Tables.css";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 const Tables = () => {
   const dispatch = useDispatch();
   const { items } = useSelector((state) => state.items);
-  const [openMonths, setOpenMonths] = useState([]);
   const formateurId = useSelector((state) => state.auth.user._id);
+  const [openMonths, setOpenMonths] = useState([]);
+  const [editableItemId, setEditableItemId] = useState(null);
+  const [editedItem, setEditedItem] = useState({});
+
   useEffect(() => {
     if (formateurId) {
       dispatch(getItemsByFormateur(formateurId));
@@ -37,6 +45,33 @@ const Tables = () => {
     return months;
   };
 
+  const handleDelete = (itemId) => {
+    const confirmed = window.confirm(
+      "Êtes-vous sûr de vouloir supprimer cet élément ?"
+    );
+    if (confirmed) {
+      dispatch(deleteItem(itemId));
+      dispatch(getItemsByFormateur(formateurId));
+    }
+  };
+
+  const handleEditClick = (item) => {
+    setEditableItemId(item._id);
+    setEditedItem({
+      title: item.title,
+      stack: item.stack,
+      start: new Date(item.start).toISOString().substr(0, 10),
+      end: new Date(item.end).toISOString().substr(0, 10),
+      location: item.location,
+    });
+  };
+
+  const handleEditSubmit = (itemId) => {
+    dispatch(updateItem({ ...editedItem, _id: itemId }));
+    setEditableItemId(null);
+    dispatch(getItemsByFormateur(formateurId));
+  };
+
   const groupedItems = groupItemsByMonth(items);
 
   return (
@@ -56,21 +91,111 @@ const Tables = () => {
                     <th>Stack</th>
                     <th>Période</th>
                     <th>Lieu</th>
-                    <th>Modalité</th>
+                    <th>Modifier</th>
+                    <th>Supprimer</th>
                   </tr>
                 </thead>
                 <tbody>
                   {groupedItems[month].map((item) => (
                     <tr key={item._id}>
-                      <td>{item.title}</td>
-                      <td>{item.stack}</td>
-                      <td>{`${new Date(
-                        item.start
-                      ).toLocaleDateString()} - ${new Date(
-                        item.end
-                      ).toLocaleDateString()}`}</td>
-                      <td>{item.location}</td>
-                      <td>{item.modalite}</td>
+                      <td>
+                        {editableItemId === item._id ? (
+                          <input
+                            type="text"
+                            value={editedItem.title}
+                            onChange={(e) =>
+                              setEditedItem({
+                                ...editedItem,
+                                title: e.target.value,
+                              })
+                            }
+                          />
+                        ) : (
+                          item.title
+                        )}
+                      </td>
+                      <td>
+                        {editableItemId === item._id ? (
+                          <input
+                            type="text"
+                            value={editedItem.stack}
+                            onChange={(e) =>
+                              setEditedItem({
+                                ...editedItem,
+                                stack: e.target.value,
+                              })
+                            }
+                          />
+                        ) : (
+                          item.stack
+                        )}
+                      </td>
+                      <td>
+                        {editableItemId === item._id ? (
+                          <>
+                            <input
+                              type="date"
+                              value={editedItem.start}
+                              onChange={(e) =>
+                                setEditedItem({
+                                  ...editedItem,
+                                  start: e.target.value,
+                                })
+                              }
+                            />
+                            <input
+                              type="date"
+                              value={editedItem.end}
+                              onChange={(e) =>
+                                setEditedItem({
+                                  ...editedItem,
+                                  end: e.target.value,
+                                })
+                              }
+                            />
+                          </>
+                        ) : (
+                          `${new Date(
+                            item.start
+                          ).toLocaleDateString()} - ${new Date(
+                            item.end
+                          ).toLocaleDateString()}`
+                        )}
+                      </td>
+                      <td>
+                        {editableItemId === item._id ? (
+                          <input
+                            type="text"
+                            value={editedItem.location}
+                            onChange={(e) =>
+                              setEditedItem({
+                                ...editedItem,
+                                location: e.target.value,
+                              })
+                            }
+                          />
+                        ) : (
+                          item.location
+                        )}
+                      </td>
+                      <td>
+                        {editableItemId === item._id ? (
+                          <button onClick={() => handleEditSubmit(item._id)}>
+                            Confirmer
+                          </button>
+                        ) : (
+                          <FaEdit
+                            onClick={() => handleEditClick(item)}
+                            style={{ cursor: "pointer" }}
+                          />
+                        )}
+                      </td>
+                      <td>
+                        <FaTrash
+                          onClick={() => handleDelete(item._id)}
+                          style={{ cursor: "pointer", color: "red" }}
+                        />
+                      </td>
                     </tr>
                   ))}
                 </tbody>

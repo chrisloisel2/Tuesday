@@ -22,6 +22,19 @@ export const getItemsByFormateur = createAsyncThunk(
   }
 );
 
+export const updateItem = createAsyncThunk("item/updateItem", async (item) => {
+  const response = await MyAxios.put(`/item/items/${item._id}`, item);
+  return response;
+});
+
+export const deleteItem = createAsyncThunk(
+  "item/deleteItem",
+  async (itemId) => {
+    const response = await MyAxios.delete(`/item/items/${itemId}`);
+    return response;
+  }
+);
+
 const itemReducer = createSlice({
   name: "item",
   initialState: {
@@ -62,6 +75,30 @@ const itemReducer = createSlice({
         state.items = action.payload;
       })
       .addCase(getItemsByFormateur.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(updateItem.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateItem.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.items = state.items.map((item) =>
+          item._id === action.payload._id ? action.payload : item
+        );
+      })
+      .addCase(updateItem.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(deleteItem.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(deleteItem.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.items = state.items.filter((item) => item._id !== action.payload);
+      })
+      .addCase(deleteItem.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       });
