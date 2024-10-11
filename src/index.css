@@ -1,7 +1,7 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -18,206 +18,210 @@ body {
 }
 
 :root {
-	--main-color: #133774;
-	--main-color-hover: rgb(0, 143, 238);
-	--font-color: rgb(255, 255, 255);
-	--background-color: #292f4c;
-	--background-darker-color: #181b34;
+  --main-color: #133774;
+  --main-color-hover: rgb(0, 143, 238);
+  --font-color: rgb(255, 255, 255);
+  --background-color: #292f4c;
+  --background-darker-color: #181b34;
 
-	--padding-small: 10px;
-	--padding-medium: 20px;
-	--padding-large: 30px;
+  --padding-small: 10px;
+  --padding-medium: 20px;
+  --padding-large: 30px;
 
-	--font-size-small: 12px;
-	--font-size-medium: 20px;
-	--font-size-large: 30px;
+  --font-size-small: 12px;
+  --font-size-medium: 20px;
+  --font-size-large: 30px;
 }
 
 .login {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	padding: var(--padding-medium);
-	display: flex;
-	flex-direction: column;
-	gap: 20px;
-	height: 80%;
-	width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--padding-medium);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 80%;
+  width: 100%;
 }
 
 .app {
-	padding: var(--padding-medium);
-	display: flex;
-	height: 95%;
-	gap: 10px;
+  padding: var(--padding-medium);
+  display: flex;
+  height: 95%;
+  gap: 10px;
 }
 
 .boardCpt {
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
-	height: 100%;
-	padding: var(--padding-small);
-	border-radius: 10px;
-	background-color: var(--background-color);
-	width: 10%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  padding: var(--padding-small);
+  border-radius: 10px;
+  background-color: var(--background-color);
+  width: 10%;
 }
 
 .board-list {
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
-	height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
 }
 
-.board-item{
-	position: relative;
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
-	padding: var(--padding-small);
-	background-color: var(--background-color);
-	color: var(--font-color);
-	font-weight: bold;
-	border : none;
-	gap: 10px;
-	width: 100%;
-	z-index: 3;
+.board-item {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--padding-small);
+  background-color: var(--background-color);
+  color: var(--font-color);
+  font-weight: bold;
+  border: none;
+  gap: 10px;
+  width: 100%;
+  z-index: 3;
+}
+
+.board-item-active {
+  background-color: blanchedalmond !important;
+  color: black !important;
 }
 
 .board-item:hover {
-	background-color: var(--main-color);
-	border-radius: 5px;
+  background-color: var(--main-color);
+  border-radius: 5px;
 }
 
 .active {
-	background-color: var(--main-color);
-	border-radius: 5px;
+  background-color: var(--main-color);
+  border-radius: 5px;
 }
 
 .board-item p {
-	font-size: var(--font-size-small);
-	font-family: 'Roboto', sans-serif;
-	outline: none;
-	overflow: hidden;
+  font-size: var(--font-size-small);
+  font-family: "Roboto", sans-serif;
+  outline: none;
+  overflow: hidden;
 }
 
 .board-item input {
-	background-color: transparent;
-	width: 70%;
-	border: none;
+  background-color: transparent;
+  width: 70%;
+  border: none;
 }
 
 .board {
-	height: 100%;
-	width: 100%;
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
-	padding: var(--padding-small);
-	border-radius: 10px;
-	background-color: var(--background-color);
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: var(--padding-small);
+  border-radius: 10px;
+  background-color: var(--background-color);
 }
 
 .title {
-	color: var(--font-color);
-	font-size: var(--font-size-large);
-	font-weight: bold;
-	padding: var(--padding-small);
-	font-family: 'Roboto', sans-serif;
+  color: var(--font-color);
+  font-size: var(--font-size-large);
+  font-weight: bold;
+  padding: var(--padding-small);
+  font-family: "Roboto", sans-serif;
 }
 
 .table-line {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
-	width: 100%;
-	padding: var(--padding-small);
-	border-radius: 5px;
-	background-color: var(--background-darker-color);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: var(--padding-small);
+  border-radius: 5px;
+  background-color: var(--background-darker-color);
 }
 
 .view-switcher {
-	display: flex;
-	flex-direction: row;
-	justify-content: start;
-	align-items: start;
-	gap: 13px;
-	width: 98%;
-	padding: var(--padding-small);
-	border-radius: 5px;
-	background-color: var(--background-color);
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: start;
+  gap: 13px;
+  width: 98%;
+  padding: var(--padding-small);
+  border-radius: 5px;
+  background-color: var(--background-color);
 }
 
 button {
-	color: var(--font-color);
-	border: none;
-	border-radius: 5px;
-	padding: var(--padding-small);
-	background-color: var(--background-color);
-	cursor: pointer;
+  color: var(--font-color);
+  border: none;
+  border-radius: 5px;
+  padding: var(--padding-small);
+  background-color: var(--background-color);
+  cursor: pointer;
 }
 
 .view-switcher button:hover {
-	background-color: var(--main-color);
+  background-color: var(--main-color);
 }
 
 .active {
-	background-color: var(--main-color);
+  background-color: var(--main-color);
 }
 
 .tables {
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
-	width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
 }
 
 .legend {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-evenly;
-	align-items: center;
-	width: 100%;
-	border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  border-radius: 5px;
 }
 
 -container {
-	display: flex;
-	flex-direction: column;
-	width: 100%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 .rbc-calendar {
-	display: flex;
-	flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .month-items {
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .month-items table {
-	border-radius: 0px 0px 5px 5px;
+  border-radius: 0px 0px 5px 5px;
 }
 
-
 .view {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-	align-items: center;
-	padding: var(--padding-small);
-	border-radius: 5px;
-	border-bottom: 2px solid var(--main-color);
-	cursor: pointer;
-	color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  padding: var(--padding-small);
+  border-radius: 5px;
+  border-bottom: 2px solid var(--main-color);
+  cursor: pointer;
+  color: white;
 }
 
 .selected {
-	background-color: var(--main-color);
+  background-color: var(--main-color);
 }

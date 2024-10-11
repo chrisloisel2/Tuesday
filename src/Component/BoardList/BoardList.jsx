@@ -1,187 +1,89 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { FaRegEdit, FaCog } from "react-icons/fa";
-import { MdAdd } from "react-icons/md";
-import { IoIosCheckmark } from "react-icons/io";
+import React, { useEffect, useState } from "react";
 import { IoDocumentTextOutline } from "react-icons/io5";
-import { ArchiveBoard, CreateBoard, DeleteBoard, toggleFavoriteBoard, UpdateBoard } from '../../Redux/BoardReducer';
+import { MdAdd } from "react-icons/md";
+import FormationBoard from "../BoardsPablo/FormationBoard";
+import BoardCours from "../BoardsPablo/BoardCours";
+import OtherBoard from "../BoardsPablo/OtherBoard";
 
-const BoardList = ({ selectBoard }) => {
-	const dispatch = useDispatch();
-	const boards = useSelector((state) => state.board.board);
-	const [editState, setEditState] = useState({}); // Gérer l'état d'édition par board
-	const [showModal, setShowModal] = useState({}); // Gérer l'état de la modale de paramètres par board
-	const [showEdit, setShowEdit] = useState(false);
+const BoardList = ({ activeBoard, setActiveBoard }) => {
+  const boards = [
+    { id: "formations", title: "Formations" },
+    { id: "cours", title: "Cours" },
+    { id: "autre", title: "Autre" },
+  ];
 
-	if (!boards || boards.length === 0) {
-		return <div>Loading...</div>;
-	}
+  return (
+    <div className="board-list-container">
+      <div className="menu">
+        {boards.map((board) => (
+          <button
+            key={board.id}
+            className={`board-item ${
+              activeBoard === board.id ? "board-item-active" : ""
+            }`}
+            onClick={() => setActiveBoard(board.id)}
+          >
+            <IoDocumentTextOutline
+              style={{
+                fontSize: "20px",
+                marginRight: "10px",
+              }}
+            />
+            <p>{board.title}</p>
+          </button>
+        ))}
+        <button
+          className="board-item"
+          onClick={() => console.log("Ajouter un nouveau board")}
+          style={{
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "20px",
+          }}
+        >
+          <MdAdd />
+        </button>
+      </div>
 
-	const handleEditToggle = (boardId, title) => {
-		setEditState((prev) => ({
-			...prev,
-			[boardId]: {
-				edit: !prev[boardId]?.edit,
-				title: title || prev[boardId]?.title || '',
-			},
-		}));
-	};
+      <div className="board-content">
+        {activeBoard === "formations" && <FormationBoard />}
+        {activeBoard === "cours" && <BoardCours />}
+        {activeBoard === "autre" && <OtherBoard />}
+      </div>
 
-	const handleTitleChange = (boardId, value) => {
-		setEditState((prev) => ({
-			...prev,
-			[boardId]: {
-				...prev[boardId],
-				title: value,
-			},
-		}));
-
-	};
-
-	const handleKeyPress = (e, board) => {
-		if (e.key === 'Enter') {
-			handleEditToggle(board._id);
-			if (editState[board._id]?.title !== board.title) {
-				dispatch(UpdateBoard({ ...board, title: editState[board._id]?.title }));
-			}
-		}
-	};
-
-	const handleEdit = (board) => {
-		handleEditToggle(board._id);
-		if (editState[board._id]?.title !== board.title) {
-			dispatch(UpdateBoard({ ...board, title: editState[board._id]?.title }));
-		}
-	};
-
-	const toggleModal = (boardId) => {
-		setShowModal((prev) => ({
-			...prev,
-			[boardId]: !prev[boardId], // Toggle la modale de paramètres
-		}));
-	};
-
-	const handleDelete = (boardId) => {
-		dispatch(DeleteBoard(boardId));
-	};
-
-	const handleArchive = (boardId) => {
-		dispatch(ArchiveBoard(boardId));
-	};
-
-	const handleFavorite = (boardId) => {
-		dispatch(toggleFavoriteBoard(boardId));
-	};
-
-	return (
-		<div className="boardCpt">
-			<div className="board-list">
-				{boards.map((board) => (
-					<div key={board._id} className="board-item-container">
-						<button
-							className="board-item"
-							onClick={() => selectBoard(board)}
-							onMouseEnter={() => setShowEdit(true)}
-							onMouseLeave={() => setShowEdit(false)}
-						>
-							{editState[board._id]?.edit ? (
-								<>
-									<input
-										type="text"
-										value={editState[board._id]?.title || ''}
-										onChange={(e) => handleTitleChange(board._id, e.target.value)}
-										onKeyPress={(e) => handleKeyPress(e, board)}
-									/>
-									<IoIosCheckmark
-										onClick={() => handleEdit(board)}
-										style={{ fontSize: '20px', cursor: 'pointer' }}
-									/>
-								</>
-							) : (
-								<>
-									<IoDocumentTextOutline style={{
-										fontSize: '20px', marginRight: '10px',
-										position: 'absolute', left: '0', zIndex: '10', height: '30px', padding: '5px'
-									}} />
-									<p style={{ margin: '0', marginLeft: '40px' }}
-									>{board.title}</p>
-								</>
-							)}
-
-							{
-								showEdit && (
-									<FaCog
-										onClick={() => toggleModal(board._id)}
-										style={{
-											fontSize: '20px', cursor: 'pointer', marginLeft: '10px',
-											position: 'absolute', right: '0',
-											zIndex: '10',
-											height: '30px',
-											padding: '5px',
-										}}
-									/>
-								)
-							}
-						</button>
-
-						{/* Icône pour ouvrir la modale de paramètres */}
-
-
-
-						{/* Modale de paramètres */}
-						{showModal[board._id] && (
-							<div className="board-modal">
-								<ul>
-									<li onClick={() => handleEditToggle(board._id, board.title)}>Modifier</li>
-									<li onClick={() => handleDelete(board._id)}>Supprimer</li>
-									<li onClick={() => handleArchive(board._id)}>Archiver</li>
-									<li onClick={() => handleFavorite(board._id)}>Mettre en favoris</li>
-								</ul>
-							</div>
-						)}
-					</div>
-				))}
-				<button className="board-item" onClick={() => dispatch(CreateBoard())}
-					style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}
-				>
-					<MdAdd />
-				</button>
-			</div>
-
-			<style jsx>{`
-        .board-item-container {
+      <style jsx>{`
+        .board-list-container {
           display: flex;
-          align-items: center;
-          position: relative;
+          height: 100vh;
         }
 
-        .board-modal {
-          position: absolute;
-          top: 100%;
-          right: 0;
-          background: white;
-          border: 1px solid #ccc;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-          z-index: 10000000;
+        .menu {
+          width: 200px;
+          background-color: #292f4c;
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
         }
 
-        .board-modal ul {
-          list-style: none;
-          padding: 0;
-          margin: 0;
-        }
-
-        .board-modal ul li {
-          padding: 8px 12px;
+        .menu button {
+          margin-bottom: 10px;
+          padding: 10px;
           cursor: pointer;
+          background-color: #007bff;
+          color: white;
+          border: none;
+          border-radius: 5px;
         }
 
-        .board-modal ul li:hover {
-          background-color: #f0f0f0;
+        .board-content {
+          flex-grow: 1;
+          padding: 20px;
         }
       `}</style>
-		</div>
-	);
+    </div>
+  );
 };
 
 export default BoardList;

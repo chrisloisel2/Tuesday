@@ -5,6 +5,7 @@ import Register from "../Register/Register";
 import PrivateRoute from "../PrivateRoute/PrivateRoute";
 import Calendar from "../Calendar/Calendar";
 import Tables from "../Tables/Tables";
+import BoardList from "../BoardList/BoardList";
 
 function App() {
   return (
