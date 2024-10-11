@@ -33,6 +33,7 @@ const Display = () => {
           flex-grow: 1;
           padding: 20px;
           width: 80vw;
+          overflow-y: auto;
         }
       `}</style>
 		</div>

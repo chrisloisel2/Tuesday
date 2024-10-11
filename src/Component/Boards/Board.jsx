@@ -4,6 +4,7 @@ import Calendrier from "../Calendar/Calendar";
 import { MdAdd } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { createTable } from "../../Redux/BoardReducer";
+import "./Board.css";
 
 const Board = ({ activeBoard }) => {
 	const [viewMode, setViewMode] = useState("calendar");
