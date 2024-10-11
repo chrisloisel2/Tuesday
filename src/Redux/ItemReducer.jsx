@@ -23,6 +23,7 @@ export const getItemsByFormateur = createAsyncThunk(
 );
 
 export const updateItem = createAsyncThunk("item/updateItem", async (item) => {
+	console.log(item);
 	const response = await MyAxios.put(`/item/items/${item._id}`, item);
 	return response;
 });

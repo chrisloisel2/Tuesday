@@ -3,7 +3,7 @@ import DateRangeBadge from '../DateRangeBadge/DateRangeBadge';
 import { updateItem } from '../../Redux/ItemReducer';
 import { useDispatch } from 'react-redux';
 
-const Item = ({ item }) => {
+const Item = ({ item, color }) => {
 	const [editedItem, setEditedItem] = useState({
 		title: item.title,
 		stack: item.stack,
@@ -11,18 +11,13 @@ const Item = ({ item }) => {
 		location: item.location,
 		start: item.start,
 		end: item.end,
-		nbdays: item.nbdays,
+		nbDays: item.nbDays,
 		tjm: item.tjm,
 	});
 	const dispatch = useDispatch();
 
 	const handleChange = (e) => {
-		console.log("item copy :", editedItem);
-		console.log("new data :", e.target.innerText);
-		console.log("cell index :", e.target.id);
 		editedItem[e.target.id] = e.target.innerText;
-		console.log("item AFTER copy :", editedItem);
-
 		dispatch(updateItem({ ...editedItem, _id: item._id }));
 	};
 
@@ -31,6 +26,7 @@ const Item = ({ item }) => {
 			<td
 				contentEditable
 				onBlur={handleChange}
+				suppressContentEditableWarning={true}
 				onKeyDown={(e) => {
 					if (e.key === 'Enter') {
 						e.preventDefault();
@@ -42,6 +38,7 @@ const Item = ({ item }) => {
 			<td
 				contentEditable
 				onBlur={handleChange}
+				suppressContentEditableWarning={true}
 				onKeyDown={(e) => {
 					if (e.key === 'Enter') {
 						e.preventDefault();
@@ -52,6 +49,7 @@ const Item = ({ item }) => {
 			<td
 				contentEditable
 				onBlur={handleChange}
+				suppressContentEditableWarning={true}
 				onKeyDown={(e) => {
 					if (e.key === 'Enter') {
 						e.preventDefault();
@@ -62,6 +60,7 @@ const Item = ({ item }) => {
 			<td
 				contentEditable
 				onBlur={handleChange}
+				suppressContentEditableWarning={true}
 				onKeyDown={(e) => {
 					if (e.key === 'Enter') {
 						e.preventDefault();
@@ -69,20 +68,22 @@ const Item = ({ item }) => {
 					}
 				}}
 			>{editedItem.location}</td>
-			<td><DateRangeBadge startDate={editedItem.start} endDate={editedItem.end} /></td>
+			<td><DateRangeBadge startDate={editedItem.start} endDate={editedItem.end} color={color} /></td>
 			<td
 				contentEditable
 				onBlur={handleChange}
+				suppressContentEditableWarning={true}
 				onKeyDown={(e) => {
 					if (e.key === 'Enter') {
 						e.preventDefault();
 						e.target.blur();
 					}
 				}}
-			>{editedItem.nbdays}</td>
+			>{editedItem.nbDays}</td>
 			<td
 				contentEditable
 				onBlur={handleChange}
+				suppressContentEditableWarning={true}
 				onKeyDown={(e) => {
 					if (e.key === 'Enter') {
 						e.preventDefault();
@@ -93,6 +94,7 @@ const Item = ({ item }) => {
 			<td
 				contentEditable
 				onBlur={handleChange}
+				suppressContentEditableWarning={true}
 				onKeyDown={(e) => {
 					if (e.key === 'Enter') {
 						e.preventDefault();
@@ -103,6 +105,7 @@ const Item = ({ item }) => {
 			<td
 				contentEditable
 				onBlur={handleChange}
+				suppressContentEditableWarning={true}
 				onKeyDown={(e) => {
 					if (e.key === 'Enter') {
 						e.preventDefault();

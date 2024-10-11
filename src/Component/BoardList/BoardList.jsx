@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 
 const BoardList = ({ activeBoard, setActiveBoard }) => {
 	const boards = useSelector((state) => state.board.board);
+	console.log("active", activeBoard);
 
 	return (
 		<div className="board-list-container">
@@ -13,7 +14,7 @@ const BoardList = ({ activeBoard, setActiveBoard }) => {
 				{boards.map((board) => (
 					<button
 						key={board._id}
-						className={`board-item ${activeBoard === board.id ? "board-item-active" : ""
+						className={`board-item${activeBoard?._id === board._id ? "-active" : ""
 							}`}
 						onClick={() => setActiveBoard(board)}
 					>
@@ -55,22 +56,13 @@ const BoardList = ({ activeBoard, setActiveBoard }) => {
           flex-direction: column;
         }
 
-        .menu button {
-          margin-bottom: 10px;
-          padding: 10px;
-          cursor: pointer;
-          background-color: #007bff;
-          color: white;
-          border: none;
-          border-radius: 5px;
-        }
 
         .board-content {
           flex-grow: 1;
           padding: 20px;
         }
       `}</style>
-		</div>
+		</div >
 	);
 };
 

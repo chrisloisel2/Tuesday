@@ -37,12 +37,6 @@ const Board = ({ activeBoard }) => {
 					Formation
 				</button>
 				<button
-					className={viewMode === "finances" ? "active" : ""}
-					onClick={() => handleViewChange("finances")}
-				>
-					Formation
-				</button>
-				<button
 					className={viewMode === "calendar" ? "active" : ""}
 					onClick={() => handleViewChange("calendar")}
 				>
@@ -88,9 +82,6 @@ const Board = ({ activeBoard }) => {
         .view-switcher button.active {
           background-color: #007bff;
           color: white;
-        }
-        .content {
-          margin-top: 20px;
         }
       `}</style>
 		</div>

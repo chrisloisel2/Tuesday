@@ -7,22 +7,11 @@ import {
 	createItem,
 } from "../../Redux/ItemReducer";
 import "./Tables.css";
-import { FaEdit, FaTrash } from "react-icons/fa";
 import ColorPicker from "../ChromePicker/ChromePicker";
 import Item from "../Items/Item";
+import { updateTable } from "../../Redux/BoardReducer";
 
-const Colors = [
-	"#FF6900",
-	"#FCB900",
-	"#7BDCB5",
-	"#00D084",
-	"#8ED1FC",
-	"#0693E3",
-	"#ABB8C3",
-	"#EB144C",
-	"#F78DA7",
-	"#9900EF",
-];
+
 
 const Tables = ({ table }) => {
 	const dispatch = useDispatch();
@@ -80,16 +69,9 @@ const Tables = ({ table }) => {
 		);
 	}
 
-	const handleColorChange = (color) => {
-		setEditedItem({
-			...editedItem,
-			color: color,
-		});
-		setEditedItem({
-			...editedItem,
-			color: color,
-		});
-		dispatch(updateItem({ ...editedItem, _id: editedItem._id }));
+	const handleColorChange = (color, table) => {
+		console.log("Color Change", { ...table, color: color });
+		dispatch(updateTable({ ...table, color: color }));
 	};
 
 	if (table === undefined) {
@@ -98,13 +80,19 @@ const Tables = ({ table }) => {
 
 	return (
 		<div className="table-view-container">
-			<div key={table._id} className="month-section">
+			<div key={table._id} className="month-section"
+				style={{
+					backgroundColor: table.color,
+					borderLeft: `10px solid ${table.color}`,
+					borderRadius: "5px",
+				}}
+			>
 				<div
 					className={`month-header ${openMonths.includes(table) ? "month-active" : "month-inactive"
 						}`}
 					onClick={() => toggleMonth(table)}
 				>
-					<ColorPicker color={table.color} setColor={handleColorChange} />
+					<ColorPicker color={table} setColor={handleColorChange} />
 					<span>{table.title}</span>
 					<span>{openMonths.includes(table) ? "▼" : "▲"}</span>
 				</div>
@@ -130,7 +118,7 @@ const Tables = ({ table }) => {
 									{
 										table.content.map((item) => (
 											<tr key={item._id}>
-												<Item item={item} />
+												<Item item={item} color={table.color} />
 											</tr>
 										))
 
@@ -155,7 +143,7 @@ const Tables = ({ table }) => {
 					)
 				}
 			</div>
-		</div>
+		</div >
 	);
 };
 

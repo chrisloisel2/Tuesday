@@ -1,12 +1,25 @@
 import React, { useReducer } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Route, Redirect, useNavigate, Navigate } from 'react-router-dom';
+import { refreshToken } from '../../Redux/AuthReducer';
+import Cookies from 'js-cookie';
+
+export const isAuthenticated = () => {
+	const token = Cookies.get('auth_token'); // 'auth_token' est le nom du cookie d'auth
+	return !!token; // Retourne vrai si le cookie existe
+};
+
 
 const PrivateRoute = ({ children }) => {
 	const isConnected = useSelector((state) => state.auth.isConnected);
 	const status = useSelector((state) => state.auth.status);
+	const dispatch = useDispatch();
 
-	if (status !== 'succeeded') {
+	if (status === 'idle') {
+		dispatch(refreshToken());
+	}
+
+	if (!isAuthenticated) {
 		return <Navigate to="/" />;
 	}
 	return children;

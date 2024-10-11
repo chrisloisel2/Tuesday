@@ -12,6 +12,17 @@ const Colors = [
 	"#EB144C",
 	"#F78DA7",
 	"#9900EF",
+	"#FF69B4",
+	"#FFD700",
+	"#FF4500",
+	"#DA70D6",
+	"#EEE8AA",
+	"#98FB98",
+	"#AFEEEE",
+	"#DB7093",
+	"#FFEFD5",
+	"#FFDAB9",
+	"#CD853F"
 ];
 
 const ColorPicker = ({ color = "#9900EF", setColor }) => {
@@ -25,7 +36,7 @@ const ColorPicker = ({ color = "#9900EF", setColor }) => {
 
 	const handleColorSelect = (selectedColor, e) => {
 		e.stopPropagation();
-		setColor(selectedColor);
+		setColor(selectedColor, color);
 		setModalOpen(false);
 	};
 
@@ -41,7 +52,7 @@ const ColorPicker = ({ color = "#9900EF", setColor }) => {
 					width: '36px',
 					height: '36px',
 					borderRadius: '50%',
-					background: color,
+					background: color.color,
 					cursor: 'pointer',
 					border: '1px solid #ccc',
 				}}
@@ -70,7 +81,7 @@ const ColorPicker = ({ color = "#9900EF", setColor }) => {
 									borderRadius: '50%',
 									background: presetColor,
 									cursor: 'pointer',
-									border: presetColor === color ? '2px solid black' : 'none',
+									border: presetColor === color.color ? '2px solid black' : 'none',
 								}}
 								onClick={(e) => handleColorSelect(presetColor, e)}
 							/>

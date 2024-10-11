@@ -73,9 +73,9 @@ export const createTable = createAsyncThunk("board/createTable", async (data) =>
 	return response;
 });
 
-export const updateTable = createAsyncThunk("board/updateTable", async (data) => {
-	const response = await MyAxios.put("/board/table/" + data._id, data);
-	console.log(response);
+export const updateTable = createAsyncThunk("table/updateTable", async (data) => {
+	console.log("PREVIOUS -_>", data);
+	const response = await MyAxios.put("/table/table/" + data._id, data);
 	return response;
 });
 
@@ -92,7 +92,12 @@ const BoardReducer = createSlice({
 		board: [],
 		error: null,
 	},
-	reducers: {},
+	reducers: {
+		resetBoard: (state, useDispatch) => {
+			const dispatch = useDispatch;
+			dispatch(GetBoards());
+		}
+	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(GetBoards.pending, (state) => { // la fonction GetBoards en attente
