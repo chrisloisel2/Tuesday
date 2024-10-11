@@ -1,15 +1,25 @@
 import React, { useEffect, useState } from "react";
 import BoardList from "../BoardList/BoardList";
 import "./Display.css";
+import Board from "../Boards/Board";
+import { GetBoards } from "../../Redux/BoardReducer";
+import { useDispatch } from "react-redux";
 
 const Display = () => {
-  const [activeBoard, setActiveBoard] = useState("formations");
+	const [activeBoard, setActiveBoard] = useState(null);
+	const dispatch = useDispatch();
 
-  return (
-    <div className="display-container">
-      <BoardList setActiveBoard={setActiveBoard} />{" "}
-      <div className="board-content"></div>
-      <style jsx>{`
+	useEffect(() => {
+		dispatch(GetBoards());
+	}, []);
+
+	return (
+		<div className="display-container">
+			<BoardList setActiveBoard={setActiveBoard} />{" "}
+			<div className="board-content">
+				<Board activeBoard={activeBoard} />
+			</div>
+			<style jsx>{`
         .display-container {
           display: flex;
           height: 100vh;
@@ -21,8 +31,8 @@ const Display = () => {
           width: 80vw;
         }
       `}</style>
-    </div>
-  );
+		</div>
+	);
 };
 
 export default Display;

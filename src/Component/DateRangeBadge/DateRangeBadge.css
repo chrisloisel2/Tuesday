@@ -1,0 +1,10 @@
+/* DateRangeBadge.css */
+.date-badge {
+	background-color: #3cc1ff; /* Couleur de fond similaire à celle de l'image */
+	color: white;
+	padding: 5px 10px;
+	border-radius: 15px; /* Bordures arrondies pour l'effet "pill" */
+	font-size: 14px;
+	font-weight: bold;
+	display: inline-block;
+  }

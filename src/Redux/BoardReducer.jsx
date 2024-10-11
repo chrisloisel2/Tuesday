@@ -251,7 +251,7 @@ const BoardReducer = createSlice({
 				state.status = "succeeded";
 				state.board = state.board.map((item) => {
 					if (item._id === action.payload.board) {
-						item.tables.push(action.payload);
+						item.content.push(action.payload);
 					}
 					return item;
 				});
