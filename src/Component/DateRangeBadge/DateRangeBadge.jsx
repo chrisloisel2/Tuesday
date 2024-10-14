@@ -4,8 +4,11 @@ import './DateRangeBadge.css'; // Fichier CSS séparé pour les styles
 
 const DateRangeBadge = ({ startDate, endDate, color }) => {
 	// Formater les dates en fonction du format souhaité
+	console.log("START", startDate);
+	console.log("END", endDate);
 	const formattedStartDate = format(new Date(startDate), "MMM d");
 	const formattedEndDate = format(new Date(endDate), "MMM d");
+
 
 	return (
 		<div className="date-badge"

@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 
 const BoardList = ({ activeBoard, setActiveBoard }) => {
 	const boards = useSelector((state) => state.board.board);
-	console.log("active", activeBoard);
 
 	return (
 		<div className="board-list-container">
@@ -41,27 +40,6 @@ const BoardList = ({ activeBoard, setActiveBoard }) => {
 					<MdAdd />
 				</button>
 			</div>
-
-			<style jsx>{`
-        .board-list-container {
-          display: flex;
-          height: 100vh;
-        }
-
-        .menu {
-          width: 200px;
-          background-color: #292f4c;
-          padding: 20px;
-          display: flex;
-          flex-direction: column;
-        }
-
-
-        .board-content {
-          flex-grow: 1;
-          padding: 20px;
-        }
-      `}</style>
 		</div >
 	);
 };

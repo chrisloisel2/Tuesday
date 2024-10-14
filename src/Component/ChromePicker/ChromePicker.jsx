@@ -12,17 +12,6 @@ const Colors = [
 	"#EB144C",
 	"#F78DA7",
 	"#9900EF",
-	"#FF69B4",
-	"#FFD700",
-	"#FF4500",
-	"#DA70D6",
-	"#EEE8AA",
-	"#98FB98",
-	"#AFEEEE",
-	"#DB7093",
-	"#FFEFD5",
-	"#FFDAB9",
-	"#CD853F"
 ];
 
 const ColorPicker = ({ color = "#9900EF", setColor }) => {
@@ -49,8 +38,8 @@ const ColorPicker = ({ color = "#9900EF", setColor }) => {
 		<div style={{ position: 'relative', display: 'inline-block' }} onClick={(e) => e.stopPropagation()}>
 			<div
 				style={{
-					width: '36px',
-					height: '36px',
+					width: '16px',
+					height: '16px',
 					borderRadius: '50%',
 					background: color.color,
 					cursor: 'pointer',
@@ -65,7 +54,7 @@ const ColorPicker = ({ color = "#9900EF", setColor }) => {
 					position: 'absolute',
 					top: '40px',
 					left: 0,
-					zIndex: 2,
+					zIndex: 100000,
 					background: 'white',
 					padding: '10px',
 					borderRadius: '5px',

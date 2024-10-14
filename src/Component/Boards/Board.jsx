@@ -5,11 +5,29 @@ import { MdAdd } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { createTable } from "../../Redux/BoardReducer";
 import "./Board.css";
+import { SlEarphones } from "react-icons/sl";
 
 const Board = ({ activeBoard }) => {
 	const [viewMode, setViewMode] = useState("calendar");
 	const boards = useSelector((state) => state.board.board);
+	const [selectedItems, setSelectedItems] = useState([]);
 	const dispatch = useDispatch();
+
+
+	const [columnWidths, setColumnWidths] = useState({
+		select: 50,
+		title: 150,
+		stack: 150,
+		formateur: 150,
+		location: 150,
+		date: 150,
+		nbDays: 100,
+		tjm: 100,
+		caTTC: 100,
+		caHT: 100,
+	});
+
+
 
 	useEffect(() => {
 		setViewMode("tables");
@@ -49,7 +67,7 @@ const Board = ({ activeBoard }) => {
 				{
 					viewMode === "tables" &&
 					activeBoard?.content?.map((item) => (
-						<Tables key={item._id} table={item} />
+						<Tables key={item._id} table={item} selectedItems={selectedItems} setSelectedItems={setSelectedItems} columnWidths={columnWidths} setColumnWidths={setColumnWidths} />
 					))
 				}
 				{viewMode === "tables" &&
@@ -68,23 +86,8 @@ const Board = ({ activeBoard }) => {
 							AddTable
 						</button>
 					)}
-				{viewMode === "calendar" && <Calendrier />}
+				{viewMode === "calendar" && <Calendrier activeBoard={activeBoard} />}
 			</div>
-
-			<style jsx>{`
-        .view-switcher {
-          margin-bottom: 20px;
-        }
-        .view-switcher button {
-          margin-right: 10px;
-          padding: 10px;
-          cursor: pointer;
-        }
-        .view-switcher button.active {
-          background-color: #007bff;
-          color: white;
-        }
-      `}</style>
 		</div>
 	);
 };

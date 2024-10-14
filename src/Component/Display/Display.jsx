@@ -12,7 +12,7 @@ const Display = () => {
 
 	useEffect(() => {
 		dispatch(GetBoards()).then((res) => {
-			setActiveBoard(res.payload[0]);
+			setActiveBoard(res?.payload[0]);
 		});
 	}, [dispatch]);
 
@@ -22,20 +22,6 @@ const Display = () => {
 			<div className="board-content">
 				<Board activeBoard={activeBoard} />
 			</div>
-			<div id="modal-root"></div>
-			<style jsx>{`
-        .display-container {
-          display: flex;
-          height: 100vh;
-        }
-
-        .board-content {
-          flex-grow: 1;
-          padding: 20px;
-          width: 80vw;
-          overflow-y: auto;
-        }
-      `}</style>
 		</div>
 	);
 };

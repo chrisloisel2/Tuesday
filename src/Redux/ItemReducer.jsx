@@ -42,8 +42,28 @@ const itemReducer = createSlice({
 		status: "idle",
 		items: [],
 		error: null,
+		selectedItems: [],
 	},
-	reducers: {},
+	reducers: {
+		selectItem: (state, action) => {
+			if (state.selectedItems.includes(action.payload)) {
+				state.selectedItems = state.selectedItems.filter(
+					(id) => id !== action.payload
+				);
+			}
+			else {
+				state.selectedItems.push(action.payload);
+			}
+		},
+		selectAll: (state, action) => {
+			if (state.selectedItems.length === state.items.length) {
+				state.selectedItems = [];
+			}
+			else {
+				state.selectedItems = state.items.map((item) => item._id);
+			}
+		},
+	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(getAllItems.pending, (state) => {
@@ -105,5 +125,7 @@ const itemReducer = createSlice({
 			});
 	},
 });
+
+export const { selectItem, selectAll } = itemReducer.actions;
 
 export default itemReducer.reducer;

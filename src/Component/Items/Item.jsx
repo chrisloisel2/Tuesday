@@ -1,118 +1,90 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import DateRangeBadge from '../DateRangeBadge/DateRangeBadge';
 import { updateItem } from '../../Redux/ItemReducer';
 import { useDispatch } from 'react-redux';
 
-const Item = ({ item, color }) => {
+const Item = ({ item, color, columns }) => {
 	const [editedItem, setEditedItem] = useState({
-		title: item.title,
-		stack: item.stack,
-		formateur: item.formateur,
-		location: item.location,
-		start: item.start,
-		end: item.end,
-		nbDays: item.nbDays,
-		tjm: item.tjm,
+		...item,
+		columns: { ...item.columns }
 	});
 	const dispatch = useDispatch();
+
+
+	const calculatePrice = useMemo(() => {
+		return editedItem.tjm * editedItem.nbDays;
+	}, [editedItem.tjm, editedItem.nbDays]);
+
+	const calculatePriceWithTax = useMemo(() => {
+		if (new Date(editedItem.end).getFullYear() < 2024) {
+			return calculatePrice;
+		}
+		return calculatePrice * 1.20;
+	}, [calculatePrice]);
 
 	const handleChange = (e) => {
 		editedItem[e.target.id] = e.target.innerText;
 		dispatch(updateItem({ ...editedItem, _id: item._id }));
 	};
 
+	Object.entries(item.columns).map(([key, value]) => {
+		if (value.type === 'enum') {
+			console.log("KEY", key);
+			console.log("COLUMNS", columns);
+			console.log("ALED", columns[key].color[value.value]);
+		}
+
+	}
+
+	);
+
 	return (
 		<>
-			<td
-				contentEditable
-				onBlur={handleChange}
-				suppressContentEditableWarning={true}
-				onKeyDown={(e) => {
-					if (e.key === 'Enter') {
-						e.preventDefault();
-						e.target.blur();
+			{
+				Object.entries(item.columns).map(([key, value]) => {
+					if (value.type === 'date') {
+						console.log("DATE", item.columns[key]);
+						console.log("Date2", item.start, item.columns[key].start);
+						return (
+							<td key={key} id={key} contentEditable onInput={handleChange} suppressContentEditableWarning={true}>
+								<DateRangeBadge startDate={item.columns[key].start} endDate={item.columns[key].end} color={color} />
+							</td>
+						);
 					}
-				}}
-				id="title"
-			><div>{editedItem.title}</div></td>
-			<td
-				contentEditable
-				onBlur={handleChange}
-				suppressContentEditableWarning={true}
-				onKeyDown={(e) => {
-					if (e.key === 'Enter') {
-						e.preventDefault();
-						e.target.blur();
+
+					else {
+						return (
+							<td
+								key={key}
+								id={key}
+								{
+								...value.type === 'enum' ? {
+									className: 'enum'
+								} : {
+									contentEditable: true,
+									onBlur: (e) => {
+										if (e.target.innerText !== item.columns[key].value) {
+											handleChange(e);
+										}
+									}
+								}
+								}
+								suppressContentEditableWarning={true}
+								onInput={handleChange}
+								style={{
+									backgroundColor: `${value.type === 'enum' ? columns[key].color[value.value] : 'transparent'
+										}`,
+								}}
+							>
+								{
+									value.value
+								}
+							</td >
+						)
 					}
-				}}
-			>{editedItem.stack}</td>
-			<td
-				contentEditable
-				onBlur={handleChange}
-				suppressContentEditableWarning={true}
-				onKeyDown={(e) => {
-					if (e.key === 'Enter') {
-						e.preventDefault();
-						e.target.blur();
-					}
-				}}
-			>{editedItem.formateur}</td>
-			<td
-				contentEditable
-				onBlur={handleChange}
-				suppressContentEditableWarning={true}
-				onKeyDown={(e) => {
-					if (e.key === 'Enter') {
-						e.preventDefault();
-						e.target.blur();
-					}
-				}}
-			>{editedItem.location}</td>
-			<td><DateRangeBadge startDate={editedItem.start} endDate={editedItem.end} color={color} /></td>
-			<td
-				contentEditable
-				onBlur={handleChange}
-				suppressContentEditableWarning={true}
-				onKeyDown={(e) => {
-					if (e.key === 'Enter') {
-						e.preventDefault();
-						e.target.blur();
-					}
-				}}
-			>{editedItem.nbDays}</td>
-			<td
-				contentEditable
-				onBlur={handleChange}
-				suppressContentEditableWarning={true}
-				onKeyDown={(e) => {
-					if (e.key === 'Enter') {
-						e.preventDefault();
-						e.target.blur();
-					}
-				}}
-			>{editedItem.tjm}</td>
-			<td
-				contentEditable
-				onBlur={handleChange}
-				suppressContentEditableWarning={true}
-				onKeyDown={(e) => {
-					if (e.key === 'Enter') {
-						e.preventDefault();
-						e.target.blur();
-					}
-				}}
-			>{editedItem.tjm * editedItem.nbdays || "pas de chiffre d'affaire"}</td>
-			<td
-				contentEditable
-				onBlur={handleChange}
-				suppressContentEditableWarning={true}
-				onKeyDown={(e) => {
-					if (e.key === 'Enter') {
-						e.preventDefault();
-						e.target.blur();
-					}
-				}}
-			>{editedItem.tjm * editedItem.nbdays * 1.20 || "pas de chiffre d'affaire"}</td>
+				}
+				)
+			}
 		</>
 	);
 };
