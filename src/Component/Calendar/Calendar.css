@@ -136,3 +136,39 @@
   margin-top: 20vh;
   color: pink;
 }
+
+.custom-toolbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2vh;
+  position: relative;
+}
+
+.nav-buttons {
+  display: flex;
+}
+
+.nav-buttons button {
+  background: transparent;
+  color: var(--primary-color);
+  font-weight: bold;
+  font-size: 1vw;
+}
+
+.nav-buttons span {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5vw;
+  width: 12vw;
+  text-transform: capitalize;
+}
+
+.nav-buttons {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.5vw;
+  white-space: nowrap;
+}
