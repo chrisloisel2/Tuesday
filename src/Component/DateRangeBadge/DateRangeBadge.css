@@ -1,9 +1,28 @@
-/* DateRangeBadge.css */
 .date-badge {
-	color: white;
-	padding: 5px 10px;
-	border-radius: 15px; /* Bordures arrondies pour l'effet "pill" */
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	width: 100%;
+	border: 1px solid #ddd;
+	border-radius: 15px;
+	position: relative;
+	background-color: #f9f9f9;
+}
+
+.progress-bar {
+	position: absolute;
+	height: 100%;
+	z-index: 0;
+	border-radius: 15px;
+	transition: width 0.5s ease; /* Animation pour rendre la progression fluide */
+}
+
+.date-info {
+	width: 100%;
+	height: 100%;
+	padding: 3px;
 	font-size: 14px;
-	font-weight: bold;
-	display: inline-block;
-  }
+	color: black;
+	z-index: 1;
+}

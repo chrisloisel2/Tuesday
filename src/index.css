@@ -166,10 +166,8 @@ body {
   flex-direction: row;
   justify-content: start;
   align-items: start;
-  gap: 13px;
   width: 98%;
   padding: var(--padding-small);
-  border-radius: 5px;
   background-color: var(--background-color);
 }
 
@@ -269,17 +267,100 @@ th {
 	scrollbar-width: none;
   }
 
-
-
   .board-list-container {
 	display: flex;
 	height: 100vh;
   }
 
   .menu {
-	width: 200px;
+	width: 150px;
 	background-color: #292f4c;
-	padding: 20px;
+	padding: 3px;
 	display: flex;
 	flex-direction: column;
   }
+
+
+/* Le modal enum */
+.modalEnum {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 100;
+    background-color: #2c2f38;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    width: 200px;
+}
+
+/* La petite flèche au-dessus de la modale */
+.modal-arrow {
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #2c2f38;
+}
+
+/* Le contenu interne du modal */
+.modal-content {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Chaque option dans le modal (couleur + label) */
+.enumOption {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 6px;
+}
+
+.enumOption:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Le petit carré de couleur à gauche de l'option */
+.enumColor {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    margin-right: 8px;
+}
+
+/* Le label de chaque option */
+.enumLabel {
+    font-size: 14px;
+    color: white;
+    font-weight: 500;
+}
+
+/* Le footer du modal avec l'icône d'édition */
+.modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+}
+
+.edit-icon {
+    width: 16px;
+    height: 16px;
+    background-size: cover;
+    margin-right: 4px;
+}
+
+/* Texte du footer */
+.modal-footer:hover {
+    color: #fff;
+    opacity: 0.8;
+}

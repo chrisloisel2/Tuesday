@@ -5,41 +5,25 @@ import { MdAdd } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { createTable } from "../../Redux/BoardReducer";
 import "./Board.css";
-import { SlEarphones } from "react-icons/sl";
+import ViewList from "../ViewList/ViewList";
 
 const Board = ({ activeBoard }) => {
-	const [viewMode, setViewMode] = useState("calendar");
 	const boards = useSelector((state) => state.board.board);
-	const [selectedItems, setSelectedItems] = useState([]);
+	const [columns, setColumns] = useState({});
+	const [selectedView, setselectedView] = useState();
 	const dispatch = useDispatch();
 
-
-	const [columnWidths, setColumnWidths] = useState({
-		select: 50,
-		title: 150,
-		stack: 150,
-		formateur: 150,
-		location: 150,
-		date: 150,
-		nbDays: 100,
-		tjm: 100,
-		caTTC: 100,
-		caHT: 100,
-	});
-
-
-
 	useEffect(() => {
-		setViewMode("tables");
-		console.log("raffraichir", activeBoard);
-	}, [boards.length]);
+		setColumns(activeBoard?.columns);
+	});
 
 	const handleAddTable = () => {
 		dispatch(createTable(activeBoard._id));
 	}
 
 	const handleViewChange = (view) => {
-		setViewMode(view);
+		console.log("view", view);
+		setselectedView(view);
 	};
 
 	if (activeBoard === null) {
@@ -49,28 +33,17 @@ const Board = ({ activeBoard }) => {
 	return (
 		<div className="formation-board">
 			<div className="view-switcher">
-				<button
-					className={viewMode === "tables" ? "active" : ""}
-					onClick={() => handleViewChange("tables")}
-				>
-					Formation
-				</button>
-				<button
-					className={viewMode === "calendar" ? "active" : ""}
-					onClick={() => handleViewChange("calendar")}
-				>
-					Calendrier
-				</button>
+				<ViewList views={activeBoard} change={handleViewChange} activeVew={selectedView} />
 			</div>
 
 			<div className="content">
 				{
-					viewMode === "tables" &&
+					selectedView?.type === "table" &&
 					activeBoard?.content?.map((item) => (
-						<Tables key={item._id} table={item} selectedItems={selectedItems} setSelectedItems={setSelectedItems} columnWidths={columnWidths} setColumnWidths={setColumnWidths} />
+						<Tables key={item._id} table={item} view={selectedView} activeBoard={activeBoard} />
 					))
 				}
-				{viewMode === "tables" &&
+				{selectedView?.type === "table" &&
 					(
 						<button
 							onClick={handleAddTable}
@@ -80,13 +53,12 @@ const Board = ({ activeBoard }) => {
 								alignItems: "center",
 								justifyContent: "center",
 								fontSize: "20px",
-							}}
-						>
+							}}>
 							<MdAdd />
 							AddTable
 						</button>
 					)}
-				{viewMode === "calendar" && <Calendrier activeBoard={activeBoard} />}
+				{selectedView?.type === "calendar" && <Calendrier activeBoard={activeBoard} />}
 			</div>
 		</div>
 	);

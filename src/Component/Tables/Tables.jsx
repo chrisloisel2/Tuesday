@@ -11,31 +11,39 @@ import {
 import "./Tables.css";
 import ColorPicker from "../ChromePicker/ChromePicker";
 import Item from "../Items/Item";
-import { updateTable } from "../../Redux/BoardReducer";
+import { updateColumns, UpdateBoard, updateTable } from "../../Redux/BoardReducer";
 
 
 
-const Tables = ({ table }) => {
+const Tables = ({ table, view, activeBoard }) => {
 	const dispatch = useDispatch();
+	const [columns, setColumns] = useState(activeBoard.columns); // S'assurer que columns est initialisé
 	const [openTable, setOpenTable] = useState([]);
 	const selectedItems = useSelector((state) => state.items.selectedItems);
 
-
 	const handleResizeMouseDown = (col) => (event) => {
-		console.log("Resize", col);
 		const startX = event.clientX;
-		const startWidth = table.columns[col].taille;
+		const startWidth = columns[col]?.width || 100; // Valeur par défaut
 
 		const onMouseMove = (e) => {
-			const newWidth = startWidth + (e.clientX - startX);
-			table.columns[col].taille = newWidth;
+			const newWidth = Math.max(50, startWidth + (e.clientX - startX)); // Limiter à 50px minimum
+			setColumns((prevColumns) => ({
+				...prevColumns,
+				[col]: {
+					...prevColumns[col],
+					width: newWidth,
+				},
+			}));
 		};
 
 		const onMouseUp = () => {
-			dispatch(updateTable({
-				...table, columns: { ...table.columns, [col]: { ...table.columns[col], taille: startWidth } }
-			})
-			);
+			// Enregistrer la nouvelle largeur
+			dispatch(updateColumns({
+				id: activeBoard._id,
+				data: {
+					...columns,
+				}
+			}));
 			document.removeEventListener("mousemove", onMouseMove);
 			document.removeEventListener("mouseup", onMouseUp);
 		};
@@ -43,6 +51,20 @@ const Tables = ({ table }) => {
 		document.addEventListener("mousemove", onMouseMove);
 		document.addEventListener("mouseup", onMouseUp);
 	};
+
+
+	const handleColumnCreate = (boardId) => {
+		console.log("Create Column", activeBoard._id);
+		dispatch(updateColumns(
+			{
+				id: activeBoard._id,
+				data: {
+					value: "column",
+					type: "text",
+				}
+			}
+		));
+	}
 
 	const handleSelectItem = (itemId) => {
 		dispatch(selectItem(itemId));
@@ -63,16 +85,12 @@ const Tables = ({ table }) => {
 	const handleCreateItem = (tableId,
 		title = "Nouvel élément",
 	) => {
-		console.log("Create Item", tableId);
 		dispatch(
 			createItem({
-				title: title,
-				stack: "stack",
+				formateur: undefined,
 				table: tableId,
-				start: new Date().toISOString().substr(0, 10),
-				end: new Date().toISOString().substr(0, 10),
-				location: "Lieu",
-				table: tableId,
+				createdAt: new Date().toISOString(),
+				columns: activeBoard.columns,
 			})
 		);
 	}
@@ -87,9 +105,9 @@ const Tables = ({ table }) => {
 	}
 	// console.log("Table", Object.keys(table.columns));
 
-	if (table.columns === undefined) {
-		return <div>loading...</div>
-	}
+	// if (table.columns === undefined) {
+	// 	return <div>loading...</div>
+	// }
 
 	return (
 		<div className="table-view-container">
@@ -130,12 +148,12 @@ const Tables = ({ table }) => {
 											/>
 										</th>
 										{
-											Object.entries(table.columns).map(([key, value]) => (
+											Object.entries(activeBoard.columns).map(([key, value]) => (
 												<th
 													key={key}
-													style={{ width: `${table.columns[key].taille}px` }}
+													style={{ width: `${columns[key].width}px` }}
 												>
-													{table.columns[key].value}
+													{activeBoard.columns[key].value}
 													<div
 														className="resize-handle"
 														onMouseDown={handleResizeMouseDown(key)}
@@ -143,8 +161,19 @@ const Tables = ({ table }) => {
 												</th>
 											))
 										}
-										<th style={{ width: `40px` }}>
-											<button>+</button>
+										<th style={{
+											width: `40px`,
+										}}>
+											<button
+												style={{
+													backgroundColor: "transparent",
+													border: "none",
+													color: "black",
+													fontSize: "20px",
+													cursor: "pointer",
+												}}
+												onClick={() => handleColumnCreate(activeBoard._id)}
+											>+</button>
 										</th>
 									</tr>
 								</thead>
@@ -160,7 +189,7 @@ const Tables = ({ table }) => {
 														checked={selectedItems.includes(item._id)}
 													/>
 												</td>
-												<Item item={item} color={table.color} columns={table.columns} />
+												<Item item={item} color={table.color} columns={activeBoard.columns} />
 												<td>
 												</td>
 											</tr>

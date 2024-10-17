@@ -6,40 +6,53 @@ import PrivateRoute from "../PrivateRoute/PrivateRoute";
 import Calendar from "../Calendar/Calendar";
 import Tables from "../Tables/Tables";
 import BoardList from "../BoardList/BoardList";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getUser, refreshToken } from "../../Redux/AuthReducer";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route
-          path="/display"
-          element={
-            <PrivateRoute>
-              <Display />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/tables"
-          element={
-            <PrivateRoute>
-              <Tables />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/calendar"
-          element={
-            <PrivateRoute>
-              <Calendar />
-            </PrivateRoute>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
-  );
+	const user = useSelector((state) => state.auth.user);
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		if (!user) {
+			dispatch(refreshToken());
+			dispatch(getUser());
+		}
+	}, []);
+
+	return (
+		<BrowserRouter>
+			<Routes>
+				<Route path="/" element={<Login />} />
+				<Route path="/register" element={<Register />} />
+				<Route
+					path="/display"
+					element={
+						<PrivateRoute>
+							<Display />
+						</PrivateRoute>
+					}
+				/>
+				<Route
+					path="/tables"
+					element={
+						<PrivateRoute>
+							<Tables />
+						</PrivateRoute>
+					}
+				/>
+				<Route
+					path="/calendar"
+					element={
+						<PrivateRoute>
+							<Calendar />
+						</PrivateRoute>
+					}
+				/>
+			</Routes>
+		</BrowserRouter>
+	);
 }
 
 export default App;

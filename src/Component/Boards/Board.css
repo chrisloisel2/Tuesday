@@ -1,12 +1,9 @@
-.view-switcher {
-	margin-bottom: 20px;
-  }
   .view-switcher button {
 	margin-right: 10px;
 	padding: 10px;
 	cursor: pointer;
   }
   .view-switcher button.active {
-	background-color: #007bff;
+	background-color: #133774;
 	color: white;
   }
