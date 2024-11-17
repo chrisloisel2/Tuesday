@@ -3,28 +3,29 @@ import Tables from "../Tables/Tables";
 import Calendrier from "../Calendar/Calendar";
 import { MdAdd } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { createTable } from "../../Redux/BoardReducer";
+import { createTable, setSelectedView } from "../../Redux/BoardReducer";
 import "./Board.css";
 import ViewList from "../ViewList/ViewList";
+import SelectedPannel from "../SelectedPannel/SelectedPannel";
 
 const Board = ({ activeBoard }) => {
-	const boards = useSelector((state) => state.board.board);
+	const selectedView = useSelector((state) => state.board.selectedView);
+	const selectedItems = useSelector((state) => state.items.selectedItems);
+	const items = useSelector((state) => state.items.items);
 	const [columns, setColumns] = useState({});
-	const [selectedView, setselectedView] = useState();
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		setColumns(activeBoard?.columns);
-	});
+	}, [activeBoard]);
 
 	const handleAddTable = () => {
 		dispatch(createTable(activeBoard._id));
 	}
 
-	const handleViewChange = (view) => {
-		console.log("view", view);
-		setselectedView(view);
-	};
+	// const handleViewChange = (view) => {
+	// 	dispatch(setSelectedView(view));
+	// };
 
 	if (activeBoard === null) {
 		return <div>Veuillez sélectionner un tableau</div>;
@@ -33,7 +34,7 @@ const Board = ({ activeBoard }) => {
 	return (
 		<div className="formation-board">
 			<div className="view-switcher">
-				<ViewList views={activeBoard} change={handleViewChange} activeVew={selectedView} />
+				<ViewList />
 			</div>
 
 			<div className="content">
@@ -58,6 +59,11 @@ const Board = ({ activeBoard }) => {
 							AddTable
 						</button>
 					)}
+				<div>
+					{selectedItems.length > 0 && (
+						<SelectedPannel />
+					)}
+				</div>
 				{selectedView?.type === "calendar" && <Calendrier activeBoard={activeBoard} />}
 			</div>
 		</div>

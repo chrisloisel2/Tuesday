@@ -42,7 +42,7 @@ const store = configureStore({
 		users: UserReducer,
 		items: ItemReducer,
 	},
-	preloadedState,
+	// preloadedState,
 	middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(localStorageMiddleware),
 });
 

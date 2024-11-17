@@ -5,7 +5,6 @@ import MyAxios from "../Interceptor/MyAxios";
 
 export const login = createAsyncThunk("auth/login", async (data) => {
 	const response = await MyAxios.post("/auth/connexion", data);
-	console.log(response);
 	return response;
 });
 

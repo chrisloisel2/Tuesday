@@ -86,6 +86,9 @@ const Calendrier = (activeBoard) => {
 		return user?.color;
 	};
 
+	console.log("Items", items);
+	console.log("Users", users);
+	console.log("userRole", userRole);
 	const filteredEvents = items.filter((item) => {
 		if (userRole === "admin") {
 			return filteredUsers.includes(item.formateur);
@@ -93,6 +96,7 @@ const Calendrier = (activeBoard) => {
 			return item.formateur === userId;
 		}
 	});
+
 
 
 	const events = filteredEvents.map((item) => ({

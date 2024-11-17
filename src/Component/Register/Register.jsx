@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { register } from '../../Redux/AuthReducer';
 import { useNavigate } from 'react-router-dom';
+import './Register.css';
 
 const Register = () => {
 	const dispatch = useDispatch();
@@ -33,8 +34,8 @@ const Register = () => {
 	};
 
 	return (
-		<div>
-			<h2>Register</h2>
+		<div className='login'>
+			< h2 > Register</h2 >
 			<form onSubmit={handleSubmit}>
 				<div>
 					<label>name:</label>
@@ -67,8 +68,9 @@ const Register = () => {
 					/>
 				</div>
 				<button type="submit">Register</button>
+				<a href="/">Login</a>
 			</form>
-		</div>
+		</div >
 	);
 };
 

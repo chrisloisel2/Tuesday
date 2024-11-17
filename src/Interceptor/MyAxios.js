@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const MyAxios = axios.create({
-	baseURL: 'http://localhost:8080',
+	baseURL: 'http://api.skylonis.com/',
 	headers: {
 		'Content-Type': 'application/json',
 	},
@@ -9,18 +9,18 @@ const MyAxios = axios.create({
 });
 
 
-// MyAxios.interceptors.request.use(
-// 	(config) => {
-// 		const token = localStorage.getItem('token');
-// 		if (token) {
-// 			config.headers.Authorization = `Bearer ${token}`;
-// 		}
-// 		return config;
-// 	},
-// 	(error) => {
-// 		return Promise.reject(error);
-// 	}
-// );
+MyAxios.interceptors.request.use(
+	(config) => {
+		const token = localStorage.getItem('token');
+		if (token) {
+			config.headers.Authorization = `Bearer ${token}`;
+		}
+		return config;
+	},
+	(error) => {
+		return Promise.reject(error);
+	}
+);
 
 MyAxios.interceptors.response.use(
 	(response) => {
@@ -33,9 +33,11 @@ MyAxios.interceptors.response.use(
 			originalRequest._retry = true;
 
 			try {
-				const response = await MyAxios.post('/api/auth/refresh-token');
-				if (response.status === 200) {
-					return MyAxios(originalRequest);
+				if (localStorage.getItem('token')) {
+					const response = await MyAxios.post('/api/auth/refresh-token');
+					if (response.status === 200) {
+						return MyAxios(originalRequest);
+					}
 				}
 			} catch (refreshError) {
 				alert('Votre session a expiré, veuillez vous reconnecter');

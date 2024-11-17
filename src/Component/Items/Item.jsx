@@ -1,115 +1,135 @@
-import React, { useMemo, useState } from 'react';
-import DateRangeBadge from '../DateRangeBadge/DateRangeBadge';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import EditableCell from './EditableCell';
+import EnumCell from './EnumCell';
+import DateCell from './DateCell';
+import './Item.css';
 import { updateItem } from '../../Redux/ItemReducer';
-import { useDispatch } from 'react-redux';
+import DateModal from '../DateModal/DateModal';
+import FormulaCell from './FormulaCell';
 
-const Item = ({ item, color, columns }) => {
+const Item = ({ item, color, columns, activeBoard }) => {
 	const [editedItem, setEditedItem] = useState(item);
-	const [activeEnumColumn, setActiveEnumColumn] = useState(null); // État pour la colonne active
+	const [activeEnumColumn, setActiveEnumColumn] = useState(null);
+	const [isDateModalOpen, setIsDateModalOpen] = useState(false); // État pour ouvrir/fermer le modal de date
+	const [currentDateColumn, setCurrentDateColumn] = useState(null); // Colonne actuelle pour la date
+	const view = useSelector((state) => state.board.selectedView);
 	const dispatch = useDispatch();
 
-	const handleChange = (e) => {
+	// console.log('ITEM DEBUG', item);
+
+	const handleDelete = (columnKey) => {
 		const newEditedItem = {
 			...editedItem,
 			columns: {
 				...editedItem.columns,
-				[e.target.id]: {
-					...editedItem.columns[e.target.id],
-					value: e.target.innerText,
-				},
+				[columnKey]: null, // Supprimer la colonne
 			},
 		};
 		setEditedItem(newEditedItem);
-		dispatch(updateItem(newEditedItem)); // Utilisation de la nouvelle valeur directement
+		dispatch(updateItem(newEditedItem));
 	};
 
-	const handleEnumClick = (key, value) => {
-		// Créer un nouvel objet avec la valeur mise à jour
+	const handleUpdate = (newEditedItem) => {
+		setEditedItem(newEditedItem);
+		dispatch(updateItem(newEditedItem));
+	};
+
+	const openDateModal = (columnKey) => {
+		setCurrentDateColumn(columnKey);
+		setIsDateModalOpen(true);
+	};
+
+	const handleSaveDate = (newDates) => {
 		const newEditedItem = {
 			...editedItem,
 			columns: {
 				...editedItem.columns,
-				[key]: {
-					...editedItem.columns[key],
-					value: value,
+				[currentDateColumn]: {
+					...editedItem.columns[currentDateColumn],
+					start: newDates.start.toISOString(),
+					end: newDates.end.toISOString(),
 				},
 			},
 		};
-
-		// Mettre à jour l'état et envoyer au back
-		setEditedItem(newEditedItem);
-		dispatch(updateItem(newEditedItem)); // Envoi immédiat de la nouvelle version au back-end
-		setActiveEnumColumn(null); // Fermer la modale après la sélection
+		handleUpdate(newEditedItem);
+		setIsDateModalOpen(false);
 	};
 
 	return (
 		<>
-			{
-				Object.entries(item.columns).map(([key, value]) => {
-					if (item.columns[key] === undefined) {
-						return (
-							<td key={key} id={key} contentEditable onInput={handleChange} suppressContentEditableWarning={true}>
-							</td>
-						);
+			{Object.entries(columns)
+				.sort(([, a], [, b]) => a.order - b.order)
+				.filter(([key, value]) => view.hiddenColumns?.includes(key) === false)
+				.map(([key, value]) => {
+					switch (columns[key]?.type) {
+						case 'date':
+							return (
+								<>
+									<DateCell
+										key={key}
+										columnKey={key}
+										item={item}
+										color={color}
+										openDateModal={() => openDateModal(key)}
+										handleUpdate={handleUpdate}
+									/>
+								</>
+							);
+						case 'enum':
+							return (
+								<EnumCell
+									key={key}
+									columnKey={key}
+									item={item}
+									columns={columns}
+									activeEnumColumn={activeEnumColumn}
+									setActiveEnumColumn={setActiveEnumColumn}
+									handleUpdate={handleUpdate}
+									board={activeBoard}
+								/>
+							);
+
+						case 'formula':
+							return (
+								<FormulaCell
+									key={key}
+									columnKey={key}
+									item={item}
+									columns={columns}
+									handleDelete={handleDelete}
+									handleUpdate={handleUpdate}
+								/>
+							);
+						case 'Id':
+							return (
+								<td key={key} style={{ color: item.columns[key]?.color }}>
+									{item._id}
+								</td>);
+						default:
+							return (
+								<EditableCell
+									key={key}
+									columnKey={key}
+									item={item}
+									handleDelete={handleDelete}
+									handleUpdate={handleUpdate}
+								/>
+							);
 					}
-					if (value.type === 'date') {
-						return (
-							<td key={key} id={key} contentEditable onInput={handleChange} suppressContentEditableWarning={true}>
-								<DateRangeBadge startDate={item.columns[key]?.start} endDate={item.columns[key]?.end} color={color} />
-							</td>
-						);
-					}
-					if (value.type === 'enum') {
-						return (
-							<td key={key} id={key} onClick={() => setActiveEnumColumn(activeEnumColumn === key ? null : key)} // Activer/désactiver la modale uniquement pour cette colonne
-								style={{
-									backgroundColor: columns[key]?.values[item.columns[key]?.value],
-									position: 'relative',
-								}}
-							>
-								{item.columns[key]?.value}
-								{activeEnumColumn === key && (
-									<div className="modalEnum">
-										<div className="modal-arrow" />
-										<div className="modal-content">
-											{Object.keys(columns[key].values).map((enumValue, index) => (
-												<div key={index}
-													className="enumOption"
-													onClick={() => handleEnumClick(key, enumValue)} // Utiliser la fonction de mise à jour
-												>
-													<div className="enumColor" style={{ backgroundColor: columns[key].values[enumValue] }} />
-													<div className="enumLabel">{enumValue}</div>
-												</div>
-											))}
-										</div>
-										<div className="modal-footer">
-											<i className="edit-icon" /> Edit Labels
-										</div>
-									</div>
-								)}
-							</td>
-						);
-					}
-					else {
-						return (
-							<td
-								key={key}
-								id={key}
-								contentEditable
-								onBlur={(e) => {
-									if (e.target.innerText !== item.columns[key]?.value) {
-										handleChange(e);
-									}
-								}}
-								suppressContentEditableWarning={true}
-								onInput={handleChange}
-							>
-								{value.value}
-							</td>
-						);
-					}
-				})
-			}
+				})}
+
+			{isDateModalOpen && (
+				<DateModal
+					isOpen={isDateModalOpen}
+					onClose={() => setIsDateModalOpen(false)}
+					initialDates={{
+						start: new Date(editedItem.columns[currentDateColumn]?.start),
+						end: new Date(editedItem.columns[currentDateColumn]?.end),
+					}}
+					onSave={handleSaveDate}
+				/>
+			)}
 		</>
 	);
 };

@@ -104,6 +104,7 @@ const itemReducer = createSlice({
 			})
 			.addCase(updateItem.fulfilled, (state, action) => {
 				state.status = "succeeded";
+				console.log(action.payload);
 				state.items = state.items.map((item) =>
 					item._id === action.payload._id ? action.payload : item
 				);

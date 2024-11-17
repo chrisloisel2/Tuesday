@@ -11,16 +11,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUser, refreshToken } from "../../Redux/AuthReducer";
 
 function App() {
-	const user = useSelector((state) => state.auth.user);
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		if (!user) {
-			dispatch(refreshToken());
-			dispatch(getUser());
-		}
-	}, []);
-
 	return (
 		<BrowserRouter>
 			<Routes>

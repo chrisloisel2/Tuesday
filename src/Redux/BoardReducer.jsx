@@ -1,5 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import MyAxios from "../Interceptor/MyAxios";
+import { updateItem } from "./ItemReducer";
+import { act } from "react";
+import { useDispatch } from "react-redux";
 
 // Action Reducer
 
@@ -71,13 +74,13 @@ export const creteView = createAsyncThunk("board/createView", async (data) => {
 });
 
 export const updateView = createAsyncThunk("board/updateView", async (data) => {
-	const response = await MyAxios.put("/board/view/" + data._id, data);
+	const response = await MyAxios.put("/view/view/" + data._id, data);
 	console.log(response);
 	return response;
 });
 
 export const deleteView = createAsyncThunk("board/deleteView", async (data) => {
-	const response = await MyAxios.delete("/board/view/" + data);
+	const response = await MyAxios.delete("/view/view/" + data);
 	console.log(response);
 	return response;
 });
@@ -119,11 +122,33 @@ export const deleteTable = createAsyncThunk(
 const BoardReducer = createSlice({
 	name: "board",
 	initialState: {
+		activeBoard: {},
 		status: "idle",
 		board: [],
 		error: null,
+		openTable: [],
+		selectedView: null,
 	},
 	reducers: {
+		SelectedView: (state, action) => {
+			state.selectedView = action.payload;
+		},
+		setOpenTable: (state, action) => {
+			if (state.openTable?.find((m) => m._id === action.payload._id)) {
+				state.openTable = state.openTable?.filter((m) => m._id !== action.payload._id);
+			}
+			else if (state.openTable) {
+				state.openTable = [...state.openTable, action.payload];
+			}
+			else {
+				state.openTable = [action.payload];
+			}
+		},
+		selectBoard: (state, action) => {
+			console.log(state.activeBoard);
+			state.activeBoard = action.payload;
+			console.log("state.activeBoard", state.activeBoard);
+		},
 		resetBoard: (state, useDispatch) => {
 			const dispatch = useDispatch;
 			dispatch(GetBoards());
@@ -188,7 +213,7 @@ const BoardReducer = createSlice({
 				// la fonction register réussie
 				state.status = "succeeded";
 				console.log(action.payload);
-				state.board = state.board.filter((item) => item._id !== action.payload);
+				state.board = state.board.view((item) => item._id !== action.payload._id);
 			})
 			.addCase(DeleteBoard.rejected, (state, action) => {
 				// la fonction register échouée
@@ -257,12 +282,13 @@ const BoardReducer = createSlice({
 			.addCase(updateView.fulfilled, (state, action) => {
 				// la fonction register réussie
 				state.status = "succeeded";
-				state.board = state.board.map((item) => {
+				state.board = state.board.view((item) => {
 					if (item._id === action.payload._id) {
 						return action.payload;
 					}
 					return item;
 				});
+				state.selectedView = action.payload;
 				state.isConnected = true;
 			})
 			.addCase(updateView.rejected, (state, action) => {
@@ -277,12 +303,7 @@ const BoardReducer = createSlice({
 			.addCase(deleteView.fulfilled, (state, action) => {
 				// la fonction register réussie
 				state.status = "succeeded";
-				state.board = state.board.map((item) => {
-					if (item._id === action.payload._id) {
-						return action.payload;
-					}
-					return item;
-				});
+				GetBoards();
 				state.isConnected = true;
 			})
 			.addCase(deleteView.rejected, (state, action) => {
@@ -366,11 +387,53 @@ const BoardReducer = createSlice({
 				state.isConnected = true;
 			})
 			.addCase(deleteTable.rejected, (state, action) => {
-				// la fonction register échouée
+				state.status = "failed";
+				state.error = action.error.message;
+			})
+			.addCase(updateColumns.pending, (state) => {
+				state.status = "loading";
+			})
+			.addCase(updateColumns.fulfilled, (state, action) => {
+				state.status = "succeeded";
+				const updatedBoard = state.board.map((item) => {
+					if (item._id === action.payload._id) {
+						// Crée une copie de l'élément pour mise à jour
+						return {
+							...item,
+							columns: action.payload.columns,  // Mettez à jour columns ici
+						};
+					}
+					return item;
+				});
+				state.board = updatedBoard;  // Assigne l’ensemble modifié
+				state.isConnected = true;
+			})
+			.addCase(updateColumns.rejected, (state, action) => {
+				state.status = "failed";
+				state.error = action.error.message;
+			})
+			.addCase(updateItem.pending, (state) => {
+				state.status = "loading";
+			})
+			.addCase(updateItem.fulfilled, (state, action) => {
+				state.status = "succeeded";
+				console.log(action.payload);
+				state.board.forEach((board) => {
+					board.content.forEach((table) => {
+						table.content = table.content.map((item) =>
+							item._id === action.payload._id ? action.payload : item
+						);
+					});
+				}
+				);
+			})
+			.addCase(updateItem.rejected, (state, action) => {
 				state.status = "failed";
 				state.error = action.error.message;
 			});
 	},
 });
+
+export const { selectBoard, resetBoard, setOpenTable, SelectedView } = BoardReducer.actions;
 
 export default BoardReducer.reducer;
