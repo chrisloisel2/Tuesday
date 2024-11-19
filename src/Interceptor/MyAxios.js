@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const MyAxios = axios.create({
-	baseURL: 'http://api.skylonis.com/',
+	baseURL: 'https://api.skylonis.com/',
 	headers: {
 		'Content-Type': 'application/json',
 	},
