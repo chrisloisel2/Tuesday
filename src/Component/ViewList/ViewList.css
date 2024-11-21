@@ -34,13 +34,13 @@
 
   .options-modal {
 	position: absolute;
-	top: 40px;
-	right: 50%;
-	width: 120px;
+	top: 300px;
+	right: 600px;
+	width: 820px;
 	padding: 10px;
-	background-color: #ffffff;
+	background-color: rgb(222, 222, 222);
 	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-	border-radius: 5px;
+	border-radius: 25px;
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
@@ -50,29 +50,38 @@
   .options-modal button {
 	background-color: transparent;
 	border: none;
-	color: #333;
+	color: #000000;
 	padding: 8px;
-	text-align: left;
+	text-align: center;
 	cursor: pointer;
 	font-size: 14px;
 	width: 100%;
   }
 
   .options-modal button:hover {
-	background-color: #f0f0f0;
+	background-color: #969696;
   }
 
-  button {
-	padding: 8px 12px;
-	margin-top: 10px;
-	cursor: pointer;
-	background-color: #4b7bec;
-	color: #ffffff;
+  .filtering {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+  }
+
+  .filtering input {
 	border: none;
-	border-radius: 4px;
-	font-size: 16px;
+	border-bottom: 1px solid #333;
+	margin-right: 10px;
   }
 
-  button:hover {
-	background-color: #3a5cb0;
+  .filtering button {
+	background-color: transparent;
+	border: none;
+	color: #333;
+	cursor: pointer;
+  }
+
+  .filtering button:hover {
+	color: #ffffff;
   }

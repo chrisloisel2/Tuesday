@@ -11,6 +11,7 @@ const Display = () => {
 	const activeBoard = useSelector((state) => state.board.activeBoard);
 
 	useEffect(() => {
+		console.log("Display");
 		dispatch(GetBoards());
 	}, [dispatch]);
 

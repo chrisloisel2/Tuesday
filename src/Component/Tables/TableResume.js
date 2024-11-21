@@ -6,8 +6,27 @@ import { renderDate, renderEnum, renderFormula, renderNumber, renderText } from 
 import { ImFontSize } from "react-icons/im";
 import { useSelector } from "react-redux";
 
-const renderItem = (items, key, value, activeBoard, table) => {
+const renderItem = (items, key, value, activeBoard, table, view) => {
 	let count = 0;
+
+	items = items.filter((item) => {
+		if (!view.filters) return true;
+		return view.filters.every((filter) => {
+			const columnValue = item.columns[filter.column]?.value;
+			switch (filter.operator) {
+				case "égal":
+					return columnValue === filter.value;
+				case "contient":
+					return columnValue?.toString().includes(filter.value);
+				case "supérieur":
+					return parseFloat(columnValue) > parseFloat(filter.value);
+				case "inférieur":
+					return parseFloat(columnValue) < parseFloat(filter.value);
+				default:
+					return false;
+			}
+		});
+	});
 
 	switch (value.type) {
 		case "text":
@@ -92,7 +111,7 @@ const TableResume = ({ table, activeBoard, setCreateModal, handleSelectAll, sele
 							) :
 								<th key={key} style={{ width: `${columns[key]?.width}px` }} onClick={() => months(table)}>
 									{
-										renderItem(table.content, key, value, activeBoard, table)
+										renderItem(table.content, key, value, activeBoard, table, view)
 									}
 								</th>
 							}

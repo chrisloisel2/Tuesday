@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../Redux/AuthReducer';
 import { useNavigate } from 'react-router-dom';
 import './login.css';
@@ -9,12 +9,14 @@ const Login = () => {
 	const [password, setPassword] = useState('');
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+	const auth = useSelector((state) => state.auth);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		// Handle login logic here
 		dispatch(login({ email, password })).then((data) => {
-			navigate('/display');
+			if (!data.error) {
+				navigate('/display');
+			}
 		});
 	};
 
