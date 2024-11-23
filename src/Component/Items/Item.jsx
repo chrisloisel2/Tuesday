@@ -57,6 +57,38 @@ const Item = ({ item, color, columns, activeBoard }) => {
 		setIsDateModalOpen(false);
 	};
 
+	const handleFileUpload = async (file, key) => {
+		const formData = new FormData();
+		formData.append('file', file);
+
+		try {
+			setUploading(true);
+			const response = await axios.post('/api/upload', formData, {
+				headers: { 'Content-Type': 'multipart/form-data' },
+			});
+
+			const fileUrl = response.data.fileUrl;
+
+			const newEditedItem = {
+				...editedItem,
+				columns: {
+					...editedItem.columns,
+					[key]: {
+						...editedItem.columns[key],
+						value: fileUrl,
+					},
+				},
+			};
+
+			handleUpdate(newEditedItem);
+		} catch (error) {
+			console.error('Error uploading file:', error);
+		} finally {
+			setUploading(false);
+		}
+	};
+
+
 	return (
 		<>
 			{Object.entries(columns)
@@ -110,28 +142,33 @@ const Item = ({ item, color, columns, activeBoard }) => {
 						case 'file':
 							return (
 								<td key={key} style={{ color: item.columns[key]?.color }}>
-									{
-										item.columns[key]?.value ?
-											<FaFileAlt style={{ color: item.columns[key]?.color, fontSize: "1.5rem" }} />
-											:
-											<input type="file" onChange={(e) => {
-												const newEditedItem = {
-													...editedItem,
-													columns: {
-														...editedItem.columns,
-														[key]: {
-															...editedItem.columns[key],
-															value: e.target.files[0].name,
-														},
-													},
-												};
-
-												console.log('newEditedItem', newEditedItem);
-												// handleUpdate(newEditedItem);
+									{item.columns[key]?.value ? (
+										<a
+											href={item.columns[key]?.value}
+											target="_blank"
+											rel="noopener noreferrer"
+											style={{ display: 'flex', alignItems: 'center' }}
+										>
+											<FaFileAlt
+												style={{
+													color: item.columns[key]?.color,
+													fontSize: '1.5rem',
+													marginRight: '5px',
+												}}
+											/>
+											View File
+										</a>
+									) : (
+										<input
+											type="file"
+											disabled={uploading}
+											onChange={(e) =>
+												handleFileUpload(e.target.files[0], key)
 											}
-											} />
-									}
-								</td>);
+										/>
+									)}
+								</td>
+							);
 						default:
 							return (
 								<EditableCell
