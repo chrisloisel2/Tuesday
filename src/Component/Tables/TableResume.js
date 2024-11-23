@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ColorPicker from "../ChromePicker/ChromePicker";
 import ResizeHandle from "./ResizeHandle";
 import { IoMdArrowDropright } from "react-icons/io";
-import { renderDate, renderEnum, renderFormula, renderNumber, renderText } from "./render";
+import { renderDate, renderEnum, renderFile, renderFormula, renderNumber, renderText } from "./render";
 import { ImFontSize } from "react-icons/im";
 import { useSelector } from "react-redux";
 
@@ -39,6 +39,8 @@ const renderItem = (items, key, value, activeBoard, table, view) => {
 			return renderEnum(items, key, value, activeBoard.columns);
 		case "formula":
 			return renderFormula(items, key, value, activeBoard.columns);
+		case "file":
+			return null;
 		default:
 			return "Unknown";
 	}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaFileAlt } from "react-icons/fa";
 import DateRangeBadge from '../DateRangeBadge/DateRangeBadge';
 
 const renderText = (items, key, value) => {
@@ -135,6 +136,8 @@ const renderNumber = (items, key, value) => {
 			return null;
 	}
 }
+
+
 
 const renderEnum = (items, key, value, columns) => {
 	switch (value.show) {

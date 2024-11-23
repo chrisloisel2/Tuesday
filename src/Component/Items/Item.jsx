@@ -7,6 +7,7 @@ import './Item.css';
 import { updateItem } from '../../Redux/ItemReducer';
 import DateModal from '../DateModal/DateModal';
 import FormulaCell from './FormulaCell';
+import { FaFileAlt } from "react-icons/fa";
 
 const Item = ({ item, color, columns, activeBoard }) => {
 	const [editedItem, setEditedItem] = useState(item);
@@ -105,6 +106,31 @@ const Item = ({ item, color, columns, activeBoard }) => {
 							return (
 								<td key={key} style={{ color: item.columns[key]?.color }}>
 									{item._id}
+								</td>);
+						case 'file':
+							return (
+								<td key={key} style={{ color: item.columns[key]?.color }}>
+									{
+										item.columns[key]?.value ?
+											<FaFileAlt style={{ color: item.columns[key]?.color, fontSize: "1.5rem" }} />
+											:
+											<input type="file" onChange={(e) => {
+												const newEditedItem = {
+													...editedItem,
+													columns: {
+														...editedItem.columns,
+														[key]: {
+															...editedItem.columns[key],
+															value: e.target.files[0].name,
+														},
+													},
+												};
+
+												console.log('newEditedItem', newEditedItem);
+												// handleUpdate(newEditedItem);
+											}
+											} />
+									}
 								</td>);
 						default:
 							return (
