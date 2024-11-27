@@ -8,6 +8,7 @@ import { updateItem } from '../../Redux/ItemReducer';
 import DateModal from '../DateModal/DateModal';
 import FormulaCell from './FormulaCell';
 import { FaFileAlt } from "react-icons/fa";
+import MyAxios from '../../Interceptor/MyAxios';
 
 const Item = ({ item, color, columns, activeBoard }) => {
 	const [editedItem, setEditedItem] = useState(item);
@@ -15,6 +16,7 @@ const Item = ({ item, color, columns, activeBoard }) => {
 	const [isDateModalOpen, setIsDateModalOpen] = useState(false); // État pour ouvrir/fermer le modal de date
 	const [currentDateColumn, setCurrentDateColumn] = useState(null); // Colonne actuelle pour la date
 	const view = useSelector((state) => state.board.selectedView);
+	const [uploading, setUploading] = useState(false);
 	const dispatch = useDispatch();
 
 	// console.log('ITEM DEBUG', item);
@@ -59,15 +61,20 @@ const Item = ({ item, color, columns, activeBoard }) => {
 
 	const handleFileUpload = async (file, key) => {
 		const formData = new FormData();
+		// Changer le nom du fichier pour éviter les doublons
+		formData.append('name', `${item._id}-${key}`);
+
 		formData.append('file', file);
 
 		try {
 			setUploading(true);
-			const response = await axios.post('/api/upload', formData, {
+			const response = await MyAxios.post('/item/upload', formData, {
 				headers: { 'Content-Type': 'multipart/form-data' },
 			});
 
-			const fileUrl = response.data.fileUrl;
+			console.log('File uploaded:', response.fileUrl);
+			const fileUrl = response.fileUrl;
+			console.log('File uploaded:', fileUrl);
 
 			const newEditedItem = {
 				...editedItem,
@@ -87,6 +94,12 @@ const Item = ({ item, color, columns, activeBoard }) => {
 			setUploading(false);
 		}
 	};
+	// Object.entries(columns)
+	// 	.sort(([, a], [, b]) => a.order - b.order)
+	// 	.filter(([key, value]) => view.hiddenColumns?.includes(key) === false)
+	// 	.map(([key, value]) => {
+	// 		console.log('ITEM DEBUG', key, value);
+	// 	});
 
 
 	return (
@@ -123,6 +136,43 @@ const Item = ({ item, color, columns, activeBoard }) => {
 								/>
 							);
 
+						case 'diapo':
+							console.log('DIAPo', item.columns[value?.diapo]?.value);
+							if (!item.columns[value?.diapo]?.value) {
+								return <td key={key} style={{ color: item.columns[key]?.color }}></td>
+							}
+							const url = item.columns[value?.diapo]?.value.split('/')[4];
+							console.log('DIAPo url', url);
+
+							const link = "/cours/" + url + "/0/1";
+							const downloadlink = "/cours/" + url + "/1/1";
+							console.log('DIAPo', link);
+							return (
+								<td key={key} style={{ color: item.columns[key]?.color }}
+									styles={{
+										display: 'flex',
+										justifyContent: 'space-between',
+										alignItems: 'center',
+										gap: '5rem',
+									}}
+								>
+									<a href={link} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', marginRight: '1rem' }}>
+										cliquer ici
+									</a>/
+									<a
+										href={downloadlink}
+										target="_blank"
+										rel="noopener noreferrer"
+										style={{
+											color: 'inherit',
+											marginLeft: '1rem',
+										}}
+									>
+										<FaFileAlt style={{ color: item.columns[key]?.color, fontSize: '1rem' }} />
+									</a>
+								</td>
+							);
+
 						case 'formula':
 							return (
 								<FormulaCell
@@ -141,31 +191,36 @@ const Item = ({ item, color, columns, activeBoard }) => {
 								</td>);
 						case 'file':
 							return (
-								<td key={key} style={{ color: item.columns[key]?.color }}>
+								<td key={key} style={{ color: item.columns[key] }}>
 									{item.columns[key]?.value ? (
 										<a
 											href={item.columns[key]?.value}
 											target="_blank"
 											rel="noopener noreferrer"
-											style={{ display: 'flex', alignItems: 'center' }}
+											style={{
+												color: 'inherit',
+											}}
 										>
 											<FaFileAlt
+
 												style={{
 													color: item.columns[key]?.color,
-													fontSize: '1.5rem',
-													marginRight: '5px',
+													fontSize: '1rem',
 												}}
 											/>
-											View File
 										</a>
 									) : (
-										<input
-											type="file"
-											disabled={uploading}
-											onChange={(e) =>
-												handleFileUpload(e.target.files[0], key)
-											}
-										/>
+										<>
+											<input
+												type="file"
+												disabled={uploading}
+												onChange={(e) =>
+													handleFileUpload(e.target.files[0], key)
+												}
+												className={`file-input ${uploading ? 'uploading' : ''}`}
+											/>
+										</>
+
 									)}
 								</td>
 							);

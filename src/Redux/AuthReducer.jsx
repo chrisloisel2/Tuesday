@@ -37,7 +37,12 @@ const authReducer = createSlice({
 		error: null,
 	},
 	// Recuperer le state du localhost
-	reducers: {},
+	reducers: {
+		logout: (state) => {
+			state.isConnected = false;
+			state.user = null;
+		}
+	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(login.pending, (state) => {
@@ -100,5 +105,7 @@ const authReducer = createSlice({
 			});
 	},
 });
+
+export const { logout } = authReducer.actions;
 
 export default authReducer.reducer;

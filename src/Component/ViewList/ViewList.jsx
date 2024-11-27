@@ -19,6 +19,8 @@ const ViewList = () => {
 	const dispatch = useDispatch();
 	const users = useSelector((state) => state.users.users);
 	const user = useSelector((state) => state.auth.user);
+	// console.log('user', user);
+	console.log('users', users);
 	const activeBoard = useSelector((state) => state.board.activeBoard);
 	const activeView = useSelector((state) => state.board.selectedView);
 

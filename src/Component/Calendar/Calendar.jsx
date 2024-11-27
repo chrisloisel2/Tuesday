@@ -151,23 +151,23 @@ const Calendrier = (activeBoard) => {
 					"value": title,
 					"type": "text",
 				},
-				"stack": {
+				"2": {
 					"value": stack,
 					"type": "text",
 				},
-				"nbdays": {
+				"3": {
 					"value": nbdays,
 					"type": "number",
 				},
-				"tjm": {
+				"4": {
 					"value": tjm,
 					"type": "number",
 				},
-				"date": {
+				"5": {
 					"start": new Date(start).toISOString(),
 					"end": new Date(end).toISOString(),
 				},
-				"lieu": {
+				"6": {
 					"value": location,
 					"type": "text",
 				}

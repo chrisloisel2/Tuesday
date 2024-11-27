@@ -1,18 +1,27 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteItem } from '../../Redux/ItemReducer';
 
-const SelectedPanel = ({ items, onUpdate, onDelete }) => {
+const SelectedPanel = () => {
 	const selectedItem = useSelector((state) => state.items.selectedItems);
+	const dispatch = useDispatch();
+
+	const handleDelete = () => {
+		selectedItem.forEach((item) => {
+			dispatch(deleteItem(item));
+			selectedItem.pop();
+		});
+	}
+
 
 	console.log('Selected Panel :', selectedItem);
 	return (
 		<div className="selected-panel">
-			<h3>Selected Panel</h3>
-			{selectedItem && (
-				<div>
-					<h4>{selectedItem.length}</h4>
-				</div>
-			)}
+			<h3>Items Selectionnés</h3>
+			<div className="selected-items">
+				<h4>{selectedItem.length} items</h4>
+				<button onClick={handleDelete}>Supprimer</button>
+			</div>
 		</div>
 	);
 };

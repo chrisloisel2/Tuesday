@@ -269,6 +269,9 @@ th {
 
   .board-list-container {
 	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 1rem;
 	height: 100vh;
   }
 
@@ -366,15 +369,26 @@ th {
 }
 
 .selected-panel {
-	background-color: #2c2f38;
+	background-color: #0e2f93;
+	color: white;
 	border-radius: 8px;
-	padding: 16px;
+	padding: 10px;
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-	width: 200px;
+	width: 90%;
+	height: 140px;
 	position: absolute;
-	top: 100%;
-	left: 0;
+	top: 85%;
+	left: 8%;
 	z-index: 100;
+}
+
+.selected-items {
+	padding-left: 20px;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	gap: 20px;
+	align-items: center;
 }
 
 .view-list {
@@ -405,4 +419,21 @@ th {
 	border: none;
 	color: white;
 	cursor: pointer;
+}
+
+.user-view {
+	position: relative;
+	bottom: 0;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	align-items: center;
+	color: white;
+	width: 100%;
+}
+
+.user-view img {
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
 }

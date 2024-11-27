@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
-import { ImCross } from "react-icons/im";
-import DeleteConfirmationModal from './DeleteConfirmationModal'; // Importer la modale
+import React, { useRef, useState } from 'react';
 
 const EditableCell = ({ columnKey, item, handleUpdate, handleDelete }) => {
-	const [showIcon, setShowIcon] = useState(false); // État pour afficher/masquer l'icône
-	const [showDeleteModal, setShowDeleteModal] = useState(false); // État pour afficher/masquer la pop-up
+	const [showIcon, setShowIcon] = useState(false);
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
+	const cellRef = useRef(null); // Référence pour capturer le contenu
 
-	const handleChange = (e) => {
-		const newValue = e.target.innerText;
+	const handleChange = () => {
+		const newValue = cellRef.current.innerText; // Récupérer le texte via la référence
 		const newEditedItem = {
 			...item,
 			columns: {
@@ -27,38 +26,17 @@ const EditableCell = ({ columnKey, item, handleUpdate, handleDelete }) => {
 
 	return (
 		<td
+			ref={cellRef} // Associer la référence
 			id={columnKey}
 			contentEditable
 			suppressContentEditableWarning={true}
 			onBlur={handleChange}
-			onInput={handleChange}
 			spellCheck="false"
-			onMouseEnter={() => setShowIcon(true)} // Afficher l'icône au survol
-			onMouseLeave={() => setShowIcon(false)} // Masquer l'icône lorsque la souris quitte
+			onMouseEnter={() => setShowIcon(true)}
+			onMouseLeave={() => setShowIcon(false)}
 			style={{ position: 'relative' }}
 		>
 			{item.columns[columnKey]?.value}
-
-			{/* Icône de suppression */}
-			{showIcon && (
-				<ImCross
-					onClick={toggleDeleteModal}
-					style={{
-						position: 'absolute',
-						right: '10px',
-						cursor: 'pointer',
-						color: '#d9534f'
-					}}
-				/>
-			)}
-
-			{/* Pop-up de confirmation */}
-			{showDeleteModal && (
-				<DeleteConfirmationModal
-					onClose={toggleDeleteModal}
-					onConfirm={() => handleDelete(columnKey)}
-				/>
-			)}
 		</td>
 	);
 };

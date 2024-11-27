@@ -52,8 +52,9 @@ const Board = ({ activeBoard }) => {
 								cursor: "pointer",
 								display: "flex",
 								alignItems: "center",
-								justifyContent: "center",
+								gap: "6px",
 								fontSize: "20px",
+								padding: "10px",
 							}}>
 							<MdAdd />
 							AddTable
@@ -66,6 +67,12 @@ const Board = ({ activeBoard }) => {
 				</div>
 				{selectedView?.type === "calendar" && <Calendrier activeBoard={activeBoard} />}
 			</div>
+
+			{
+				selectedItems.length > 0 && (
+					<SelectedPannel />
+				)
+			}
 		</div>
 	);
 };

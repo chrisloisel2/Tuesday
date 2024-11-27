@@ -1,0 +1,120 @@
+/* Appliquer un thème sombre élégant */
+.reveal {
+    background-color: #1e1e1e; /* Arrière-plan sombre */
+    color: #eaeaea; /* Texte clair */
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: 22px; /* Taille générale du texte */
+}
+
+/* Style pour les titres */
+.reveal h1,
+.reveal h2,
+.reveal h3 {
+    color: #f5c542; /* Accent doré pour les titres */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+
+/* Ajuster les titres pour être moins imposants */
+.reveal h1 {
+    font-size: 2.5em; /* Réduire la taille */
+    margin-bottom: 15px;
+}
+
+.reveal h2 {
+    font-size: 2em;
+}
+
+.reveal h3 {
+    font-size: 1.8em;
+}
+
+/* Style des listes */
+.reveal ul,
+.reveal ol {
+    padding-left: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    line-height: 1.6; /* Rendre le texte plus espacé */
+}
+
+.reveal li {
+    margin-bottom: 10px;
+}
+
+/* Style des balises de code */
+.reveal code {
+    background-color: #2d2d2d; /* Fond contrasté pour le code */
+    color: #c5e478; /* Texte vert clair */
+    font-family: 'Courier New', monospace;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 1.3em; /* Taille légèrement plus petite */
+}
+
+/* Style pour les sections */
+.reveal section {
+    padding: 20px;
+    margin: auto;
+}
+
+/* Numérotation des diapositives */
+.reveal .slide-number {
+    color: #888; /* Couleur discrète */
+    font-size: 0.8em;
+}
+
+/* Style des liens */
+.reveal a {
+    color: #f5c542; /* Doré pour les liens */
+    text-decoration: underline;
+}
+
+/* Navigation (flèches) */
+.reveal .navigate-left,
+.reveal .navigate-right,
+.reveal .navigate-up,
+.reveal .navigate-down {
+    color: #f5c542; /* Couleur dorée pour les flèches */
+}
+
+/* Ajout de transitions */
+.reveal .slides > section {
+    transition: all 0.5s ease;
+}
+
+@media print {
+    /* Fond blanc pour l'impression */
+	@page {
+        size: A4 landscape; /* Définit le format A4 et paysage */
+        margin: 1cm; /* Ajoute une marge */
+    }
+    .reveal {
+        background: white !important;
+        color: black !important;
+        font-size: 20px; /* Taille réduite pour économiser de l'espace */
+    }
+
+    /* Cache les flèches et éléments inutiles */
+    .reveal .navigate-left,
+    .reveal .navigate-right,
+    .reveal .navigate-up,
+    .reveal .navigate-down,
+    .controls,
+    .progress {
+        display: none !important;
+    }
+
+    /* Espacement entre diapositives */
+    .reveal .slides section {
+        page-break-after: always; /* Chaque diapositive commence sur une nouvelle page */
+    }
+
+    /* Notes visibles si activées */
+    .reveal .notes {
+        display: block !important;
+        font-size: 12px;
+        margin-top: 10px;
+    }
+}

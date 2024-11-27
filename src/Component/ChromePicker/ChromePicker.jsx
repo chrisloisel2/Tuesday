@@ -25,7 +25,7 @@ const ColorPicker = ({ color = "#9900EF", setColor }) => {
 
 	const handleColorSelect = (selectedColor, e) => {
 		e.stopPropagation();
-		setColor(selectedColor, color);
+		setColor(selectedColor);
 		setModalOpen(false);
 	};
 

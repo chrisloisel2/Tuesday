@@ -6,10 +6,16 @@ const ColumnCreatorModal = ({ handleColumnCreate, setCreateModal, columns }) => 
 	const [formulaExpression, setFormulaExpression] = useState("");
 	const [selectedOperation, setSelectedOperation] = useState(null);
 	const [error, setError] = useState("");
+	const [diapoExpression, setDiapoExpression] = useState("");
 
 	const handlenext = (data) => {
 		setColumn(data);
 		setStage(stage + 1);
+	};
+
+	const handleCreateDiapo = () => {
+		handleColumnCreate({ ...column, value: "Diapo", diapo: diapoExpression });
+		setCreateModal(false);
 	};
 
 	// Ajouter une colonne ou une valeur au calcul
@@ -57,6 +63,7 @@ const ColumnCreatorModal = ({ handleColumnCreate, setCreateModal, columns }) => 
 					<button onClick={() => handlenext({ type: "file", show: "none" })}>File</button>
 					<button onClick={() => handlenext({ type: "checkbox", show: "none" })}>Checkbox</button>
 					<button onClick={() => handlenext({ type: "formula", show: "none" })}>Formula</button>
+					<button onClick={() => handlenext({ type: "diapo", show: "none" })}>Diapo</button>
 					<button onClick={() => setCreateModal(false)}>Cancel</button>
 				</div>
 			)}
@@ -93,7 +100,25 @@ const ColumnCreatorModal = ({ handleColumnCreate, setCreateModal, columns }) => 
 				</div>
 			)}
 
-			{stage === 1 && column.type !== "formula" && (
+			{stage === 1 && column.type === "diapo" && (
+				<div className="modal-column-content">
+					<h2>Construct Diapo</h2>
+					<div>
+						<h3>Diapo Markdown:</h3>
+						<p>Markdown selectionné : {columns[diapoExpression]?.value}</p>
+						<select onChange={(e) => setDiapoExpression(e.target.value)}>
+							{Object.keys(columns).map((key, value) => (
+								<option value={key}>{columns[key].value}</option>
+							))}
+						</select>
+					</div>
+					{error && <p style={{ color: "red" }}>{error}</p>}
+					<button onClick={() => setStage(0)}>Back</button>
+					<button onClick={handleCreateDiapo}>Create Diapo</button>
+				</div>
+			)}
+
+			{stage === 1 && column.type !== "formula" && column.type !== "diapo" && (
 				<div className="modal-column-content">
 					<h2>Column Type: {column.type}</h2>
 					<h2>Column Name</h2>

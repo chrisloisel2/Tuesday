@@ -20,6 +20,8 @@ const Tables = ({ table, view, activeBoard }) => {
 	const [columns, setColumns] = useState(activeBoard.columns);
 	const openTable = useSelector((state) => state.board.openTable);
 	const selectedItems = useSelector((state) => state.items.selectedItems);
+	const [updateMonth, setUpdateMonth] = useState(false);
+	const [updateNameMonth, setUpdateNameMonth] = useState("");
 
 	const handleSelectItem = (itemId) => {
 		dispatch(selectItem(itemId));
@@ -39,7 +41,12 @@ const Tables = ({ table, view, activeBoard }) => {
 				formateur: undefined,
 				table: tableId,
 				createdAt: new Date().toISOString(),
-				columns: activeBoard.columns,
+				columns: {
+					"title": {
+						value: title,
+						type: "text",
+					},
+				},
 			})
 		);
 	};
@@ -66,6 +73,10 @@ const Tables = ({ table, view, activeBoard }) => {
 		return <div>Loading...</div>;
 	}
 
+	const handleSetColors = (color) => {
+		dispatch(updateTable({ ...table, color: color }));
+	}
+
 	return (
 		<div className="table-view-container">
 			<div key={table._id} className="month-section"
@@ -83,8 +94,36 @@ const Tables = ({ table, view, activeBoard }) => {
 							onClick={() => toggleMonth(table)}
 						>
 							<span style={{ color: table.color }}>▼</span>
-							<span style={{ color: table.color }}>{table.title}</span>
-							<ColorPicker color={table} />
+							<span style={{ color: table.color }}
+								onClick={(e) => {
+									console.log("click");
+									e.stopPropagation();
+									setUpdateMonth(!updateMonth);
+									setUpdateNameMonth(table.title);
+								}}
+							> {
+									updateMonth ?
+										<input
+											type="text"
+											value={updateNameMonth}
+											// mettre le cursor à la fin
+											autoFocus
+											onChange={(e) => {
+												e.stopPropagation();
+												setUpdateNameMonth(e.target.value);
+											}}
+											onBlur={(e) => {
+												e.stopPropagation();
+												dispatch(updateTable({
+													...table, title: e.target.value
+												}));
+												setUpdateMonth(false);
+											}}
+										/>
+										:
+										table.title
+								}</span>
+							<ColorPicker color={table} setColor={handleSetColors} />
 						</div>
 						<table>
 							<TableHeader
@@ -121,14 +160,16 @@ const Tables = ({ table, view, activeBoard }) => {
 
 				)}
 			</div>
-			{createModal && (
-				<ColumnCreatorModal
-					handleColumnCreate={handleColumnCreate}
-					setCreateModal={setCreateModal}
-					columns={columns}
-				/>
-			)}
-		</div>
+			{
+				createModal && (
+					<ColumnCreatorModal
+						handleColumnCreate={handleColumnCreate}
+						setCreateModal={setCreateModal}
+						columns={columns}
+					/>
+				)
+			}
+		</div >
 	);
 };
 

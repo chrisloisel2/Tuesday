@@ -29,7 +29,7 @@ const TableBody = ({ table, columns, activeBoard, handleSelectItem, selectedItem
 					});
 				})
 				.map((item) => (
-					<tr key={item._id} className={selectedItems.includes(item._id) ? "selected" : ""}>
+					<tr key={Math.random() * 28798} className={selectedItems.includes(item._id) ? "selected" : ""}>
 						<td>
 							<input
 								type="checkbox"
@@ -48,7 +48,7 @@ const TableBody = ({ table, columns, activeBoard, handleSelectItem, selectedItem
 					.filter(([key, value]) => view.hiddenColumns?.includes(key) === false)
 					.map(([key, value]) => (
 						<>
-							{key === "title" ? (
+							{key === "title" || key === 1 ? (
 								<td colSpan="1">
 									<input
 										type="text"

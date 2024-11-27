@@ -10,6 +10,7 @@ export const createItem = createAsyncThunk(
 	"item/createItem",
 	async (newItem) => {
 		const response = await MyAxios.post("/item/items", newItem);
+		console.log("create item", response);
 		return response;
 	}
 );
@@ -23,7 +24,7 @@ export const getItemsByFormateur = createAsyncThunk(
 );
 
 export const updateItem = createAsyncThunk("item/updateItem", async (item) => {
-	console.log(item);
+	console.log("update item", item);
 	const response = await MyAxios.put(`/item/items/${item._id}`, item);
 	return response;
 });
@@ -99,20 +100,20 @@ const itemReducer = createSlice({
 				state.status = "failed";
 				state.error = action.error.message;
 			})
-			.addCase(updateItem.pending, (state) => {
-				state.status = "loading";
-			})
-			.addCase(updateItem.fulfilled, (state, action) => {
-				state.status = "succeeded";
-				console.log(action.payload);
-				state.items = state.items.map((item) =>
-					item._id === action.payload._id ? action.payload : item
-				);
-			})
-			.addCase(updateItem.rejected, (state, action) => {
-				state.status = "failed";
-				state.error = action.error.message;
-			})
+			// .addCase(updateItem.pending, (state) => {
+			// 	state.status = "loading";
+			// })
+			// .addCase(updateItem.fulfilled, (state, action) => {
+			// 	state.status = "succeeded";
+			// 	console.log(action.payload);
+			// 	state.items = state.items.map((item) =>
+			// 		item._id === action.payload._id ? action.payload : item
+			// 	);
+			// })
+			// .addCase(updateItem.rejected, (state, action) => {
+			// 	state.status = "failed";
+			// 	state.error = action.error.message;
+			// })
 			.addCase(deleteItem.pending, (state) => {
 				state.status = "loading";
 			})

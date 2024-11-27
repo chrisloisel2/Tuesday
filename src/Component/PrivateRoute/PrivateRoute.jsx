@@ -5,8 +5,8 @@ import { refreshToken } from '../../Redux/AuthReducer';
 import Cookies from 'js-cookie';
 
 export const isAuthenticated = () => {
-	const token = Cookies.get('auth_token'); // 'auth_token' est le nom du cookie d'auth
-	return !!token; // Retourne vrai si le cookie existe
+	const token = Cookies.get('auth_token');
+	return !!token;
 };
 
 
@@ -19,7 +19,7 @@ const PrivateRoute = ({ children }) => {
 		dispatch(refreshToken());
 	}
 
-	if (!isAuthenticated) {
+	if (!isAuthenticated || isConnected === false) {
 		return <Navigate to="/" />;
 	}
 	return children;

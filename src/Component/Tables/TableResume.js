@@ -39,6 +39,8 @@ const renderItem = (items, key, value, activeBoard, table, view) => {
 			return renderEnum(items, key, value, activeBoard.columns);
 		case "formula":
 			return renderFormula(items, key, value, activeBoard.columns);
+		case "diapo":
+			return null;
 		case "file":
 			return null;
 		default:
@@ -63,7 +65,7 @@ const TableResume = ({ table, activeBoard, setCreateModal, handleSelectAll, sele
 						.map(([key, value]) => (
 							<th key={key} style={{ width: `${columns[key].width}px` }} onClick={() => months(table)}>
 								{
-									activeBoard.columns[key].value === "Title" ?
+									key === "title" || key === 1 ?
 										<span style={{
 											color: table.color,
 											fontWeight: "bold",
@@ -104,8 +106,8 @@ const TableResume = ({ table, activeBoard, setCreateModal, handleSelectAll, sele
 					.filter(([key, value]) => view.hiddenColumns?.includes(key) === false)
 					.map(([key, value]) => (
 						<>
-							{key === "title" ? (
-								<th key={key} style={{ width: `${columns[key]?.width}px` }} onClick={() => months(table)}>
+							{key === "title" || key === 1 ? (
+								<th key={Math.random() * 28798} style={{ width: `${columns[key]?.width}px` }} onClick={() => months(table)}>
 									items: {
 										table?.content?.length
 									}

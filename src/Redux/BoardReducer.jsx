@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import MyAxios from "../Interceptor/MyAxios";
-import { updateItem } from "./ItemReducer";
+import { createItem, updateItem } from "./ItemReducer";
 import { act } from "react";
 import { useDispatch } from "react-redux";
 
@@ -28,7 +28,9 @@ export const GetBoard = createAsyncThunk("board/getBoard", async (data) => {
 export const CreateBoard = createAsyncThunk(
 	"board/createBoard",
 	async (data) => {
+		console.log("create board", data);
 		const response = await MyAxios.post("/board/", data);
+		console.log(response);
 		return response;
 	}
 );
@@ -45,7 +47,9 @@ export const UpdateBoard = createAsyncThunk(
 export const updateColumns = createAsyncThunk(
 	"board/updateColumns",
 	async ({ id, data }) => {
+		console.log("update columns", id, data);
 		const response = await MyAxios.put("/board/column/" + id, data);
+		console.log("response", response);
 		return response;
 	}
 );
@@ -98,6 +102,7 @@ export const createTable = createAsyncThunk(
 	"board/createTable",
 	async (data) => {
 		const response = await MyAxios.post("/table/table", { boardId: data });
+		console.log(response);
 		return response;
 	}
 );
@@ -105,7 +110,9 @@ export const createTable = createAsyncThunk(
 export const updateTable = createAsyncThunk(
 	"table/updateTable",
 	async (data) => {
+		console.log("update table", data);
 		const response = await MyAxios.put("/table/table/" + data._id, data);
+		console.log(response);
 		return response;
 	}
 );
@@ -130,6 +137,9 @@ const BoardReducer = createSlice({
 		selectedView: null,
 	},
 	reducers: {
+		getItemById: (state, action) => {
+			return state.activeBoard.content.find((item) => item._id === action.payload.table).content.find((item) => item._id === action.payload.id);
+		},
 		SelectedView: (state, action) => {
 			state.selectedView = action.payload;
 		},
@@ -338,12 +348,7 @@ const BoardReducer = createSlice({
 			.addCase(createTable.fulfilled, (state, action) => {
 				// la fonction register réussie
 				state.status = "succeeded";
-				state.board = state.board.map((item) => {
-					if (item._id === action.payload.board) {
-						item.content.push(action.payload);
-					}
-					return item;
-				});
+				state.activeBoard = action.payload;
 				state.isConnected = true;
 			})
 			.addCase(createTable.rejected, (state, action) => {
@@ -358,13 +363,12 @@ const BoardReducer = createSlice({
 			.addCase(updateTable.fulfilled, (state, action) => {
 				// la fonction register réussie
 				state.status = "succeeded";
-				state.board = state.board.map((item) => {
+				state.activeBoard.content = state.activeBoard.content.map((item) => {
 					if (item._id === action.payload._id) {
 						return action.payload;
 					}
 					return item;
 				});
-				state.isConnected = true;
 			})
 			.addCase(updateTable.rejected, (state, action) => {
 				// la fonction register échouée
@@ -395,17 +399,7 @@ const BoardReducer = createSlice({
 			})
 			.addCase(updateColumns.fulfilled, (state, action) => {
 				state.status = "succeeded";
-				const updatedBoard = state.board.map((item) => {
-					if (item._id === action.payload._id) {
-						// Crée une copie de l'élément pour mise à jour
-						return {
-							...item,
-							columns: action.payload.columns,  // Mettez à jour columns ici
-						};
-					}
-					return item;
-				});
-				state.board = updatedBoard;  // Assigne l’ensemble modifié
+				state.activeBoard.columns = action.payload;
 				state.isConnected = true;
 			})
 			.addCase(updateColumns.rejected, (state, action) => {
@@ -417,15 +411,19 @@ const BoardReducer = createSlice({
 			})
 			.addCase(updateItem.fulfilled, (state, action) => {
 				state.status = "succeeded";
-				console.log(action.payload);
-				state.board.forEach((board) => {
-					board.content.forEach((table) => {
-						table.content = table.content.map((item) =>
-							item._id === action.payload._id ? action.payload : item
-						);
-					});
-				}
-				);
+				state.activeBoard.content = state.activeBoard.content.map((item) => {
+					if (item._id === action.payload.table) {
+						// Mise à jour des colonnes et recherche de l'élément à modifier
+						item.content = item.content.map((innerItem) => {
+							if (innerItem._id === action.payload._id) {
+								return { ...innerItem, ...action.payload }; // Fusionne l'élément avec les nouvelles données
+							}
+							return innerItem;
+						});
+						item.columns = action.payload.columns; // Met à jour les colonnes si nécessaire
+					}
+					return item;
+				});
 			})
 			.addCase(updateItem.rejected, (state, action) => {
 				state.status = "failed";
@@ -458,11 +456,31 @@ const BoardReducer = createSlice({
 			.addCase(updateViewSharing.rejected, (state, action) => {
 				state.status = "failed";
 				state.error = action.error.message;
-			}
-			);
+			})
+			.addCase(createItem.pending, (state) => {
+				state.status = "loading";
+			})
+			.addCase(createItem.fulfilled, (state, action) => {
+				state.status = "succeeded";
+				console.log("new item", action.payload);
+				state.activeBoard.content = state.activeBoard.content.map((item) => {
+					console.log("table trouvée", item);
+					if (item._id === action.payload.table) {
+						console.log("table trouvée ->", item);
+						item.content.push(action.payload);
+						console.log("table trouvée ->", item);
+					}
+					return item;
+				}
+				);
+			})
+			.addCase(createItem.rejected, (state, action) => {
+				state.status = "failed";
+				state.error = action.error.message;
+			});
 	},
 });
 
-export const { selectBoard, resetBoard, setOpenTable, SelectedView } = BoardReducer.actions;
+export const { selectBoard, resetBoard, setOpenTable, SelectedView, getItemById } = BoardReducer.actions;
 
 export default BoardReducer.reducer;

@@ -51,3 +51,14 @@
 .date-cell{
 	position: relative;
 }
+
+.file-input .deactive {
+	display: none;
+}
+
+.file-input .active {
+	cursor: pointer;
+	display: block;
+}
+
+

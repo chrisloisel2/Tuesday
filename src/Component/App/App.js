@@ -9,6 +9,7 @@ import BoardList from "../BoardList/BoardList";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, refreshToken } from "../../Redux/AuthReducer";
+import RevealMarkdown from "../RevealMarkdown/RevealMarkdown";
 
 function App() {
 	return (
@@ -40,6 +41,7 @@ function App() {
 						</PrivateRoute>
 					}
 				/>
+				<Route path="/cours/:urlId/:dwId/:templateId" element={<RevealMarkdown />} />
 			</Routes>
 		</BrowserRouter>
 	);
