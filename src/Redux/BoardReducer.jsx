@@ -399,7 +399,7 @@ const BoardReducer = createSlice({
 			})
 			.addCase(updateColumns.fulfilled, (state, action) => {
 				state.status = "succeeded";
-				state.activeBoard.columns = action.payload;
+				state.activeBoard.columns = action.payload.columns;
 				state.isConnected = true;
 			})
 			.addCase(updateColumns.rejected, (state, action) => {

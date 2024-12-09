@@ -125,28 +125,23 @@ const Item = ({ item, color, columns, activeBoard }) => {
 						case 'enum':
 							return (
 								<EnumCell
-									key={key}
 									columnKey={key}
 									item={item}
-									columns={columns}
 									activeEnumColumn={activeEnumColumn}
 									setActiveEnumColumn={setActiveEnumColumn}
 									handleUpdate={handleUpdate}
-									board={activeBoard}
 								/>
 							);
 
 						case 'diapo':
-							console.log('DIAPo', item.columns[value?.diapo]?.value);
 							if (!item.columns[value?.diapo]?.value) {
 								return <td key={key} style={{ color: item.columns[key]?.color }}></td>
 							}
 							const url = item.columns[value?.diapo]?.value.split('/')[4];
 							console.log('DIAPo url', url);
 
-							const link = "/cours/" + url + "/0/1";
-							const downloadlink = "/cours/" + url + "/1/1";
-							console.log('DIAPo', link);
+							const link = "/cours/" + url + "/" + item.columns[value?.template]?.value;
+							const downloadlink = "/cours/" + url + "/" + item.columns[value?.template]?.value;
 							return (
 								<td key={key} style={{ color: item.columns[key]?.color }}
 									styles={{
@@ -156,19 +151,8 @@ const Item = ({ item, color, columns, activeBoard }) => {
 										gap: '5rem',
 									}}
 								>
-									<a href={link} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', marginRight: '1rem' }}>
+									<a href={link} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>
 										cliquer ici
-									</a>/
-									<a
-										href={downloadlink}
-										target="_blank"
-										rel="noopener noreferrer"
-										style={{
-											color: 'inherit',
-											marginLeft: '1rem',
-										}}
-									>
-										<FaFileAlt style={{ color: item.columns[key]?.color, fontSize: '1rem' }} />
 									</a>
 								</td>
 							);

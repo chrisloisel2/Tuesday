@@ -1,0 +1,83 @@
+@media print {
+    @page {
+		size: A4 landscape  !important;
+        margin: 0 !important;
+        page-break-after: always;
+    }
+
+	html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+		background-color: transparent !important;
+        overflow: hidden;
+    }
+
+
+	.reveal {
+		width: 100vw !important;
+		height: 100vh !important;
+        background: transparent !important;
+        color: rgb(0, 0, 0) !important;
+        font-family: 'Roboto', Arial, sans-serif;
+    }
+
+	.reveal .notes {
+        display: none !important;
+    }
+
+	/* .reveal.IB.title-only .slide-background {
+		background-image: url('title.png') !important;
+		background-size: cover !important;
+		background-position: center !important;
+		background-repeat: no-repeat !important;
+	} */
+
+	.reveal.IB .slide-background {
+		background-image: url('bg.png') !important;
+		background-size:  contain !important;
+		background-position: center !important;
+		background-repeat: no-repeat !important;
+		width: 100% !important;
+		height: 100% !important;
+	}
+
+
+.reveal.Ascent h1,
+.reveal.Ascent h2,
+.reveal.Ascent h3 {
+	color: #251c61;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	margin-bottom: 20px;
+	padding-bottom: 20px;
+	max-width: 100%;
+	font-size: 1.5em;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.reveal ul{
+	list-style-type: none;
+}
+
+
+.reveal.Ascent .slide-background {
+	background-image: url('ascent.png') !important;
+	background-size:  cover !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+	width: 100% !important;
+	height: 100% !important;
+}
+
+/* Ne pas afficher le numéro des pages en reveal.JS */
+.reveal .slide-number {
+    display: none !important; /* Cache la numérotation des diapositives */
+  }
+
+}
+
+

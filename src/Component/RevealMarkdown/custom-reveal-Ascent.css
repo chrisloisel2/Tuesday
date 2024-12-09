@@ -1,0 +1,42 @@
+.reveal {
+	width: 100vw !important;
+	height: 100vh !important;
+	background: transparent !important;
+	color: rgb(0, 0, 0) !important;
+	font-size: 1.5em;
+	font-family: 'Roboto', Arial, sans-serif;
+}
+
+.reveal .notes {
+	display: none !important;
+}
+
+.reveal.Ascent h1,
+.reveal.Ascent h2,
+.reveal.Ascent h3 {
+	color: #251c61;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	margin-bottom: 20px;
+	padding-bottom: 20px;
+	max-width: 100%;
+	font-size: 1.6em;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.reveal ul{
+	list-style-type: none;
+}
+
+
+.reveal.Ascent .slide-background {
+	background-image: url('ascent.png') !important;
+	background-size:  cover !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+	width: 100% !important;
+	height: 100% !important;
+}
+

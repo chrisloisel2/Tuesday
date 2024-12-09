@@ -1,0 +1,39 @@
+.reveal {
+	width: 100vw !important;
+	height: 100vh !important;
+	background: transparent !important;
+	color: rgb(0, 0, 0) !important;
+	font-family: 'Roboto', Arial, sans-serif;
+}
+
+.reveal .notes {
+	display: none !important;
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3 {
+	color: #4210da;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	margin-bottom: 20px;
+	max-width: 100%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.reveal ul{
+	list-style-type: none;
+}
+
+
+.reveal.Ipssi .slide-background {
+	/* background-image: url('bg.png') !important;
+	background-size:  cover !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important; */
+	width: 100% !important;
+	height: 100% !important;
+}
+

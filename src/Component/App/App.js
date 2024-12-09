@@ -41,7 +41,7 @@ function App() {
 						</PrivateRoute>
 					}
 				/>
-				<Route path="/cours/:urlId/:dwId/:templateId" element={<RevealMarkdown />} />
+				<Route path="/cours/:urlId/:templateId" element={<RevealMarkdown />} />
 			</Routes>
 		</BrowserRouter>
 	);

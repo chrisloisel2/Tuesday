@@ -7,6 +7,7 @@ const ColumnCreatorModal = ({ handleColumnCreate, setCreateModal, columns }) => 
 	const [selectedOperation, setSelectedOperation] = useState(null);
 	const [error, setError] = useState("");
 	const [diapoExpression, setDiapoExpression] = useState("");
+	const [diapoTemplate, setDiapoTemplate] = useState("");
 
 	const handlenext = (data) => {
 		setColumn(data);
@@ -14,7 +15,7 @@ const ColumnCreatorModal = ({ handleColumnCreate, setCreateModal, columns }) => 
 	};
 
 	const handleCreateDiapo = () => {
-		handleColumnCreate({ ...column, value: "Diapo", diapo: diapoExpression });
+		handleColumnCreate({ ...column, value: "Diapo", diapo: diapoExpression, template: diapoTemplate });
 		setCreateModal(false);
 	};
 
@@ -107,6 +108,13 @@ const ColumnCreatorModal = ({ handleColumnCreate, setCreateModal, columns }) => 
 						<h3>Diapo Markdown:</h3>
 						<p>Markdown selectionné : {columns[diapoExpression]?.value}</p>
 						<select onChange={(e) => setDiapoExpression(e.target.value)}>
+							{Object.keys(columns).map((key, value) => (
+								<option value={key}>{columns[key].value}</option>
+							))}
+						</select>
+
+						<p>Template selectionné : {columns[diapoTemplate]?.value}</p>
+						<select onChange={(e) => setDiapoTemplate(e.target.value)}>
 							{Object.keys(columns).map((key, value) => (
 								<option value={key}>{columns[key].value}</option>
 							))}

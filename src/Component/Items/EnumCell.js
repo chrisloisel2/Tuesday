@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { updateColumns } from '../../Redux/BoardReducer';
 
 const makeRandomColor = () => {
@@ -12,8 +12,9 @@ const makeRandomColor = () => {
 };
 
 
-const EnumCell = ({ columnKey, item, columns, activeEnumColumn, setActiveEnumColumn, handleUpdate, board }) => {
+const EnumCell = ({ columnKey, item, activeEnumColumn, setActiveEnumColumn, handleUpdate }) => {
 	const dispatch = useDispatch();
+	const board = useSelector((state) => state.board.activeBoard);
 	const [editLabel, setEditLabel] = useState(false);
 	const [valueLabel, setValueLabel] = useState('');
 
@@ -34,11 +35,11 @@ const EnumCell = ({ columnKey, item, columns, activeEnumColumn, setActiveEnumCol
 
 	const handleLabelEdit = () => {
 		let data = {
-			...columns,
+			...board.columns,
 			[columnKey]: {
-				...columns[columnKey],
+				...board.columns[columnKey],
 				values: {
-					...columns[columnKey].values,
+					...board.columns[columnKey].values,
 					[valueLabel]: makeRandomColor(),
 				},
 			},
@@ -57,7 +58,7 @@ const EnumCell = ({ columnKey, item, columns, activeEnumColumn, setActiveEnumCol
 			id={columnKey}
 			onClick={() => setActiveEnumColumn(activeEnumColumn === columnKey ? null : columnKey)}
 			style={{
-				backgroundColor: columns[columnKey]?.values[item.columns[columnKey]?.value],
+				// backgroundColor: board.columns[columnKey]?.values[item.columns[columnKey]?.value],
 				position: 'relative',
 			}}
 		>
@@ -66,13 +67,13 @@ const EnumCell = ({ columnKey, item, columns, activeEnumColumn, setActiveEnumCol
 				<div className="modalEnum">
 					<div className="modal-arrow" />
 					<div className="modal-content">
-						{Object.keys(columns[columnKey].values).map((enumValue, index) => (
+						{Object.keys(board.columns[columnKey]?.values).map((enumValue, index) => (
 							<div
 								key={index}
 								className="enumOption"
 								onClick={() => handleEnumClick(enumValue)}
 							>
-								<div className="enumColor" style={{ backgroundColor: columns[columnKey].values[enumValue] }} />
+								<div className="enumColor" style={{ backgroundColor: board.columns[columnKey]?.values[enumValue] }} />
 								<div className="enumLabel">{enumValue}</div>
 							</div>
 						))}

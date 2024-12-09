@@ -9,7 +9,6 @@ const SelectedPanel = () => {
 	const handleDelete = () => {
 		selectedItem.forEach((item) => {
 			dispatch(deleteItem(item));
-			selectedItem.pop();
 		});
 	}
 
