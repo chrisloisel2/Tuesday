@@ -6,6 +6,7 @@ import 'reveal.js/dist/reveal.css';
 import './custom-reveal-IPSSI.css';
 import './custom-reveal-IB.css';
 import './custom-reveal-Ascent.css';
+import './custom-reveal-Skylonis.css';
 import { useParams } from 'react-router-dom';
 import mermaid from 'mermaid';
 

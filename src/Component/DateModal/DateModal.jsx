@@ -5,8 +5,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import './DateModal.css'; // Importation du CSS stylisé
 
 const DateModal = ({ isOpen, onClose, initialDates, handleSaveDate }) => {
-	const [startDate, setStartDate] = useState(new Date(initialDates.start));
-	const [endDate, setEndDate] = useState(new Date(initialDates.end));
+
+
+	const [startDate, setStartDate] = useState(new Date(initialDates.start || new Date()));
+	const [endDate, setEndDate] = useState(new Date(initialDates.end || new Date()));
 
 	const handleSave = () => {
 		handleSaveDate({ start: startDate, end: endDate });
