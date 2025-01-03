@@ -24,6 +24,7 @@ const Calendrier = (activeBoard) => {
 	const [view, setView] = useState("month");
 	const [filteredUsers, setFilteredUsers] = useState([]);
 	const userRole = useSelector((state) => state.auth.user?.role);
+	const user = useSelector((state) => state.auth.user);
 	const userId = useSelector((state) => state.auth.user?._id);
 
 	const [title, setTitle] = useState("");
@@ -50,18 +51,12 @@ const Calendrier = (activeBoard) => {
 		dispatch(getAllItems());
 		if (users.length > 0) {
 			setFilteredUsers(
-				users.filter((user) => user.name !== "admin").map((user) => user._id)
+				users.filter((user) => user.name !== "admin")
 			);
 		}
 	}, [dispatch]);
 
-	useEffect(() => {
-		if (users.length > 0) {
-			setFilteredUsers(
-				users.filter((user) => user.name !== "admin").map((user) => user._id)
-			);
-		}
-	}, [users]);
+
 
 	const localizer = momentLocalizer(moment);
 	const messages = {
@@ -89,26 +84,37 @@ const Calendrier = (activeBoard) => {
 	console.log("Items", items);
 	console.log("Users", users);
 	console.log("userRole", userRole);
+
+	// const Redouanes = items.filter((item) => {
+	// 	if (item.columns["formateur"]?.value == "Redouane") {
+	// 		console.log(item)
+	// 	}
+	// 	return true
+	// });
+
+
 	const filteredEvents = items.filter((item) => {
 		if (userRole === "admin") {
-			return filteredUsers.includes(item.formateur);
+			return filteredUsers.map((user) => user.name).includes(item.columns['formateur']?.value);
 		} else {
-			return item.formateur === userId;
+			return item.columns['formateur']?.value === user.name;
 		}
 	});
 
+	const events = filteredEvents.map((item) => {
 
-
-	const events = filteredEvents.map((item) => ({
-		title: `${item.columns['title']?.value} - ${item.columns['lieu']?.value}`,
-		start: new Date(item.columns['date']?.start),
-		end: new Date(item.columns['date']?.end),
-		resource: item,
-		formateur: item.formateur.name,
-		stack: item.columns['stack']?.value,
-		lieu: item.columns['lieu']?.value,
-		color: formateurColors(item.formateur),
-	}));
+		return (
+			{
+				title: `${item.columns['title']?.value} - ${item.columns['lieu']?.value}`,
+				start: new Date(item.columns['date']?.start),
+				end: new Date(item.columns['date']?.end),
+				resource: item,
+				formateur: item.columns['formateur']?.value,
+				stack: item.columns['stack']?.value,
+				lieu: item.columns['lieu']?.value,
+				color: formateurColors(item.formateur),
+			});
+	})
 
 	console.log("Events", events);
 

@@ -27,6 +27,10 @@
 	list-style-type: none;
 }
 
+.reveal .notes {
+    display: none !important;
+}
+
 
 .reveal.IB .slide-background {
 	background-image: url('IB.png') !important;

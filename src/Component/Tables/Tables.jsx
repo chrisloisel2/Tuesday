@@ -23,6 +23,31 @@ const Tables = ({ table, view, activeBoard }) => {
 	const [updateMonth, setUpdateMonth] = useState(false);
 	const [updateNameMonth, setUpdateNameMonth] = useState("");
 
+
+	let items = table.content.filter((item) => {
+		if (!view.filters) return true;
+		return view.filters.every((filter) => {
+			const columnValue = item.columns[filter.column]?.value;
+			switch (filter.operator) {
+				case "égal":
+					return columnValue === filter.value;
+				case "contient":
+					return columnValue?.toString().includes(filter.value);
+				case "supérieur":
+					return parseFloat(columnValue) > parseFloat(filter.value);
+				case "inférieur":
+					return parseFloat(columnValue) < parseFloat(filter.value);
+				default:
+					return false;
+			}
+		});
+	});
+
+
+	if (Array.isArray(items) && items.length === 0) {
+		return;
+	}
+
 	const handleSelectItem = (itemId) => {
 		dispatch(selectItem(itemId));
 	};
