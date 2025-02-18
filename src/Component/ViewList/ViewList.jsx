@@ -19,8 +19,7 @@ const ViewList = () => {
 	const dispatch = useDispatch();
 	const users = useSelector((state) => state.users.users);
 	const user = useSelector((state) => state.auth.user);
-	// console.log('user', user);
-	console.log('users', users);
+
 	const activeBoard = useSelector((state) => state.board.activeBoard);
 	const activeView = useSelector((state) => state.board.selectedView);
 
@@ -32,7 +31,6 @@ const ViewList = () => {
 
 	useEffect(() => {
 		dispatch(getAllUsers());
-		console.log('users', users);
 	}, [dispatch, activeView]);
 
 	const handleAdd = () => {
@@ -41,9 +39,9 @@ const ViewList = () => {
 				name: "newView",
 				type: "table",
 				BoardId: activeBoard?._id,
+				owner: [user._id]
 			})
 		);
-		dispatch(GetBoards());
 	};
 
 	const handleOptionsModal = () => {
@@ -76,17 +74,17 @@ const ViewList = () => {
 	return (
 		<div className="view-list">
 			<div className="view-switcher">
-				{activeBoard?.view
-					?.filter((item) => {
-						return (
-							item.owner.includes(user._id) ||
-							item.sharedWith.includes(user._id)
-						);
-					})
+				{activeBoard?.view?.filter((item) => {
+					return (
+						item.owner.includes(user._id) ||
+						item.sharedWith.includes(user._id) ||
+						user.role == "admin"
+					);
+				})
 					.map((item) => (
 						<div
 							key={item._id}
-							className={activeView?._id === item._id ? "view active" : "view"}
+							className={activeView?._id === item._id ? "view-active" : "view"}
 							onClick={() => dispatch(SelectedView(item))}
 						>
 							{item.name}
@@ -108,11 +106,11 @@ const ViewList = () => {
 			{optionsModal && (
 				<div className="options-modal">
 					<h3>Options</h3>
-					<p>View name: <input type="text" placeholder="Rename view" onChange={
+					<p>Changer le nom : <input type="text" placeholder="Rename view" onChange={
 						(e) => setViewName(e.target.value)
 					} value={viewName} /><input type='button' value="valider" onClick={
 						() => {
-							dispatch(updateView({ viewId: activeView._id, name: viewName }));
+							dispatch(updateView({ _id: activeView._id, name: viewName }));
 						}
 					} /></p>
 

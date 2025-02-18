@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import MyAxios from "../Interceptor/MyAxios";
-import { createItem, updateItem } from "./ItemReducer";
+import { createItem, deleteItem, updateItem } from "./ItemReducer";
 import { act } from "react";
 import { useDispatch } from "react-redux";
 
@@ -266,22 +266,14 @@ const BoardReducer = createSlice({
 				state.error = action.error.message;
 			})
 			.addCase(creteView.pending, (state) => {
-				// la fonction register en attente
 				state.status = "loading";
 			})
 			.addCase(creteView.fulfilled, (state, action) => {
-				// la fonction register réussie
 				state.status = "succeeded";
-				state.board = state.board.map((item) => {
-					if (item._id === action.payload._id) {
-						return action.payload;
-					}
-					return item;
-				});
-				state.isConnected = true;
+				console.log("create view", action.payload);
+				state.activeBoard.view.push(action.payload);
 			})
 			.addCase(creteView.rejected, (state, action) => {
-				// la fonction register échouée
 				state.status = "failed";
 				state.error = action.error.message;
 			})
@@ -292,7 +284,8 @@ const BoardReducer = createSlice({
 			.addCase(updateView.fulfilled, (state, action) => {
 				// la fonction register réussie
 				state.status = "succeeded";
-				state.board = state.activeBoard.view.map((item) => {
+				console.log("update view", action.payload);
+				state.activeBoard.view = state.activeBoard.view.map((item) => {
 					if (item._id === action.payload._id) {
 						return action.payload;
 					}
@@ -311,22 +304,19 @@ const BoardReducer = createSlice({
 				state.status = "loading";
 			})
 			.addCase(deleteView.fulfilled, (state, action) => {
-				// la fonction register réussie
 				state.status = "succeeded";
-				GetBoards();
+				state.activeBoard.view = state.activeBoard.view.filter((item) => item._id !== action.payload._id);
+				state.selectedView = state.activeBoard.view[0];
 				state.isConnected = true;
 			})
 			.addCase(deleteView.rejected, (state, action) => {
-				// la fonction register échouée
 				state.status = "failed";
 				state.error = action.error.message;
 			})
 			.addCase(getViews.pending, (state) => {
-				// la fonction register en attente
 				state.status = "loading";
 			})
 			.addCase(getViews.fulfilled, (state, action) => {
-				// la fonction register réussie
 				state.status = "succeeded";
 				state.board = state.board.map((item) => {
 					if (item._id === action.payload._id) {
@@ -475,6 +465,18 @@ const BoardReducer = createSlice({
 				);
 			})
 			.addCase(createItem.rejected, (state, action) => {
+				state.status = "failed";
+				state.error = action.error.message;
+			})
+			.addCase(deleteItem.fulfilled, (state, action) => {
+				state.activeBoard.content = state.activeBoard.content.map((item) => {
+					if (item._id === action.payload.table) {
+						item.content = item.content.filter((innerItem) => innerItem._id !== action.payload._id);
+					}
+					return item;
+				});
+			})
+			.addCase(deleteItem.rejected, (state, action) => {
 				state.status = "failed";
 				state.error = action.error.message;
 			});

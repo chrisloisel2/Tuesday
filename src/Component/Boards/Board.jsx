@@ -8,9 +8,10 @@ import "./Board.css";
 import ViewList from "../ViewList/ViewList";
 import SelectedPannel from "../SelectedPannel/SelectedPannel";
 
-const Board = ({ activeBoard }) => {
+const Board = () => {
 	const selectedView = useSelector((state) => state.board.selectedView);
 	const selectedItems = useSelector((state) => state.items.selectedItems);
+	const activeBoard = useSelector((state) => state.board.activeBoard);
 	const items = useSelector((state) => state.items.items);
 	const [columns, setColumns] = useState({});
 	const dispatch = useDispatch();
@@ -27,7 +28,8 @@ const Board = ({ activeBoard }) => {
 	// 	dispatch(setSelectedView(view));
 	// };
 
-	if (activeBoard === null) {
+
+	if (activeBoard._id === undefined) {
 		return <div>Veuillez sélectionner un tableau</div>;
 	}
 

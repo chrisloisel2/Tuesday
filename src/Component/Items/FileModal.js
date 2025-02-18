@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 const FileModal = ({ isOpen, onClose, fileUrl, onDelete }) => {
 	if (!isOpen) return null;
 
@@ -21,5 +22,6 @@ const FileModal = ({ isOpen, onClose, fileUrl, onDelete }) => {
 		</div>
 	);
 };
+
 
 export default FileModal;

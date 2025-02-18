@@ -109,7 +109,7 @@ tr {
 	background-color: rgba(0, 0, 0, 0.3);
   }
 
-  .selected {
+  .selected > td {
 	background-color: #16317b;
   }
 

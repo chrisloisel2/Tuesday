@@ -13,7 +13,6 @@ const SelectedPanel = () => {
 	}
 
 
-	console.log('Selected Panel :', selectedItem);
 	return (
 		<div className="selected-panel">
 			<h3>Items Selectionnés</h3>

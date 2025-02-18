@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react";
-import BoardList from "../BoardList/BoardList";
+import BoardList from "../../Component/BoardList/BoardList";
 import "./Display.css";
-import Board from "../Boards/Board";
+import Board from "../../Component/Boards/Board";
 import { GetBoards, selectBoard, setSelectedView } from "../../Redux/BoardReducer";
 import { useDispatch, useSelector } from "react-redux";
 
 const Display = () => {
-	const boards = useSelector((state) => state.board.board);
 	const dispatch = useDispatch();
+	const boards = useSelector((state) => state.board.board);
 	const activeBoard = useSelector((state) => state.board.activeBoard);
 
 	useEffect(() => {
-		console.log("Display");
 		dispatch(GetBoards());
 	}, [dispatch]);
 

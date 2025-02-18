@@ -44,8 +44,8 @@ const store = configureStore({
 		users: UserReducer,
 		items: ItemReducer,
 	},
-	// preloadedState,
-	// middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(localStorageMiddleware),
+	preloadedState,
+	middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(localStorageMiddleware),
 });
 
 export default store;

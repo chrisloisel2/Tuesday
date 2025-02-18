@@ -58,7 +58,7 @@ const EnumCell = ({ columnKey, item, activeEnumColumn, setActiveEnumColumn, hand
 			id={columnKey}
 			onClick={() => setActiveEnumColumn(activeEnumColumn === columnKey ? null : columnKey)}
 			style={{
-				// backgroundColor: board.columns[columnKey]?.values[item.columns[columnKey]?.value],
+				backgroundColor: board.columns[columnKey]?.values[item.columns[columnKey]?.value],
 				position: 'relative',
 			}}
 		>

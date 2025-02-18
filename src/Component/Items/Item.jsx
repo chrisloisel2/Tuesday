@@ -3,30 +3,31 @@ import { useDispatch, useSelector } from 'react-redux';
 import EditableCell from './EditableCell';
 import EnumCell from './EnumCell';
 import DateCell from './DateCell';
+import { FiUpload } from 'react-icons/fi';
 import './Item.css';
 import { updateItem } from '../../Redux/ItemReducer';
 import DateModal from '../DateModal/DateModal';
 import FormulaCell from './FormulaCell';
 import { FaFileAlt } from "react-icons/fa";
 import MyAxios from '../../Interceptor/MyAxios';
+import FileModal from './FileModal';
 
 const Item = ({ item, color, columns, activeBoard }) => {
+	const [isFileModal, setIsFileModal] = useState(false);
 	const [editedItem, setEditedItem] = useState(item);
 	const [activeEnumColumn, setActiveEnumColumn] = useState(null);
-	const [isDateModalOpen, setIsDateModalOpen] = useState(false); // État pour ouvrir/fermer le modal de date
-	const [currentDateColumn, setCurrentDateColumn] = useState(null); // Colonne actuelle pour la date
+	const [isDateModalOpen, setIsDateModalOpen] = useState(false);
+	const [currentDateColumn, setCurrentDateColumn] = useState(null);
 	const view = useSelector((state) => state.board.selectedView);
 	const [uploading, setUploading] = useState(false);
 	const dispatch = useDispatch();
-
-	// console.log('ITEM DEBUG', item);
 
 	const handleDelete = (columnKey) => {
 		const newEditedItem = {
 			...editedItem,
 			columns: {
 				...editedItem.columns,
-				[columnKey]: null, // Supprimer la colonne
+				[columnKey]: null,
 			},
 		};
 		setEditedItem(newEditedItem);
@@ -61,7 +62,6 @@ const Item = ({ item, color, columns, activeBoard }) => {
 
 	const handleFileUpload = async (file, key) => {
 		const formData = new FormData();
-		// Changer le nom du fichier pour éviter les doublons
 		formData.append('name', `${item._id}-${key}`);
 
 		formData.append('file', file);
@@ -94,13 +94,6 @@ const Item = ({ item, color, columns, activeBoard }) => {
 			setUploading(false);
 		}
 	};
-	// Object.entries(columns)
-	// 	.sort(([, a], [, b]) => a.order - b.order)
-	// 	.filter(([key, value]) => view.hiddenColumns?.includes(key) === false)
-	// 	.map(([key, value]) => {
-	// 		console.log('ITEM DEBUG', key, value);
-	// 	});
-
 
 	return (
 		<>
@@ -132,13 +125,11 @@ const Item = ({ item, color, columns, activeBoard }) => {
 									handleUpdate={handleUpdate}
 								/>
 							);
-
 						case 'diapo':
 							if (!item.columns[value?.diapo]?.value) {
 								return <td key={key} style={{ color: item.columns[key]?.color }}></td>
 							}
 							const url = item.columns[value?.diapo]?.value.split('/')[4];
-							console.log('DIAPo url', url);
 
 							const link = "/cours/" + url + "/" + item.columns[value?.template]?.value;
 							const downloadlink = "/cours/" + url + "/" + item.columns[value?.template]?.value;
@@ -156,7 +147,6 @@ const Item = ({ item, color, columns, activeBoard }) => {
 									</a>
 								</td>
 							);
-
 						case 'formula':
 							return (
 								<FormulaCell
@@ -177,34 +167,28 @@ const Item = ({ item, color, columns, activeBoard }) => {
 							return (
 								<td key={key} style={{ color: item.columns[key] }}>
 									{item.columns[key]?.value ? (
-										<a
-											href={item.columns[key]?.value}
-											target="_blank"
-											rel="noopener noreferrer"
-											style={{
-												color: 'inherit',
-											}}
-										>
-											<FaFileAlt
-
-												style={{
-													color: item.columns[key]?.color,
-													fontSize: '1rem',
-												}}
-											/>
-										</a>
-									) : (
 										<>
-											<input
-												type="file"
-												disabled={uploading}
-												onChange={(e) =>
-													handleFileUpload(e.target.files[0], key)
-												}
-												className={`file-input ${uploading ? 'uploading' : ''}`}
-											/>
+											<a
+												href={item.columns[key]?.value}
+												target="_blank"
+												rel="noopener noreferrer"
+												style={{
+													color: 'inherit',
+												}}
+											>
+												<FaFileAlt
+													onMouseEnter={() => setIsFileModal(true)}
+													onMouseLeave={() => setIsFileModal(false)}
+													style={{
+														color: item.columns[key]?.color,
+														fontSize: '1rem',
+													}}
+												/>
+											</a>
+											<FileModal isOpen={isFileModal} onClose={() => setIsFileModal(false)} fileUrl={item.columns[key]?.value} onDelete={() => handleDelete(key)} />
 										</>
-
+									) : (
+										<FileUpload handleFileUpload={handleFileUpload} uploading={uploading} key={key} />
 									)}
 								</td>
 							);
@@ -233,6 +217,23 @@ const Item = ({ item, color, columns, activeBoard }) => {
 				/>
 			)}
 		</>
+	);
+};
+
+
+
+const FileUpload = ({ handleFileUpload, uploading, key }) => {
+	return (
+		<label className="flex items-center gap-2 p-2 border rounded-lg cursor-pointer hover:bg-gray-100">
+			<FiUpload size={24} className="text-gray-600" />
+			<span className="text-gray-600">Upload File</span>
+			<input
+				type="file"
+				onChange={(e) => handleFileUpload(e.target.files[0], key)}
+				disabled={uploading}
+				hidden
+			/>
+		</label>
 	);
 };
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { MdAdd } from "react-icons/md";
-import FormationBoard from "../Boards/Board";
 import { useDispatch, useSelector } from "react-redux";
 import { CreateBoard, GetBoard, selectBoard } from "../../Redux/BoardReducer";
 import { logout } from "../../Redux/AuthReducer";
@@ -20,15 +19,9 @@ const BoardList = () => {
 					{boards.map((board, index) => (
 						<button
 							key={board._id}
-							className={`board-item${activeBoard === index ? "-active" : ""}`}
+							className={`board-item${activeBoard._id === board._id ? "-active" : ""}`}
 							onClick={() => dispatch(GetBoard(board._id))}
 						>
-							<IoDocumentTextOutline
-								style={{
-									fontSize: "20px",
-									marginRight: "10px",
-								}}
-							/>
 							<p>{board.title}</p>
 						</button>
 					))}

@@ -3,13 +3,12 @@ import Display from "../Display/Display";
 import Login from "../Login/login";
 import Register from "../Register/Register";
 import PrivateRoute from "../PrivateRoute/PrivateRoute";
-import Calendar from "../Calendar/Calendar";
-import Tables from "../Tables/Tables";
-import BoardList from "../BoardList/BoardList";
+import Calendar from "../../Component/Calendar/Calendar";
+import Tables from "../../Component/Tables/Tables";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, refreshToken } from "../../Redux/AuthReducer";
-import RevealMarkdown from "../RevealMarkdown/RevealMarkdown";
+import RevealMarkdown from "../../Component/RevealMarkdown/RevealMarkdown";
 
 function App() {
 	return (

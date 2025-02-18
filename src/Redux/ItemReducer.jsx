@@ -119,7 +119,11 @@ const itemReducer = createSlice({
 			})
 			.addCase(deleteItem.fulfilled, (state, action) => {
 				state.status = "succeeded";
-				state.items = state.items.filter((item) => item._id !== action.payload);
+				console.log(action.payload);
+				state.items = state.items.filter((item) => item._id !== action.payload._id);
+				state.selectedItems = state.selectedItems.filter(
+					(_id) => _id !== action.payload._id
+				);
 			})
 			.addCase(deleteItem.rejected, (state, action) => {
 				state.status = "failed";

@@ -89,6 +89,7 @@ body {
   gap: 10px;
   width: 100%;
   z-index: 3;
+  font-size: var(--font-size-small);
 }
 
 .board-item-active {
@@ -98,9 +99,10 @@ body {
 	justify-content: center;
 	align-items: center;
 	padding: var(--padding-small);
-	background-color: var(--main-color);
+	background-color: var(--background-darker-color);
 	color: var(--font-color);
 	font-weight: bold;
+	font-size: var(--font-size-small);
 	border: none;
 	gap: 10px;
 	width: 100%;
@@ -112,17 +114,7 @@ body {
   border-radius: 5px;
 }
 
-.active {
-  background-color: var(--main-color);
-  border-radius: 5px;
-}
 
-.board-item p {
-  font-size: var(--font-size-small);
-  font-family: "Roboto", sans-serif;
-  outline: none;
-  overflow: hidden;
-}
 
 .board-item input {
   background-color: transparent;
@@ -149,17 +141,6 @@ body {
   font-family: "Roboto", sans-serif;
 }
 
-/* .table-line {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: var(--padding-small);
-  border-radius: 5px;
-  background-color: var(--background-darker-color);
-} */
-
 .view-switcher {
   display: flex;
   flex-direction: row;
@@ -173,7 +154,6 @@ body {
 button {
   color: var(--font-color);
   border: none;
-  border-radius: 5px;
   padding: var(--padding-small);
   background-color: var(--background-color);
   cursor: pointer;
@@ -203,11 +183,6 @@ button {
   border-radius: 5px;
 }
 
--container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
 
 .rbc-calendar {
   display: flex;
@@ -233,6 +208,20 @@ button {
   color: white;
 }
 
+.view-active {
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	padding: var(--padding-small);
+	cursor: pointer;
+	color: white;
+	background-color: var(--main-color);
+	border-radius: 5px;
+  }
+
+
 .selected {
   background-color: var(--main-color);
 }
@@ -246,9 +235,22 @@ button {
 
 th {
 	font-weight: bold;
-	top: 0; /* Position en haut pour les en-têtes */
-	z-index: 10; /* S'assure que l'en-tête est au-dessus du contenu lors du scroll */
+	top: 0;
+	z-index: 10;
   }
+
+  .selected-panel {
+	position: absolute;
+	top: 90%;
+	width: 70%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: var(--background-color);
+	padding: var(--padding-medium);
+	border-radius: 10px;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+	z-index: 100;
+	  }
 
 
   .display-container {
@@ -271,12 +273,12 @@ th {
 	justify-content: space-between;
 	gap: 1rem;
 	height: 100vh;
+	border-right: 1px solid black;
   }
 
   .menu {
 	width: 150px;
 	background-color: #292f4c;
-	padding: 3px;
 	display: flex;
 	flex-direction: column;
   }
@@ -366,7 +368,7 @@ th {
     opacity: 0.8;
 }
 
-.selected-panel {
+-panel {
 	background-color: #0e2f93;
 	color: white;
 	border-radius: 8px;

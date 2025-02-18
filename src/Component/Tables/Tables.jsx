@@ -131,7 +131,6 @@ const Tables = ({ table, view, activeBoard }) => {
 										<input
 											type="text"
 											value={updateNameMonth}
-											// mettre le cursor à la fin
 											autoFocus
 											onChange={(e) => {
 												e.stopPropagation();
