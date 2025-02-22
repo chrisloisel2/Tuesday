@@ -9,12 +9,18 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, refreshToken } from "../../Redux/AuthReducer";
 import RevealMarkdown from "../../Component/RevealMarkdown/RevealMarkdown";
+import PresentationPage from "../MainPage/MainPage";
+import ContactSection from "../Contact/contact";
+import NavigationBar from "../../components/NavigationBar/NavigationBar";
 
 function App() {
 	return (
 		<BrowserRouter>
 			<Routes>
-				<Route path="/" element={<Login />} />
+
+				<Route path="/" element={<PresentationPage />} />
+				<Route path="/contact" element={<ContactSection />} />
+				<Route path="/login" element={<Login />} />
 				<Route path="/register" element={<Register />} />
 				<Route
 					path="/display"
