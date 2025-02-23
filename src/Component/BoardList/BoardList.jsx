@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { IoDocumentTextOutline } from "react-icons/io5";
+import React, { useState } from "react";
 import { MdAdd } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { CreateBoard, GetBoard, selectBoard } from "../../Redux/BoardReducer";
+import { CreateBoard, GetBoard } from "../../Redux/BoardReducer";
 import { logout } from "../../Redux/AuthReducer";
 
 const BoardList = () => {

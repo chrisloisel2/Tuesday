@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { FaEnvelope, FaPhoneAlt, FaUser, FaCommentDots } from "react-icons/fa";
+import { FaEnvelope, FaUser, FaCommentDots } from "react-icons/fa";
 import { Button } from "../../components/ui/button";
 
 
@@ -10,8 +10,7 @@ function ContactSection() {
 			whileInView={{ opacity: 1 }}
 			transition={{ duration: 1 }}
 			viewport={{ once: true }}
-			className="min-h-screen bg-gradient-to-b from-[#1A2B3C] to-[#4AB3E2] text-[#E8F9FF] p-16 overflow-y-auto space-y-16 rounded-2xl shadow-2xl"
-		>
+			className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white overflow-y-auto flex flex-col item-center justify-center space-y-20 pl-12 pr-12">
 			<motion.h2
 				initial={{ opacity: 0, y: -20 }}
 				animate={{ opacity: 1, y: 0 }}
@@ -95,12 +94,3 @@ function ContactSection() {
 }
 
 export default ContactSection;
-
-/*
-✨ **Améliorations de la Page de Contact Skylonis :**
-- ✅ **Formulaire enrichi** avec icônes intégrées pour une meilleure expérience utilisateur.
-- ✅ **Animations Framer Motion** : Effet d'apparition fluide, zoom au survol et mise en valeur lors de la saisie.
-- ✅ **Palette cohérente** : Utilisation homogène des couleurs de Skylonis.
-- ✅ **Champs dynamiques** : Surbrillance et animations lors de la saisie.
-- ✅ **Responsive Design** : Parfaitement adapté à tous les supports.
-*/
