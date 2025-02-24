@@ -16,6 +16,7 @@ import {
 } from "react-icons/fa";
 import { Button } from "../../components/ui/button";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import { useSelector } from "react-redux";
 
 const COLORS = ["#AEEFFF", "#4AB3E2", "#1A2B3C", "#E8F9FF", "#6B8BA4"];
 
@@ -31,7 +32,7 @@ const teachingData = [
 export default function PresentationPage() {
 	return (
 		<>
-			<div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white overflow-y-auto space-y-32 pl-12 pr-12">
+			<div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white overflow-y-auto space-y-40 pl-12 pr-12  pb-20">
 				<HeroSection />
 				<CoursesSection />
 				<TeachingMethodsSection />
@@ -301,14 +302,20 @@ function TeachingMethodsSection() {
 }
 
 function FormationsSection() {
+
+	const formations = useSelector((state) => state.front.formations).slice(0, 6);
+
 	return (
 		<section className="space-y-16  pb-8">
 			<SectionHeader title="Nos Formations" description="Explorez nos modules de formation conçus pour tous les niveaux." />
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 ">
-				{[...Array(6)].map((_, index) => (
+				{formations.map((formation, index) => (
 					<GlassCard
 						key={index}
-						title={`Formation Placeholder ${index + 1}`}
+						title={formation.title}
+						description={formation.description}
+						skills={formation.skills}
+						rating={formation.rating}
 						icon={<FaChalkboardTeacher className="text-6xl text-yellow-400" />}
 					/>
 				))}

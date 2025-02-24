@@ -11,10 +11,25 @@ import NavigationBar from "../../components/NavigationBar/NavigationBar";
 import AboutUs from "../AboutUs/AboutUs";
 import CursusPage from "../Cursus/Cursus";
 import FooterSection from "../../components/Footer/footer";
+import FormationPage from "../Formations/formations";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
+const ScrollToTop = () => {
+	const { pathname } = useLocation();
+
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, [pathname]);
+
+	return null;
+};
+
 
 function App() {
 	return (
 		<BrowserRouter>
+			<ScrollToTop />
 			<Routes>
 				{publicRoutes()}
 				<Route
@@ -46,6 +61,7 @@ function App() {
 		</BrowserRouter>
 	);
 }
+
 
 
 
@@ -83,7 +99,7 @@ function publicRoutes() {
 			<Route path="/formations" element={
 				<>
 					<NavigationBar />
-					<ContactSection />
+					<FormationPage />
 					<FooterSection />
 				</>
 			} />

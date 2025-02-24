@@ -2,7 +2,8 @@ import { configureStore } from "@reduxjs/toolkit";
 import AuthReducer from "./AuthReducer";
 import BoardReducer from "./BoardReducer";
 import UserReducer from "./UserReducer";
-import ItemReducer from "./ItemReducer";
+import ItemReducer from "./FrontReducer";
+import FrontReducer from "./FrontReducer";
 
 
 // Middleware pour sauvegarder l'état dans localStorage
@@ -43,6 +44,7 @@ const store = configureStore({
 		board: BoardReducer,
 		users: UserReducer,
 		items: ItemReducer,
+		front: FrontReducer,
 	},
 	preloadedState,
 	middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(localStorageMiddleware),

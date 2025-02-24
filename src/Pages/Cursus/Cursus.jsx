@@ -1,95 +1,66 @@
-import { useState, useEffect } from "react";
-import * as echarts from "echarts";
+import { useState, useEffect, useRef } from "react";
+import * as echarts from "echarts/core";
+import { SunburstChart } from "echarts/charts";
+import { TooltipComponent } from "echarts/components";
+import { CanvasRenderer } from "echarts/renderers";
 import { motion } from "framer-motion";
-import { FaCode, FaCloud, FaDatabase, FaBrain } from "react-icons/fa";
+import { FaCode } from "react-icons/fa";
+import { useSelector } from "react-redux";
+
+echarts.use([SunburstChart, TooltipComponent, CanvasRenderer]);
 
 const colors = ["#FFAE57", "#FF7853", "#EA5151", "#CC3F57", "#9A2555"];
 const bgColor = "#2E2733";
 
-function formatData(data) {
-	const itemStyle = {
-		star5: { color: colors[0] },
-		star4: { color: colors[1] },
-		star3: { color: colors[2] },
-		star2: { color: colors[3] },
-	};
+function SunburstDiagram({ id, data }) {
+	const chartRef = useRef(null);
 
-	data.forEach((level1) => {
-		if (level1.children) {
-			level1.children.forEach((block) => {
-				if (block.children) {
-					block.children.forEach((starCategory) => {
-						const styleKey = `star${starCategory.name ? starCategory.name[0] : ""}`;
-						const style = itemStyle[styleKey] || { color: "#FFFFFF" }; // Fallback par défaut
-
-						starCategory.label = { color: style.color };
-						if (starCategory.children) {
-							starCategory.children.forEach((item) => {
-								item.value = 1;
-								item.itemStyle = style;
-								item.label = { color: style.color };
-							});
-						}
-					});
-				}
-				block.itemStyle = { color: level1.itemStyle?.color || "#CCCCCC" };
-			});
-		}
-	});
-	return data;
-}
-
-
-
-function SunburstSection({ id, data }) {
 	useEffect(() => {
-		const chartDom = document.getElementById(id);
-		const myChart = echarts.init(chartDom, "dark");
+		if (!chartRef.current) return;
+		const myChart = echarts.init(chartRef.current);
 
 		const option = {
-			backgroundColor: bgColor,
+			backgroundColor: "transparent",
 			color: colors,
 			series: [
 				{
 					type: "sunburst",
 					center: ["50%", "48%"],
-					data: formatData(data),
-					sort: (a, b) => (a.depth === 1 ? b.getValue() - a.getValue() : a.dataIndex - b.dataIndex),
+					data: data.children || [],
+					sort: (a, b) =>
+						a.depth - b.depth || (a.order ?? a.dataIndex) - (b.order ?? b.dataIndex),
+					radius: [0, "95%"],
 					label: {
 						rotate: "radial",
 						color: bgColor,
+						fontFamily: "Inter, sans-serif",
 					},
 					itemStyle: {
 						borderColor: bgColor,
 						borderWidth: 2,
 					},
 					levels: [
-						{},
+						{ r0: "0%", r: "10%", itemStyle: { borderWidth: 2 } },
+						{ r0: "12%", r: "35%", label: { rotate: 0 } },
+						{ r0: "36%", r: "60%" },
+						{ r0: "61%", r: "85%" },
 						{
-							r0: 0,
-							r: 40,
-							label: { rotate: 0 },
-						},
-						{
-							r0: 40,
-							r: 105,
-						},
-						{
-							r0: 115,
-							r: 140,
-							itemStyle: { shadowBlur: 2, shadowColor: colors[2], color: "transparent" },
-							label: { rotate: "tangential", fontSize: 10, color: colors[0] },
-						},
-						{
-							r0: 140,
-							r: 145,
-							itemStyle: { shadowBlur: 80, shadowColor: colors[0] },
+							r0: "86%",
+							r: "95%",
+							itemStyle: {
+								shadowBlur: 80,
+								shadowColor: colors[0],
+							},
 							label: {
 								position: "outside",
 								textShadowBlur: 5,
 								textShadowColor: "#333",
 							},
-							downplay: { label: { opacity: 0.5 } },
+							downplay: {
+								label: {
+									opacity: 0.5,
+								},
+							},
 						},
 					],
 				},
@@ -97,172 +68,108 @@ function SunburstSection({ id, data }) {
 		};
 
 		myChart.setOption(option);
-		return () => myChart.dispose();
-	}, [id, data]);
+		myChart.on("click", (params) => {
+			if (params.data.link) window.open(params.data.link, "_blank");
+		});
 
-	return <div id={id} className="w-full h-[900px]" />;
+		const resizeObserver = new ResizeObserver(() => myChart.resize());
+		resizeObserver.observe(chartRef.current);
+
+		return () => {
+			myChart.dispose();
+			resizeObserver.disconnect();
+		};
+	}, [data]);
+
+	return <div ref={chartRef} className="w-full h-[900px]" />;
 }
-
-
 
 function CursusOverview({ title, description, icon: Icon, onClick }) {
 	return (
 		<motion.div
-			whileHover={{ scale: 1.02 }}
-			className="cursor-pointer bg-gradient-to-r from-[#1A2B3C]  to-[var(--icon-color)] bg-opacity-60 rounded-3xl shadow-2xl p-10 flex items-center space-x-8"
+			whileHover={{ scale: 1.05 }}
+			className="flex flex-col bg-[#1A2B3C] p-8 rounded-3xl shadow-2xl space-y-4 cursor-pointer transition-all hover:shadow-3xl"
 			onClick={onClick}
 		>
-			<Icon className="text-[#AEEFFF] text-7xl" />
-			<div>
-				<h3 className="text-4xl font-extrabold text-[#E8F9FF]">{title}</h3>
-				<p className="text-lg text-[#E8F9FF] mt-4 max-w-xl leading-relaxed">{description}</p>
-			</div>
+			<Icon className="text-[#AEEFFF] text-4xl" />
+			<h2 className="text-3xl font-bold text-[#AEEFFF] font-sans">{title}</h2>
+			<p className="text-lg leading-relaxed text-gray-300">{description}</p>
 		</motion.div>
 	);
 }
 
 function CursusPage() {
 	const [selectedCursus, setSelectedCursus] = useState(null);
+	const [searchTerm, setSearchTerm] = useState("");
+	const cursus = useSelector((state) => state.front.cursus);
 
-	const cursusData = [
-		{
-			id: "devops-sunburst",
-			title: "Cursus DevOps",
-			description: "Maîtrisez l'intégration continue, les pipelines CI/CD, Docker et Kubernetes pour des déploiements performants.",
-			icon: FaCloud,
-			data: [
-				{
-					name: "CI/CD",
-					children: [
-						{
-							name: "Jenkins",
-							value: 3,
-							link: "https://www.jenkins.io/",
-							children: [
-								{ name: "Image Classification", value: 3 },
-								{ name: "Object Detection", value: 4 },
-								{ name: "Image Segmentation", value: 5 },
-								{ name: "Edge Detection", value: 2 },
-							],
-						},
-						{ name: "GitLab CI", value: 4, link: "https://docs.gitlab.com/ee/ci/" },
-						{ name: "GitHub Actions", value: 3, link: "https://docs.github.com/en/actions" },
-						{ name: "CircleCI", value: 2, link: "https://circleci.com/docs/" },
-					],
-				},
-				{
-					name: "Containers",
-					children: [
-						{ name: "Docker", value: 2, link: "https://docs.docker.com/" },
-						{ name: "Podman", value: 2, link: "https://podman.io/" },
-						{ name: "Kubernetes", value: 5, link: "https://kubernetes.io/docs/" },
-						{ name: "Helm", value: 3, link: "https://helm.sh/docs/" },
-					],
-				},
-				{
-					name: "Cloud",
-					children: [
-						{ name: "AWS", value: 4, link: "https://aws.amazon.com/" },
-						{ name: "Azure", value: 3, link: "https://azure.microsoft.com/" },
-						{ name: "GCP", value: 3, link: "https://cloud.google.com/" },
-					],
-				},
-				{
-					name: "Infrastructure as Code",
-					children: [
-						{ name: "Terraform", value: 4, link: "https://www.terraform.io/" },
-						{ name: "Ansible", value: 3, link: "https://docs.ansible.com/" },
-						{ name: "Pulumi", value: 2, link: "https://www.pulumi.com/" },
-					],
-				},
-				{
-					name: "Monitoring & Logging",
-					children: [
-						{ name: "Prometheus", value: 3, link: "https://prometheus.io/docs/" },
-						{ name: "Grafana", value: 2, link: "https://grafana.com/docs/" },
-						{ name: "ELK Stack", value: 4, link: "https://www.elastic.co/what-is/elk-stack" },
-					],
-				},
-				{
-					name: "Security",
-					children: [
-						{ name: "SonarQube", value: 4, link: "https://www.sonarqube.org/" },
-						{ name: "Vault", value: 3, link: "https://www.vaultproject.io/" },
-						{ name: "Trivy", value: 2, link: "https://aquasecurity.github.io/trivy/" },
-					],
-				},
-			],
-		},
-		{
-			id: "webdev-sunburst",
-			title: "Cursus Développement Web",
-			description: "Découvrez le développement web complet avec React.js, Next.js et les meilleures pratiques back-end.",
-			icon: FaCode,
-			data: [
-				{ name: "Frontend", children: [{ name: "React.js", value: 3 }, { name: "Vue.js", value: 3 }] },
-				{ name: "Backend", children: [{ name: "Node.js", value: 3 }, { name: "NestJS", value: 4 }] },
-			],
-		},
-		{
-			id: "ia-sunburst",
-			title: "Cursus Intelligence Artificielle",
-			description: "Explorez les secrets du Machine Learning, du Deep Learning et des réseaux de neurones modernes.",
-			icon: FaBrain,
-			data: [
-				{ name: "Machine Learning", children: [{ name: "Supervised Learning", value: 3 }, { name: "Reinforcement Learning", value: 5 }] },
-				{ name: "Deep Learning", children: [{ name: "CNNs", value: 4 }, { name: "GANs", value: 5 }] },
-			],
-		},
-		{
-			id: "bigdata-sunburst",
-			title: "Cursus Big Data",
-			description: "Manipulez des données massives avec Hadoop, Spark et découvrez les solutions de stockage avancées.",
-			icon: FaDatabase,
-			data: [
-				{ name: "Data Processing", children: [{ name: "Hadoop", value: 4 }, { name: "Spark", value: 5 }] },
-				{ name: "Data Storage", children: [{ name: "Hive", value: 3 }, { name: "HBase", value: 4 }] },
-			],
-		},
-	];
+	const filteredCursus = cursus.filter((c) =>
+		c.title.toLowerCase().includes(searchTerm.toLowerCase())
+	);
 
 	return (
-		<div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white overflow-y-auto pl-12 pr-12 pt-12 flex flex-col item-center justify-center">
+		<div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white overflow-y-auto px-12 pt-12 flex flex-col items-center justify-center space-y-8 font-sans">
 			{!selectedCursus ? (
-				<motion.div
-					className="grid grid-cols-1 lg:grid-cols-2 gap-12"
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
-					transition={{ duration: 1 }}
-				>
-					{cursusData.map((cursus) => (
-						<CursusOverview
-							key={cursus.id}
-							title={cursus.title}
-							description={cursus.description}
-							icon={cursus.icon}
-							onClick={() => setSelectedCursus(cursus)}
+				<div className="flex flex-col md:flex-row gap-12 w-full h-full max-w-7xl">
+					<motion.div
+						className="flex flex-col gap-12 p-12 w-full  h-full md:w-2/5 bg-[#1A2B3C] scrollbar-thin scrollbar-thumb-[#AEEFFF] scrollbar-track-[#1A2B3C] rounded-3xl shadow-2xl overflow-y-auto max-h-[80vh]"
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						transition={{ duration: 1 }}
+					>
+						<h2 className="text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#AEEFFF] to-[#4AB3E2]">
+							Cherchez le cursus qui vous convient
+						</h2>
+						<input
+							type="text"
+							placeholder="Rechercher un cursus"
+							value={searchTerm}
+							onChange={(e) => setSearchTerm(e.target.value)}
+							className="p-4 text-[black] rounded-lg placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#AEEFFF] transition w-full"
 						/>
-					))}
-				</motion.div>
+						<p className="text-lg leading-relaxed text-gray-300">
+							Découvrez notre large gamme de cursus, classés selon leur domaine d'expertise.
+						</p>
+						<ul className="flex flex-col gap-4 text-lg font-medium text-[#AEEFFF]">
+							<li>🌟 Développement Web</li>
+							<li>🌟 Intelligence Artificielle</li>
+							<li>🌟 Big Data</li>
+							<li>🌟 DevOps</li>
+							<li>🌟 Sécurité Informatique</li>
+						</ul>
+					</motion.div>
+
+					<div className="flex flex-col gap-12 bg-[#1A2B3C]  h-full p-12 scrollbar-thin scrollbar-thumb-[#AEEFFF] scrollbar-track-[#1A2B3C] rounded-3xl shadow-2xl overflow-y-auto max-h-[80vh] w-full md:w-3/5">
+						{filteredCursus.map((cursus) => (
+							<CursusOverview
+								key={cursus.id}
+								title={cursus.title}
+								description={cursus.description}
+								icon={FaCode}
+								onClick={() => setSelectedCursus(cursus)}
+							/>
+						))}
+					</div>
+				</div>
 			) : (
 				<motion.div
 					initial={{ opacity: 0, y: 50 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8 }}
+					className="w-full max-w-7xl"
 				>
-					<button
-						className="bg-[#AEEFFF] text-[var(-icon-color)] rounded-3xl px-8 py-3 text-lg shadow-xl hover:bg-[#E8F9FF] transition"
-						onClick={() => setSelectedCursus(null)}
-					>
-						Retour
-					</button>
-					<h2 className="text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#AEEFFF] to-[#4AB3E2]">
-						{selectedCursus.title}
-					</h2>
-					<p className="text-xl text-[#E8F9FF] max-w-5xl mx-auto">
-						{selectedCursus.description}
-					</p>
-					<SunburstSection id={selectedCursus.id} data={selectedCursus.data} />
+					<div className="flex flex-row items-center gap-12 fade-in pt-12">
+						<button
+							className="bg-[#AEEFFF] text-gray-900 rounded-3xl px-8 py-3 text-lg shadow-xl hover:bg-[#E8F9FF] transition"
+							onClick={() => setSelectedCursus(null)}
+						>
+							Retour
+						</button>
+						<h2 className="text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#AEEFFF] to-[#4AB3E2]">
+							{selectedCursus.title}
+						</h2>
+					</div>
+					<SunburstDiagram id={selectedCursus.id} data={selectedCursus.data} />
 				</motion.div>
 			)}
 		</div>
