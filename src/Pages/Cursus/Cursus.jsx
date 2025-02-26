@@ -17,6 +17,10 @@ function SunburstDiagram({ id, data }) {
   const chartRef = useRef(null);
 
   useEffect(() => {
+    console.log(data);
+  }, [data]);
+
+  useEffect(() => {
     if (!chartRef.current) return;
     const myChart = echarts.init(chartRef.current);
 
@@ -57,6 +61,7 @@ function SunburstDiagram({ id, data }) {
                 position: "outside",
                 textShadowBlur: 5,
                 textShadowColor: "#333",
+                formatter: `{b}`,
               },
               downplay: {
                 label: {

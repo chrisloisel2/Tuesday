@@ -3,6 +3,7 @@ import axios from "axios";
 
 export const fetchCursus = createAsyncThunk("item/fetchCursus", async () => {
   const response = await axios.get("http://localhost:8080/cursus");
+  console.log(response.data);
   return response.data;
 });
 
