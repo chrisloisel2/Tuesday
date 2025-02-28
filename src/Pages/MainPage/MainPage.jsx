@@ -16,7 +16,9 @@ import {
 } from "react-icons/fa";
 import { Button } from "../../components/ui/button";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCursus, fetchFormation, resetAll } from "../../Redux/FrontReducer";
+import { useEffect } from "react";
 
 const COLORS = ["#AEEFFF", "#4AB3E2", "#1A2B3C", "#E8F9FF", "#6B8BA4"];
 
@@ -28,8 +30,20 @@ const teachingData = [
 	{ name: "Suivi Personnalisé", value: 5, icon: <FaChartPie />, color: "#0F4C5C" },
 ];
 
-
 export default function PresentationPage() {
+	const dispatch = useDispatch();
+	const formationStatus = useSelector((state) => state.front.formations.status);
+	const cursusStatus = useSelector((state) => state.front.cursus.status);
+	useEffect(() => {
+		if (formationStatus === "idle") {
+			dispatch(fetchFormation());
+		}
+		if (cursusStatus === "idle") {
+			dispatch(fetchCursus());
+		}
+	}, [dispatch, formationStatus]);
+
+
 	return (
 		<>
 			<div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white overflow-y-auto space-y-40 pl-12 pr-12  pb-20">
@@ -43,7 +57,6 @@ export default function PresentationPage() {
 		</>
 	);
 }
-
 
 function HeroSection() {
 	return (
@@ -190,12 +203,13 @@ function CoursesSection() {
 	);
 }
 
-function GlassCard({ title, icon, description, skills = [], rating }) {
+function GlassCard({ title, icon, description, skills = [], rating, onClick }) {
 	return (
 		<motion.div
 			whileHover={{ scale: 1.05 }}
 			whileTap={{ scale: 0.95 }}
-			className="bg-[#6B8BA4] bg-opacity-30 rounded-2xl shadow-lg p-8 flex flex-col items-center text-center transition-transform"
+			className="bg-[#6B8BA4] bg-opacity-30 rounded-2xl shadow-lg p-8 flex flex-col items-center text-center transition-transform cursor-pointer"
+			onClick={onClick}
 		>
 			{icon}
 			<h3 className="text-2xl font-semibold mt-6 text-[#E8F9FF]">{title}</h3>
@@ -303,7 +317,8 @@ function TeachingMethodsSection() {
 
 function FormationsSection() {
 
-	const formations = useSelector((state) => state.front.formations).slice(0, 6);
+	const formations = useSelector((state) => state.front.formations.data);
+	console.log(formations);
 
 	return (
 		<section className="space-y-16  pb-8">
@@ -317,6 +332,7 @@ function FormationsSection() {
 						skills={formation.skills}
 						rating={formation.rating}
 						icon={<FaChalkboardTeacher className="text-6xl text-yellow-400" />}
+						onClick={() => window.open(`/formation/${formation.customId}`, "_self")}
 					/>
 				))}
 			</div>

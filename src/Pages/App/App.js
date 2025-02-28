@@ -14,6 +14,8 @@ import FooterSection from "../../components/Footer/footer";
 import FormationPage from "../Formations/formations";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import FormationDetailPage from "../Formations/formationDetail";
 
 const ScrollToTop = () => {
 	const { pathname } = useLocation();
@@ -79,6 +81,13 @@ function publicRoutes() {
 				<>
 					<NavigationBar />
 					<ContactSection />
+					<FooterSection />
+				</>
+			} />
+			<Route path="/formation/:customId" element={
+				<>
+					<NavigationBar />
+					<FormationDetailPage />
 					<FooterSection />
 				</>
 			} />

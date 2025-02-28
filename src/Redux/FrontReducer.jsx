@@ -1,65 +1,78 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import MyAxios from "../Interceptor/MyAxios";
 
 export const fetchCursus = createAsyncThunk("item/fetchCursus", async () => {
-  const response = await axios.get("http://localhost:8080/cursus");
-  console.log(response.data);
-  return response.data;
+	const response = await MyAxios.get("/cursus");
+	console.log(response);
+	return response;
+});
+
+export const fetchFormation = createAsyncThunk("item/fetchFormation", async () => {
+	const response = await MyAxios.get("/formation");
+	console.log("FOMRATIONSSS =>", response);
+	return response;
 });
 
 const FrontReducer = createSlice({
-  name: "item",
-  initialState: {
-    status: "idle",
-    cursus: [],
-    formations: [
-      {
-        id: "1",
-        title: "Développement Web Full Stack",
-        description:
-          "Apprenez à créer des applications web complètes avec React, Node.js, et MongoDB.",
-        duration: "12 semaines",
-        price: 1499,
-        rating: 4.8,
-        level: "Intermédiaire",
-        category: "Développement Web",
-        language: "Français",
-        link: "https://example.com/formation/web-fullstack",
-        image: "https://example.com/images/web-fullstack.jpg",
-      },
-      {
-        id: "2",
-        title: "Introduction à l'Intelligence Artificielle",
-        description:
-          "Découvrez les bases de l'IA, le machine learning et l'apprentissage profond.",
-        duration: "8 semaines",
-        price: 1199,
-        rating: 4.7,
-        level: "Débutant",
-        category: "Intelligence Artificielle",
-        language: "Français",
-        link: "https://example.com/formation/intro-ia",
-        image: "https://example.com/images/intro-ia.jpg",
-      },
-    ],
-    error: null,
-    selectedItems: [],
-  },
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchCursus.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(fetchCursus.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.cursus = action.payload;
-      })
-      .addCase(fetchCursus.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
-      });
-  },
+	name: "item",
+	initialState: {
+		status: "idle",
+		cursus: {
+			status: "idle",
+			data: [],
+			error: null,
+		},
+		formations: {
+			status: "idle",
+			data: [],
+			selectedFormation: null,
+			error: null,
+		},
+		error: null,
+	},
+	reducers: {
+		resetAll: (state) => {
+			state.status = "idle";
+			state.cursus.status = "idle";
+			state.cursus.data = [];
+			state.cursus.error = null;
+			state.formations.status = "idle";
+			state.formations.data = [];
+			state.formations.error = null;
+			state.error = null;
+		},
+		getFormationByCustomId: (state, action) => {
+			state.formations.selectedFormation = state.formations.data.find(
+				(formation) => formation.customId === action.payload
+			);
+		}
+	},
+	extraReducers: (builder) => {
+		builder
+			.addCase(fetchCursus.pending, (state) => {
+				state.status = "loading";
+			})
+			.addCase(fetchCursus.fulfilled, (state, action) => {
+				state.status = "succeeded";
+				state.cursus.data = action.payload;
+			})
+			.addCase(fetchCursus.rejected, (state, action) => {
+				state.status = "failed";
+				state.error = action.error.message;
+			})
+			.addCase(fetchFormation.pending, (state) => {
+				state.status = "loading";
+			})
+			.addCase(fetchFormation.fulfilled, (state, action) => {
+				state.status = "succeeded";
+				state.formations.data = action.payload;
+			})
+			.addCase(fetchFormation.rejected, (state, action) => {
+				state.status = "failed";
+				state.error = action.error.message;
+			});
+	},
 });
 
 export default FrontReducer.reducer;
+export const { resetAll, getFormationByCustomId } = FrontReducer.actions;

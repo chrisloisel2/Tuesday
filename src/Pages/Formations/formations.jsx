@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { FaBookOpen } from "react-icons/fa";
 import { useSelector } from "react-redux";
 
-function FormationOverview({ title, description, icon: Icon, onClick }) {
+function FormationOverview({ title, image, description, icon: Icon, onClick }) {
 	return (
 		<motion.div
 			whileHover={{ scale: 1.1, rotate: 1 }}
@@ -12,6 +12,11 @@ function FormationOverview({ title, description, icon: Icon, onClick }) {
 			animate={{ opacity: 1, y: 0 }}
 			className="flex flex-col bg-gradient-to-tr from-[#1A2B3C] to-[#223344] p-8 rounded-3xl shadow-xl hover:shadow-3xl space-y-6 cursor-pointer backdrop-blur-lg border border-gray-700"
 			onClick={onClick}
+			style={{
+				backgroundImage: `url(${image})`,
+				backgroundSize: "cover",
+				backgroundPosition: "center",
+			}}
 		>
 			<Icon className="text-[#AEEFFF] text-5xl drop-shadow-lg" />
 			<h2 className="text-3xl font-extrabold text-[#AEEFFF] font-sans  leading-snug">
@@ -26,7 +31,7 @@ function FormationOverview({ title, description, icon: Icon, onClick }) {
 
 function FormationPage() {
 	const [searchTerm, setSearchTerm] = useState("");
-	const formations = useSelector((state) => state.front.formations);
+	const formations = useSelector((state) => state.front.formations.data);
 
 	const filteredFormations = formations.filter((formation) =>
 		formation.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -69,8 +74,9 @@ function FormationPage() {
 							key={formation.id}
 							title={formation.title}
 							description={formation.description}
+							image={formation.image}
 							icon={FaBookOpen}
-							onClick={() => window.open(formation.link, "_blank")}
+							onClick={() => window.open(`/formation/${formation.customId}`, "_self")}
 						/>
 					))}
 				</motion.div>
