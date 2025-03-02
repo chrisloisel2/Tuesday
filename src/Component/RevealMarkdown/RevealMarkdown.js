@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Reveal from 'reveal.js';
 import Markdown from 'reveal.js/plugin/markdown/markdown.esm';
 import Notes from 'reveal.js/plugin/notes/notes.esm';
@@ -43,65 +43,79 @@ import 'prismjs/components/prism-swift';
 import 'prismjs/components/prism-objectivec';
 import 'prismjs/components/prism-coffeescript';
 import { useParams } from 'react-router-dom';
-import mermaid from 'mermaid';
-
 
 const RevealMarkdown = () => {
 	const { urlId, templateId } = useParams();
 	const url = `https://wavefilesystem.s3.eu-west-3.amazonaws.com/others/${urlId}`;
 
+	const revealRef = useRef(null);
+	const [isReady, setIsReady] = useState(false);
+
 	useEffect(() => {
-		Reveal.initialize({
-			plugins: [Markdown, Notes],
-			markdown: {
-				separator: '^---$',
-				separatorVertical: '^--$',
-				notesSeparator: '^Note:',
-				smartypants: true,
-			},
-			controls: true,
-			progress: true,
-			slideNumber: true,
-			history: true,
-			center: true,
-			transition: 'slide',
-			backgroundTransition: 'slide',
-			pdfExport: true,
-			pdfMaxPagesPerSlide: 1,
-			pdfSeparateFragments: true,
-			hideAddressBar: true,
-			pdfPageHeightOffset: 0,
-			notes: false,
-		});
+		if (revealRef.current) {
+			setIsReady(true);
+		}
+	}, []);
 
+	useEffect(() => {
+		if (isReady) {
+			console.log("Initialisation de Reveal.js...");
 
-		const slides = document.querySelectorAll(".reveal .slides section");
-		slides.forEach((slide) => {
-			if (
-				slide.children.length === 1 &&
-				slide.querySelector("h1") &&
-				slide.textContent.trim()
-			) {
-				console.log("H1 UNIQUE");
-				slide.classList.add("title-only");
-			}
-		});
-
-		if (window.location.href.includes('?print-pdf')) {
-			document.querySelectorAll('print-pdf').forEach((element) => {
-				console.log('element', element);
+			Reveal.initialize({
+				plugins: [Markdown, Notes],
+				markdown: {
+					separator: '^---$',
+					separatorVertical: '^--$',
+					notesSeparator: '^Note:',
+					smartypants: true,
+				},
+				controls: true,
+				progress: true,
+				slideNumber: true,
+				history: true,
+				center: true,
+				transition: 'slide',
+				backgroundTransition: 'slide',
+				pdfExport: true,
+				pdfMaxPagesPerSlide: 1,
+				pdfSeparateFragments: true,
+				hideAddressBar: true,
+				pdfPageHeightOffset: 0,
+				notes: false,
 			});
 
+			// Appliquer des styles spécifiques aux titres de section
+			const slides = document.querySelectorAll(".reveal .slides section");
+			slides.forEach((slide) => {
+				if (
+					slide.children.length === 1 &&
+					slide.querySelector("h1") &&
+					slide.textContent.trim()
+				) {
+					console.log("H1 UNIQUE");
+					slide.classList.add("title-only");
+				}
+			});
 
-			setTimeout(() => {
-				window.print();
-			}, 1000);
+			// Gestion de l'impression PDF
+			if (window.location.href.includes('?print-pdf')) {
+				setTimeout(() => {
+					console.log("Impression en cours...");
+					window.print();
+				}, 1000);
+			}
 		}
 
-	}, [url]);
+		return () => {
+			if (isReady) {
+				console.log("Destruction de Reveal.js...");
+				Reveal.destroy();
+			}
+		};
+	}, [isReady, url]);
 
 	return (
-		<div className={"reveal " + templateId}>
+		<div ref={revealRef} className={`reveal ${templateId}`}>
 			<div className="slides">
 				<section
 					data-markdown={url}

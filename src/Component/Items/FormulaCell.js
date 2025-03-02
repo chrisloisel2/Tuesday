@@ -10,7 +10,6 @@ const FormulaCell = ({ columnKey, item, columns, handleUpdate, handleDelete }) =
 	useEffect(() => {
 		const calculateFormula = () => {
 			const formula = columns[columnKey]?.formula;
-			console.log("Formule :", formula);
 			if (!formula) return;
 
 			const formulaValue = formula.replace(/\b([a-zA-Z0-9_]+)\b/g, (match) => {
@@ -26,7 +25,7 @@ const FormulaCell = ({ columnKey, item, columns, handleUpdate, handleDelete }) =
 		};
 
 		calculateFormula();
-	}, [item, columnKey]);
+	}, [item, columnKey, columns]);
 
 	const handleChange = (e) => {
 		const newValue = e.target.innerText;

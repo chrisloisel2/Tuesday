@@ -1,10 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import MyAxios from "../Interceptor/MyAxios";
 import { createItem, deleteItem, updateItem } from "./ItemReducer";
-import { act } from "react";
-import { useDispatch } from "react-redux";
-
-// Action Reducer
 
 
 export const updateViewSharing = createAsyncThunk(
@@ -53,6 +49,19 @@ export const updateColumns = createAsyncThunk(
 		return response;
 	}
 );
+
+// const response = await MyAxios.put("/item/upload", formData, {
+// 	headers: { "Content-Type": "multipart/form-data" },
+// });
+
+export const updateFile = createAsyncThunk(
+	"board/updateFile",
+	async (data) => {
+		const response = await MyAxios.put("/item/upload", data, {
+			headers: { "Content-Type": "multipart/form-data" },
+		});
+		return response;
+	});
 
 export const DeleteBoard = createAsyncThunk(
 	"board/deleteBoard",
@@ -477,6 +486,16 @@ const BoardReducer = createSlice({
 				});
 			})
 			.addCase(deleteItem.rejected, (state, action) => {
+				state.status = "failed";
+				state.error = action.error.message;
+			})
+			.addCase(updateFile.pending, (state) => {
+				state.status = "loading";
+			})
+			.addCase(updateFile.fulfilled, (state, action) => {
+				state.status = "succeeded";
+			})
+			.addCase(updateFile.rejected, (state, action) => {
 				state.status = "failed";
 				state.error = action.error.message;
 			});

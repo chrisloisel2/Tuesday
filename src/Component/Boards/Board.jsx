@@ -3,7 +3,7 @@ import Tables from "../Tables/Tables";
 import Calendrier from "../Calendar/Calendar";
 import { MdAdd } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { createTable, setSelectedView } from "../../Redux/BoardReducer";
+import { createTable } from "../../Redux/BoardReducer";
 import "./Board.css";
 import ViewList from "../ViewList/ViewList";
 import SelectedPannel from "../SelectedPannel/SelectedPannel";
@@ -12,8 +12,7 @@ const Board = () => {
 	const selectedView = useSelector((state) => state.board.selectedView);
 	const selectedItems = useSelector((state) => state.items.selectedItems);
 	const activeBoard = useSelector((state) => state.board.activeBoard);
-	const items = useSelector((state) => state.items.items);
-	const [columns, setColumns] = useState({});
+	const [, setColumns] = useState({});
 	const dispatch = useDispatch();
 
 	useEffect(() => {

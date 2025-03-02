@@ -66,7 +66,7 @@ const EnumCell = ({ columnKey, item, activeEnumColumn, setActiveEnumColumn, hand
 			{activeEnumColumn === columnKey && (
 				<div className="modalEnum">
 					<div className="modal-arrow" />
-					<div className="modal-content">
+					<div className="">
 						{Object.keys(board.columns[columnKey]?.values).map((enumValue, index) => (
 							<div
 								key={index}

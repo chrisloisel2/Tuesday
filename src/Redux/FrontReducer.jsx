@@ -13,6 +13,8 @@ export const fetchFormation = createAsyncThunk("item/fetchFormation", async () =
 	return response;
 });
 
+
+
 const FrontReducer = createSlice({
 	name: "item",
 	initialState: {

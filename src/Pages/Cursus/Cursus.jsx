@@ -48,11 +48,11 @@ function SunburstDiagram({ id, data }) {
 					levels: [
 						{ r0: "0%", r: "10%", itemStyle: { borderWidth: 2 } },
 						{ r0: "12%", r: "35%", label: { rotate: 0 } },
-						{ r0: "36%", r: "60%" },
-						{ r0: "61%", r: "85%" },
+						{ r0: "36%", r: "60%", label: { rotate: 0 } },
+						{ r0: "61%", r: "85%", label: { rotate: 0 } },
 						{
 							r0: "86%",
-							r: "95%",
+							r: "90%",
 							itemStyle: {
 								shadowBlur: 80,
 								shadowColor: colors[0],
@@ -61,6 +61,7 @@ function SunburstDiagram({ id, data }) {
 								position: "outside",
 								textShadowBlur: 5,
 								textShadowColor: "#333",
+								color: "white",
 								formatter: `{b}`,
 							},
 							downplay: {
@@ -123,7 +124,7 @@ function CursusPage() {
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white overflow-y-auto px-12 pt-12 flex flex-col items-center justify-center space-y-8 font-sans">
 			{!selectedCursus ? (
-				<div className="flex flex-col md:flex-row gap-12 w-full h-full max-w-7xl">
+				<div className="flex flex-col md:flex-row gap-12 w-full h-full max-w-[85vw]">
 					<motion.div
 						className="flex flex-col gap-12 p-12 w-full  h-full md:w-2/5 bg-[#1A2B3C] scrollbar-thin scrollbar-thumb-[#AEEFFF] scrollbar-track-[#1A2B3C] rounded-3xl shadow-2xl overflow-y-auto max-h-[80vh]"
 						initial={{ opacity: 0 }}
@@ -153,7 +154,7 @@ function CursusPage() {
 						</ul>
 					</motion.div>
 
-					<div className="flex flex-col gap-12 bg-[#1A2B3C]  h-full p-12 scrollbar-thin scrollbar-thumb-[#AEEFFF] scrollbar-track-[#1A2B3C] rounded-3xl shadow-2xl overflow-y-auto max-h-[80vh] w-full md:w-3/5">
+					<div className="flex flex-col gap-12 bg-[#1A2B3C]  h-full p-12 scrollbar-thin scrollbar-thumb-[#AEEFFF] scrollbar-track-[#1A2B3C] rounded-3xl shadow-2xl overflow-y-auto max-h-[80vh] w-full md:w-4/5">
 						{filteredCursus.map((cursus) => (
 							<CursusOverview
 								key={cursus.id}

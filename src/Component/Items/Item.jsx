@@ -3,23 +3,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import EditableCell from './EditableCell';
 import EnumCell from './EnumCell';
 import DateCell from './DateCell';
-import { FiUpload } from 'react-icons/fi';
 import './Item.css';
 import { updateItem } from '../../Redux/ItemReducer';
 import DateModal from '../DateModal/DateModal';
 import FormulaCell from './FormulaCell';
-import { FaFileAlt } from "react-icons/fa";
-import MyAxios from '../../Interceptor/MyAxios';
-import FileModal from './FileModal';
+import FileCpnt from './FileModal';
 
 const Item = ({ item, color, columns, activeBoard }) => {
-	const [isFileModal, setIsFileModal] = useState(false);
 	const [editedItem, setEditedItem] = useState(item);
 	const [activeEnumColumn, setActiveEnumColumn] = useState(null);
 	const [isDateModalOpen, setIsDateModalOpen] = useState(false);
 	const [currentDateColumn, setCurrentDateColumn] = useState(null);
 	const view = useSelector((state) => state.board.selectedView);
-	const [uploading, setUploading] = useState(false);
 	const dispatch = useDispatch();
 
 	const handleDelete = (columnKey) => {
@@ -60,40 +55,6 @@ const Item = ({ item, color, columns, activeBoard }) => {
 		setIsDateModalOpen(false);
 	};
 
-	const handleFileUpload = async (file, key) => {
-		const formData = new FormData();
-		formData.append('name', `${item._id}-${key}`);
-
-		formData.append('file', file);
-
-		try {
-			setUploading(true);
-			const response = await MyAxios.post('/item/upload', formData, {
-				headers: { 'Content-Type': 'multipart/form-data' },
-			});
-
-			console.log('File uploaded:', response.fileUrl);
-			const fileUrl = response.fileUrl;
-			console.log('File uploaded:', fileUrl);
-
-			const newEditedItem = {
-				...editedItem,
-				columns: {
-					...editedItem.columns,
-					[key]: {
-						...editedItem.columns[key],
-						value: fileUrl,
-					},
-				},
-			};
-
-			handleUpdate(newEditedItem);
-		} catch (error) {
-			console.error('Error uploading file:', error);
-		} finally {
-			setUploading(false);
-		}
-	};
 
 	return (
 		<>
@@ -132,7 +93,6 @@ const Item = ({ item, color, columns, activeBoard }) => {
 							const url = item.columns[value?.diapo]?.value.split('/')[4];
 
 							const link = "/cours/" + url + "/" + item.columns[value?.template]?.value;
-							const downloadlink = "/cours/" + url + "/" + item.columns[value?.template]?.value;
 							return (
 								<td key={key} style={{ color: item.columns[key]?.color }}
 									styles={{
@@ -166,31 +126,8 @@ const Item = ({ item, color, columns, activeBoard }) => {
 						case 'file':
 							return (
 								<td key={key} style={{ color: item.columns[key] }}>
-									{item.columns[key]?.value ? (
-										<>
-											<a
-												href={item.columns[key]?.value}
-												target="_blank"
-												rel="noopener noreferrer"
-												style={{
-													color: 'inherit',
-												}}
-											>
-												<FaFileAlt
-													onMouseEnter={() => setIsFileModal(true)}
-													onMouseLeave={() => setIsFileModal(false)}
-													style={{
-														color: item.columns[key]?.color,
-														fontSize: '1rem',
-													}}
-												/>
-											</a>
-											<FileModal isOpen={isFileModal} onClose={() => setIsFileModal(false)} fileUrl={item.columns[key]?.value} onDelete={() => handleDelete(key)} />
-										</>
-									) : (
-										<FileUpload handleFileUpload={handleFileUpload} uploading={uploading} key={key} />
-									)}
-								</td>
+									<FileCpnt item={item.columns[key]} handleDelete={handleDelete} handleUpdate={handleUpdate} />
+								</td >
 							);
 						default:
 							return (
@@ -205,36 +142,24 @@ const Item = ({ item, color, columns, activeBoard }) => {
 					}
 				})}
 
-			{isDateModalOpen && (
-				<DateModal
-					isOpen={isDateModalOpen}
-					onClose={() => setIsDateModalOpen(false)}
-					initialDates={{
-						start: new Date(editedItem.columns[currentDateColumn]?.start),
-						end: new Date(editedItem.columns[currentDateColumn]?.end),
-					}}
-					onSave={handleSaveDate}
-				/>
-			)}
+			{
+				isDateModalOpen && (
+					<DateModal
+						isOpen={isDateModalOpen}
+						onClose={() => setIsDateModalOpen(false)}
+						initialDates={{
+							start: new Date(editedItem.columns[currentDateColumn]?.start),
+							end: new Date(editedItem.columns[currentDateColumn]?.end),
+						}}
+						onSave={handleSaveDate}
+					/>
+				)
+			}
 		</>
 	);
 };
 
 
 
-const FileUpload = ({ handleFileUpload, uploading, key }) => {
-	return (
-		<label className="flex items-center gap-2 p-2 border rounded-lg cursor-pointer hover:bg-gray-100">
-			<FiUpload size={24} className="text-gray-600" />
-			<span className="text-gray-600">Upload File</span>
-			<input
-				type="file"
-				onChange={(e) => handleFileUpload(e.target.files[0], key)}
-				disabled={uploading}
-				hidden
-			/>
-		</label>
-	);
-};
 
 export default Item;

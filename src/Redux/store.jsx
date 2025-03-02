@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import AuthReducer from "./AuthReducer";
 import BoardReducer from "./BoardReducer";
 import UserReducer from "./UserReducer";
-import ItemReducer from "./FrontReducer";
+import ItemReducer from "./ItemReducer";
 import FrontReducer from "./FrontReducer";
 
 

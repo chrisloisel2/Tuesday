@@ -14,11 +14,13 @@ import {
 	FaProjectDiagram,
 	FaChartPie,
 } from "react-icons/fa";
+import { helix } from 'ldrs'
 import { Button } from "../../components/ui/button";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCursus, fetchFormation, resetAll } from "../../Redux/FrontReducer";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const COLORS = ["#AEEFFF", "#4AB3E2", "#1A2B3C", "#E8F9FF", "#6B8BA4"];
 
@@ -148,56 +150,25 @@ function BackgroundNeuralNetwork() {
 }
 
 function CoursesSection() {
+	const formations = useSelector((state) => state.front.cursus.data);
 	return (
 		<section className="space-y-16 pb-8">
 			<SectionHeader
 				title="Nos Cursus"
-				description="Des parcours complets pour devenir expert dans votre domaine."
+				description="Des parcours complets pour devenir expert dans votre domaine. Démarrez de zéro et atteignez vos objectifs professionels en un temps record."
 			/>
 			<div className="grid grid-cols-1 md:grid-cols-4 gap-12 z-1">
-				{[
-					{
-						title: "Développement Web",
-						icon: <FaLaptopCode className="text-6xl text-[#00D1FF]" />,
-						description:
-							"Apprenez les fondamentaux et frameworks modernes pour créer des applications web performantes.",
-						skills: ["HTML", "CSS", "JavaScript", "React", "Node.js"],
-						rating: 4,
-					},
-					{
-						title: "Intelligence Artificielle",
-						icon: <FaRobot className="text-6xl text-[#00D1FF]" />,
-						description:
-							"Développez des solutions IA avec Python, TensorFlow et apprenez les concepts clés du Machine Learning.",
-						skills: ["Python", "TensorFlow", "Machine Learning", "Deep Learning"],
-						rating: 5,
-					},
-					{
-						title: "Data Science",
-						icon: <FaChartLine className="text-6xl text-[#00D1FF]" />,
-						description:
-							"Analysez et modélisez des données avec Python, SQL et des outils de DataViz pour prendre des décisions basées sur la donnée.",
-						skills: ["Python", "Pandas", "SQL", "DataViz", "Statistiques"],
-						rating: 4,
-					},
-					{
-						title: "Développement Mobile",
-						icon: <FaMobile className="text-6xl text-[#00D1FF]" />,
-						description:
-							"Maîtrisez les technologies mobiles comme React Native et Flutter pour créer des applications mobiles modernes.",
-						skills: ["React Native", "Flutter", "Swift", "UX/UI Mobile"],
-						rating: 5,
-					},
-				].map((course, index) => (
-					<GlassCard
-						key={index}
-						title={course.title}
-						icon={course.icon}
-						description={course.description}
-						skills={course.skills}
-						rating={course.rating}
-					/>
-				))}
+				{formations.slice(0, 4).
+					map((course, index) => (
+						<GlassCard
+							key={index}
+							title={course.title}
+							icon={course.icon}
+							description={course.description}
+							skills={course.skills}
+							rating={course.rating}
+						/>
+					))}
 			</div>
 		</section>
 	);
@@ -406,6 +377,7 @@ function AboutSection() {
 }
 
 function ContactSection() {
+	const navigate = useNavigate();
 	return (
 		<motion.section
 			initial={{ opacity: 0 }}
@@ -415,14 +387,23 @@ function ContactSection() {
 			className="text-center space-y-8  pb-8"
 		>
 			<h2 className="text-4xl font-bold">Prêt à commencer ?</h2>
+			<l-helix
+				size="45"
+				speed="2.5"
+				color="black"
+			></l-helix>
 			<motion.div whileHover={{ scale: 1.1 }}>
-				<Button className="bg-yellow-500 text-gray-900 rounded-3xl px-12 py-5 text-xl shadow-xl hover:bg-yellow-400 transition">
+				<Button className="bg-yellow-500 text-gray-900 rounded-3xl px-12 py-5 text-xl shadow-xl hover:bg-yellow-400 transition"
+					onClick={() => navigate("/contact")}>
 					Contactez-nous
 				</Button>
 			</motion.div>
 		</motion.section>
 	);
 }
+
+// Default values shown
+
 
 function SectionHeader({ title, description }) {
 	return (

@@ -1,5 +1,4 @@
 import React from 'react';
-import { FaFileAlt } from "react-icons/fa";
 import DateRangeBadge from '../DateRangeBadge/DateRangeBadge';
 
 const renderText = (items, key, value) => {
@@ -11,7 +10,7 @@ const renderText = (items, key, value) => {
 				<td key={key}>
 					{
 						Object.keys(items).map((item, index) => {
-							if (items[item].column == key) {
+							if (items[item].column === key) {
 								return (
 									<div key={index} style={{ color: items[item].color }}>
 										{items[item].value}
@@ -49,7 +48,7 @@ const renderDate = (items, key, value, table) => {
 				}
 			});
 
-			if (min == max) {
+			if (min === max) {
 				return (
 					<p>
 						no date
@@ -83,7 +82,7 @@ const renderNumber = (items, key, value) => {
 			let count = 0;
 
 			Object.keys(items).map((item, index) => {
-				if (items[item].column == key) {
+				if (items[item].column === key) {
 					avgSum += items[item].value;
 					count += 1;
 				}
@@ -202,11 +201,10 @@ const renderFormula = (items, key, value, columns) => {
 					});
 
 					try {
-						// Évalue la formule et ajoute le résultat à la somme totale
 						const result = eval(formulaValue);
 						sum += result;
 					} catch (error) {
-						console.error("Erreur de calcul de la formule :", error);
+						// console.error("Erreur de calcul de la formule :", error);
 					}
 				}
 			});
