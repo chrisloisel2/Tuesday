@@ -5,6 +5,10 @@ const MyAxios = axios.create({
 	// baseURL: "http://localhost:8080/",
 	headers: {
 		"Content-Type": "application/json",
+		Accept: "application/json",
+		"Access-Control-Allow-Origin": "*",
+		"Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+		"Access-Control-Allow-Headers": "Content-Type, Authorization",
 	},
 	withCredentials: true,
 });
@@ -15,6 +19,7 @@ MyAxios.interceptors.request.use(
 		if (token) {
 			config.headers.Authorization = `Bearer ${token}`;
 		}
+		console.log("config ->", config);
 		return config;
 	},
 	(error) => {
@@ -24,6 +29,7 @@ MyAxios.interceptors.request.use(
 
 MyAxios.interceptors.response.use(
 	(response) => {
+		console.log("reponse ->", response);
 		return response.data;
 	},
 	async (error) => {
