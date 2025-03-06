@@ -90,6 +90,7 @@ const FileCpnt = ({ item, handleDelete, handleUpdate }) => {
 			console.log("response 1", response.fileUrl);
 			const fileUrl = response.fileUrl;
 
+			console.log("newEditedItem", editedItem);
 			const newEditedItem = {
 				...editedItem,
 				columns: {
