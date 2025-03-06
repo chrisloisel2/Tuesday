@@ -87,9 +87,8 @@ const FileCpnt = ({ item, handleDelete, handleUpdate }) => {
 			response = await MyAxios.post("/item/upload", formData, {
 				headers: { "Content-Type": "multipart/form-data" },
 			});
-			console.log("response 1", response);
-			console.log("response 2", response.data.fileUrl);
-			const fileUrl = response.data.fileUrl;
+			console.log("response 1", response.fileUrl);
+			const fileUrl = response.fileUrl;
 
 			const newEditedItem = {
 				...editedItem,
@@ -102,7 +101,7 @@ const FileCpnt = ({ item, handleDelete, handleUpdate }) => {
 				},
 			};
 
-			// handleUpdate(newEditedItem);
+			handleUpdate(newEditedItem);
 		} catch (error) {
 			console.error("❌ Erreur lors du téléchargement du fichier :", error);
 		} finally {
