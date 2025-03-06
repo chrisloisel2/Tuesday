@@ -8,12 +8,14 @@ import { updateItem } from '../../Redux/ItemReducer';
 import DateModal from '../DateModal/DateModal';
 import FormulaCell from './FormulaCell';
 import FileCpnt from './FileModal';
+import MyAxios from '../../Interceptor/MyAxios';
 
 const Item = ({ item, color, columns, activeBoard }) => {
 	const [editedItem, setEditedItem] = useState(item);
 	const [activeEnumColumn, setActiveEnumColumn] = useState(null);
 	const [isDateModalOpen, setIsDateModalOpen] = useState(false);
 	const [currentDateColumn, setCurrentDateColumn] = useState(null);
+	const [uploading, setUploading] = useState(false);
 	const view = useSelector((state) => state.board.selectedView);
 	const dispatch = useDispatch();
 
@@ -160,7 +162,7 @@ const Item = ({ item, color, columns, activeBoard }) => {
 						case 'file':
 							return (
 								<td key={key} style={{ color: item.columns[key] }}>
-									<FileCpnt item={item.columns[key]} handleDelete={handleDelete} handleFileUpload={handleFileUpload} />
+									<FileCpnt item={item.columns[key]} handleDelete={handleDelete} handleFileUpload={handleFileUpload} uploading={uploading} />
 								</td >
 							);
 						default:

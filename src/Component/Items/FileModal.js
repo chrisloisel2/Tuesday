@@ -9,6 +9,12 @@ import axios from "axios";
 
 // 📂 Composant d'upload
 const FileUpload = ({ handleFileUpload, uploading }) => {
+
+	if (uploading) {
+		return <label className="flex items-center gap-2 p-2 rounded-lg cursor-not-allowed bg-gray-700 text-white">Uploading...</label>;
+	}
+
+
 	return (
 		<label className="flex items-center gap-2 p-2 rounded-lg cursor-pointer bg-gray-700 hover:bg-gray-800 text-white">
 			<FiUpload size={24} />
@@ -64,9 +70,8 @@ const MarkdownEditor = ({ content, onSave, onCancel }) => {
 	);
 };
 
-const FileCpnt = ({ item, handleDelete, handleFileUpload }) => {
+const FileCpnt = ({ item, handleDelete, handleFileUpload, uploading }) => {
 	const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-	const [uploading, setUploading] = useState(false);
 	const [showPdf, setShowPdf] = useState(false);
 	const [editMd, setEditMd] = useState(false);
 	const [mdContent, setMdContent] = useState(null);
