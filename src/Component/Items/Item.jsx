@@ -60,8 +60,8 @@ const Item = ({ item, color, columns, activeBoard }) => {
 				...editedItem,
 				columns: {
 					...editedItem.columns,
-					columnKey: {
-						...editedItem.columns.file,
+					[columnKey]: {
+						...editedItem.columns[columnKey],
 						value: fileUrl,
 					},
 				},
