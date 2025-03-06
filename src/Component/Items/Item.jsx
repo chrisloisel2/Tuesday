@@ -39,6 +39,40 @@ const Item = ({ item, color, columns, activeBoard }) => {
 		setIsDateModalOpen(true);
 	};
 
+	const handleFileUpload = async (file) => {
+		const formData = new FormData();
+		formData.append("file", file);
+
+		try {
+			setUploading(true);
+			let response;
+
+			response = await MyAxios.post("/item/upload", formData, {
+				headers: { "Content-Type": "multipart/form-data" },
+			});
+			console.log("response 1", response.fileUrl);
+			const fileUrl = response.fileUrl;
+
+			console.log("newEditedItem", editedItem);
+			const newEditedItem = {
+				...editedItem,
+				columns: {
+					...editedItem.columns,
+					file: {
+						...editedItem.columns.file,
+						value: fileUrl,
+					},
+				},
+			};
+
+			handleUpdate(newEditedItem);
+		} catch (error) {
+			console.error("❌ Erreur lors du téléchargement du fichier :", error);
+		} finally {
+			setUploading(false);
+		}
+	};
+
 	const handleSaveDate = (newDates) => {
 		const newEditedItem = {
 			...editedItem,
@@ -126,7 +160,7 @@ const Item = ({ item, color, columns, activeBoard }) => {
 						case 'file':
 							return (
 								<td key={key} style={{ color: item.columns[key] }}>
-									<FileCpnt item={item.columns[key]} handleDelete={handleDelete} handleUpdate={handleUpdate} />
+									<FileCpnt item={item.columns[key]} handleDelete={handleDelete} handleFileUpload={handleFileUpload} />
 								</td >
 							);
 						default:

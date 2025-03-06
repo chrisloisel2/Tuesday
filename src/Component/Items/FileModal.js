@@ -64,51 +64,18 @@ const MarkdownEditor = ({ content, onSave, onCancel }) => {
 	);
 };
 
-const FileCpnt = ({ item, handleDelete, handleUpdate }) => {
+const FileCpnt = ({ item, handleDelete, handleFileUpload }) => {
 	const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 	const [uploading, setUploading] = useState(false);
 	const [showPdf, setShowPdf] = useState(false);
 	const [editMd, setEditMd] = useState(false);
 	const [mdContent, setMdContent] = useState(null);
-	const [editedItem] = useState(item);
 	const dispatch = useDispatch();
 
 	const isMdFile = item?.value?.endsWith(".md");
 
 	// 📂 Gestion de l'upload et mise à jour de fichier
-	const handleFileUpload = async (file) => {
-		const formData = new FormData();
-		formData.append("file", file);
 
-		try {
-			setUploading(true);
-			let response;
-
-			response = await MyAxios.post("/item/upload", formData, {
-				headers: { "Content-Type": "multipart/form-data" },
-			});
-			console.log("response 1", response.fileUrl);
-			const fileUrl = response.fileUrl;
-
-			console.log("newEditedItem", editedItem);
-			const newEditedItem = {
-				...editedItem,
-				columns: {
-					...editedItem.columns,
-					file: {
-						...editedItem.columns.file,
-						value: fileUrl,
-					},
-				},
-			};
-
-			handleUpdate(newEditedItem);
-		} catch (error) {
-			console.error("❌ Erreur lors du téléchargement du fichier :", error);
-		} finally {
-			setUploading(false);
-		}
-	};
 
 	const Raffraichir = async () => {
 		try {
