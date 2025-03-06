@@ -41,7 +41,7 @@ const Item = ({ item, color, columns, activeBoard }) => {
 		setIsDateModalOpen(true);
 	};
 
-	const handleFileUpload = async (file) => {
+	const handleFileUpload = async (file, columnKey) => {
 		const formData = new FormData();
 		formData.append("file", file);
 
@@ -60,7 +60,7 @@ const Item = ({ item, color, columns, activeBoard }) => {
 				...editedItem,
 				columns: {
 					...editedItem.columns,
-					file: {
+					columnKey: {
 						...editedItem.columns.file,
 						value: fileUrl,
 					},
@@ -162,7 +162,9 @@ const Item = ({ item, color, columns, activeBoard }) => {
 						case 'file':
 							return (
 								<td key={key} style={{ color: item.columns[key] }}>
-									<FileCpnt item={item.columns[key]} handleDelete={handleDelete} handleFileUpload={handleFileUpload} uploading={uploading} />
+									<FileCpnt item={item.columns[key]} handleDelete={handleDelete} handleFileUpload={
+										(file) => handleFileUpload(file, key)
+									} uploading={uploading} />
 								</td >
 							);
 						default:

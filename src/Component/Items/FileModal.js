@@ -70,7 +70,7 @@ const MarkdownEditor = ({ content, onSave, onCancel }) => {
 	);
 };
 
-const FileCpnt = ({ item, handleDelete, handleFileUpload, uploading }) => {
+const FileCpnt = ({ item, handleDelete, handleFileUpload, uploading, key }) => {
 	const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 	const [showPdf, setShowPdf] = useState(false);
 	const [editMd, setEditMd] = useState(false);
