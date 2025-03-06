@@ -84,17 +84,9 @@ const FileCpnt = ({ item, handleDelete, handleUpdate }) => {
 			setUploading(true);
 			let response;
 
-			if (item.value) {
-				// Si un fichier existe déjà, on le met à jour avec PUT
-				formData.append("existingFileKey", item.value);
-				response = dispatch(updateFile(formData));
-			} else {
-				// Sinon, on fait un upload classique avec POST
-				response = await MyAxios.post("/item/upload", formData, {
-					headers: { "Content-Type": "multipart/form-data" },
-				});
-			}
-
+			response = await MyAxios.post("/item/upload", formData, {
+				headers: { "Content-Type": "multipart/form-data" },
+			});
 			const fileUrl = response.data.fileUrl;
 
 			const newEditedItem = {
