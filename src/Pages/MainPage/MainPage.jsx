@@ -289,7 +289,6 @@ function TeachingMethodsSection() {
 function FormationsSection() {
 
 	const formations = useSelector((state) => state.front.formations.data);
-	console.log(formations);
 
 	return (
 		<section className="space-y-16  pb-8">

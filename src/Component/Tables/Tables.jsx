@@ -121,7 +121,6 @@ const Tables = ({ table, view, activeBoard }) => {
 							<span style={{ color: table.color }}>▼</span>
 							<span style={{ color: table.color }}
 								onClick={(e) => {
-									console.log("click");
 									e.stopPropagation();
 									setUpdateMonth(!updateMonth);
 									setUpdateNameMonth(table.title);

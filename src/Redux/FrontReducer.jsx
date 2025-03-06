@@ -3,13 +3,11 @@ import MyAxios from "../Interceptor/MyAxios";
 
 export const fetchCursus = createAsyncThunk("item/fetchCursus", async () => {
 	const response = await MyAxios.get("/cursus");
-	console.log(response);
 	return response;
 });
 
 export const fetchFormation = createAsyncThunk("item/fetchFormation", async () => {
 	const response = await MyAxios.get("/formation");
-	console.log("FOMRATIONSSS =>", response);
 	return response;
 });
 

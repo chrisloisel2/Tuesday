@@ -20,7 +20,6 @@ const saveToLocalStorage = (state) => {
 const localStorageMiddleware = (store) => (next) => (action) => {
 	const result = next(action);
 	saveToLocalStorage(store.getState());
-	console.log('state after dispatch', store.getState());
 	return result;
 };
 
@@ -28,7 +27,6 @@ const loadFromLocalStorage = () => {
 	try {
 		const serializedState = localStorage.getItem('appState');
 		if (serializedState === null) return undefined;
-		console.log('state loaded from localStorage', JSON.parse(serializedState));
 		return JSON.parse(serializedState);
 	} catch (e) {
 		console.warn(e);

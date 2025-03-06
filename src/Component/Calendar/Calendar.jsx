@@ -81,18 +81,6 @@ const Calendrier = (activeBoard) => {
 		return user?.color;
 	};
 
-	console.log("Items", items);
-	console.log("Users", users);
-	console.log("userRole", userRole);
-
-	// const Redouanes = items.filter((item) => {
-	// 	if (item.columns["formateur"]?.value == "Redouane") {
-	// 		console.log(item)
-	// 	}
-	// 	return true
-	// });
-
-
 	const filteredEvents = items.filter((item) => {
 		if (userRole === "admin") {
 			return filteredUsers.map((user) => user.name).includes(item.columns['formateur']?.value);
@@ -116,7 +104,6 @@ const Calendrier = (activeBoard) => {
 			});
 	})
 
-	console.log("Events", events);
 
 
 	const toggleUserFilter = (userId) => {
@@ -180,7 +167,6 @@ const Calendrier = (activeBoard) => {
 			},
 		};
 
-		console.log(newItem);
 		dispatch(createItem(newItem));
 
 		setTitle("");

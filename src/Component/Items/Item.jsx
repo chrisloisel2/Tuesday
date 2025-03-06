@@ -20,7 +20,6 @@ const Item = ({ item, color, columns, activeBoard }) => {
 	const dispatch = useDispatch();
 
 	const handleDelete = (columnKey) => {
-		console.log("delete", columnKey);
 		const newEditedItem = {
 			...editedItem,
 			columns: {
@@ -28,7 +27,6 @@ const Item = ({ item, color, columns, activeBoard }) => {
 				[columnKey]: null,
 			},
 		};
-		console.log("newEditedItem", newEditedItem);
 		setEditedItem(newEditedItem);
 		dispatch(updateItem(newEditedItem));
 	};
@@ -162,9 +160,7 @@ const Item = ({ item, color, columns, activeBoard }) => {
 						case 'file':
 							return (
 								<td key={key} style={{ color: item.columns[key] }}>
-									<FileCpnt item={item.columns[key]} handleDelete={handleDelete} handleFileUpload={
-										(file) => handleFileUpload(file, key)
-									} uploading={uploading} />
+									<FileCpnt item={item.columns[key]} handleDelete={handleDelete} handleFileUpload={handleFileUpload} uploading={uploading} reactKey={key} />
 								</td >
 							);
 						default:

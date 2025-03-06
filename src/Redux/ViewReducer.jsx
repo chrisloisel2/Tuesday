@@ -6,7 +6,6 @@ const initialState = {
 
 export const createView = createAsyncThunk("auth/login", async (data) => {
 	const response = await MyAxios.post("/auth/connexion", data);
-	console.log(response);
 	return response;
 });
 

@@ -59,8 +59,6 @@ const RevealMarkdown = () => {
 
 	useEffect(() => {
 		if (isReady) {
-			console.log("Initialisation de Reveal.js...");
-
 			Reveal.initialize({
 				plugins: [Markdown, Notes],
 				markdown: {
@@ -92,7 +90,6 @@ const RevealMarkdown = () => {
 					slide.querySelector("h1") &&
 					slide.textContent.trim()
 				) {
-					console.log("H1 UNIQUE");
 					slide.classList.add("title-only");
 				}
 			});
@@ -100,7 +97,6 @@ const RevealMarkdown = () => {
 			// Gestion de l'impression PDF
 			if (window.location.href.includes('?print-pdf')) {
 				setTimeout(() => {
-					console.log("Impression en cours...");
 					window.print();
 				}, 1000);
 			}
@@ -108,7 +104,6 @@ const RevealMarkdown = () => {
 
 		return () => {
 			if (isReady) {
-				console.log("Destruction de Reveal.js...");
 				Reveal.destroy();
 			}
 		};

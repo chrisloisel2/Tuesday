@@ -17,10 +17,6 @@ function SunburstDiagram({ id, data }) {
 	const chartRef = useRef(null);
 
 	useEffect(() => {
-		console.log(data);
-	}, [data]);
-
-	useEffect(() => {
 		if (!chartRef.current) return;
 		const myChart = echarts.init(chartRef.current);
 
@@ -114,7 +110,6 @@ function CursusPage() {
 
 	useEffect(() => {
 		dispatch(fetchCursus());
-		console.log("triggered");
 	}, [dispatch]);
 
 	const filteredCursus = cursus.filter((c) =>

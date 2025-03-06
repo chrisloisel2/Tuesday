@@ -45,7 +45,6 @@ const EnumCell = ({ columnKey, item, activeEnumColumn, setActiveEnumColumn, hand
 			},
 		};
 
-		console.log(data);
 
 		dispatch(
 			updateColumns({ id: board._id, data })

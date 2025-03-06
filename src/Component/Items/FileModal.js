@@ -8,7 +8,7 @@ import { updateFile } from "../../Redux/BoardReducer";
 import axios from "axios";
 
 // 📂 Composant d'upload
-const FileUpload = ({ handleFileUpload, uploading }) => {
+const FileUpload = ({ handleFileUpload, uploading, reactKey }) => {
 
 	if (uploading) {
 		return <label className="flex items-center gap-2 p-2 rounded-lg cursor-not-allowed bg-gray-700 text-white">Uploading...</label>;
@@ -19,12 +19,12 @@ const FileUpload = ({ handleFileUpload, uploading }) => {
 		<label className="flex items-center gap-2 p-2 rounded-lg cursor-pointer bg-gray-700 hover:bg-gray-800 text-white">
 			<FiUpload size={24} />
 			<span>Upload File</span>
-			<input type="file" onChange={(e) => handleFileUpload(e.target.files[0])} disabled={uploading} hidden />
+			<input type="file" onChange={(e) => handleFileUpload(e.target.files[0], reactKey)} disabled={uploading} hidden />
 		</label>
 	);
 };
 
-const FilePopover = ({ fileUrl, onClose, onDelete, onOpenPdf, onEditMd, isMdFile }) => {
+const FilePopover = ({ fileUrl, onClose, onDelete, onOpenPdf, onEditMd, isMdFile, reactKey }) => {
 	return (
 		<div className="absolute top-10 left-0 bg-white shadow-lg rounded-lg p-3 z-50 w-48 transition-transform scale-100 bg-[#2c2f38]">
 			<div className="modal-arrow" />
@@ -38,7 +38,7 @@ const FilePopover = ({ fileUrl, onClose, onDelete, onOpenPdf, onEditMd, isMdFile
 						Voir
 					</button>
 				)}
-				<button onClick={() => { onDelete(); onClose(); }} className="block w-full text-left text-red-500 hover:text-red-600 py-1 bg-white">
+				<button onClick={() => { onDelete(reactKey); onClose(); }} className="block w-full text-left text-red-500 hover:text-red-600 py-1 bg-white">
 					Supprimer
 				</button>
 			</div>
@@ -70,7 +70,7 @@ const MarkdownEditor = ({ content, onSave, onCancel }) => {
 	);
 };
 
-const FileCpnt = ({ item, handleDelete, handleFileUpload, uploading, key }) => {
+const FileCpnt = ({ item, handleDelete, handleFileUpload, uploading, reactKey }) => {
 	const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 	const [showPdf, setShowPdf] = useState(false);
 	const [editMd, setEditMd] = useState(false);
@@ -107,26 +107,17 @@ const FileCpnt = ({ item, handleDelete, handleFileUpload, uploading, key }) => {
 	const handleSaveMd = async (newContent) => {
 		try {
 			const formData = new FormData();
-			console.log("item", item.value);
 			formData.append("existingFileKey", item.value);
 			const blob = new Blob([newContent], { type: "text/markdown" });
 			formData.append("file", blob, "updated-file.md");
-			// Ajouter dans le body le filename
-			console.log("Filename", item.value.split("/").pop());
 			formData.append("filename", item.value.split("/").pop());
-			// const response = await MyAxios.put("/item/upload", formData, {
-			// 	headers: { "Content-Type": "multipart/form-data" },
-			// });
-			// console.log("response", response);
 			dispatch(updateFile(formData));
-			// ✅ Mise à jour réussie
 			setMdContent(newContent);
 			setEditMd(false);
 		} catch (error) {
 			console.error("❌ Erreur lors de l'enregistrement du fichier Markdown :", error);
 		}
 		finally {
-			// Forcer le rafrachissement de l'apperçu du markdown
 			Raffraichir();
 		}
 	};
@@ -147,15 +138,16 @@ const FileCpnt = ({ item, handleDelete, handleFileUpload, uploading, key }) => {
 						<FilePopover
 							fileUrl={item.value}
 							onClose={() => setIsPopoverOpen(false)}
-							onDelete={() => handleDelete("file")}
+							onDelete={handleDelete}
 							onOpenPdf={() => setShowPdf(true)}
 							onEditMd={handleEditMd}
 							isMdFile={isMdFile}
+							reactKey={reactKey}
 						/>
 					)}
 				</>
 			) : (
-				<FileUpload handleFileUpload={handleFileUpload} uploading={uploading} />
+				<FileUpload handleFileUpload={handleFileUpload} uploading={uploading} reactKey={reactKey} />
 			)}
 			{showPdf && <PdfViewer fileUrl={item.value} onClose={() => closeAll()} />}
 			{editMd && <MarkdownEditor content={mdContent} onSave={handleSaveMd} onCancel={() => closeAll()} />}

@@ -24,9 +24,7 @@ export const GetBoard = createAsyncThunk("board/getBoard", async (data) => {
 export const CreateBoard = createAsyncThunk(
 	"board/createBoard",
 	async (data) => {
-		console.log("create board", data);
 		const response = await MyAxios.post("/board/", data);
-		console.log(response);
 		return response;
 	}
 );
@@ -35,7 +33,6 @@ export const UpdateBoard = createAsyncThunk(
 	"board/updateBoard",
 	async (data) => {
 		const response = await MyAxios.put("/board/" + data._id, data);
-		console.log(response);
 		return response;
 	}
 );
@@ -43,9 +40,7 @@ export const UpdateBoard = createAsyncThunk(
 export const updateColumns = createAsyncThunk(
 	"board/updateColumns",
 	async ({ id, data }) => {
-		console.log("update columns", id, data);
 		const response = await MyAxios.put("/board/column/" + id, data);
-		console.log("response", response);
 		return response;
 	}
 );
@@ -111,7 +106,6 @@ export const createTable = createAsyncThunk(
 	"board/createTable",
 	async (data) => {
 		const response = await MyAxios.post("/table/table", { boardId: data });
-		console.log(response);
 		return response;
 	}
 );
@@ -119,9 +113,7 @@ export const createTable = createAsyncThunk(
 export const updateTable = createAsyncThunk(
 	"table/updateTable",
 	async (data) => {
-		console.log("update table", data);
 		const response = await MyAxios.put("/table/table/" + data._id, data);
-		console.log(response);
 		return response;
 	}
 );
@@ -164,9 +156,7 @@ const BoardReducer = createSlice({
 			}
 		},
 		selectBoard: (state, action) => {
-			console.log(state.activeBoard);
 			state.activeBoard = action.payload;
-			console.log("state.activeBoard", state.activeBoard);
 		},
 		resetBoard: (state, useDispatch) => {
 			const dispatch = useDispatch;
@@ -231,7 +221,6 @@ const BoardReducer = createSlice({
 			.addCase(DeleteBoard.fulfilled, (state, action) => {
 				// la fonction register réussie
 				state.status = "succeeded";
-				console.log(action.payload);
 				state.board = state.board.view((item) => item._id !== action.payload._id);
 			})
 			.addCase(DeleteBoard.rejected, (state, action) => {
@@ -279,7 +268,6 @@ const BoardReducer = createSlice({
 			})
 			.addCase(creteView.fulfilled, (state, action) => {
 				state.status = "succeeded";
-				console.log("create view", action.payload);
 				state.activeBoard.view.push(action.payload);
 			})
 			.addCase(creteView.rejected, (state, action) => {
@@ -293,7 +281,6 @@ const BoardReducer = createSlice({
 			.addCase(updateView.fulfilled, (state, action) => {
 				// la fonction register réussie
 				state.status = "succeeded";
-				console.log("update view", action.payload);
 				state.activeBoard.view = state.activeBoard.view.map((item) => {
 					if (item._id === action.payload._id) {
 						return action.payload;
@@ -461,13 +448,9 @@ const BoardReducer = createSlice({
 			})
 			.addCase(createItem.fulfilled, (state, action) => {
 				state.status = "succeeded";
-				console.log("new item", action.payload);
 				state.activeBoard.content = state.activeBoard.content.map((item) => {
-					console.log("table trouvée", item);
 					if (item._id === action.payload.table) {
-						console.log("table trouvée ->", item);
 						item.content.push(action.payload);
-						console.log("table trouvée ->", item);
 					}
 					return item;
 				}

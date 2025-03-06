@@ -15,11 +15,9 @@ export const getUser = createAsyncThunk("auth/getUser", async (id) => {
 
 export const register = createAsyncThunk("auth/register", async (data) => {
 	const response = await MyAxios.post("/auth/inscription", data);
-	console.log("response", response);
 	if (!response.ok) {
 		throw new Error(response.message || "Could not authenticate you.");
 	}
-	console.log(response);
 	return response;
 });
 

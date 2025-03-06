@@ -2,7 +2,7 @@ import axios from "axios";
 
 const MyAxios = axios.create({
 	baseURL: 'https://api.skylonis.com/',
-	// baseURL: "http://localhost:8080/",
+	// baseURL: "http://localhost:8000/",
 	headers: {
 		"Content-Type": "application/json",
 	},
@@ -15,7 +15,6 @@ MyAxios.interceptors.request.use(
 		if (token) {
 			config.headers.Authorization = `Bearer ${token}`;
 		}
-		console.log("config ->", config);
 		return config;
 	},
 	(error) => {
@@ -25,7 +24,6 @@ MyAxios.interceptors.request.use(
 
 MyAxios.interceptors.response.use(
 	(response) => {
-		console.log("reponse ->", response);
 		return response.data;
 	},
 	async (error) => {

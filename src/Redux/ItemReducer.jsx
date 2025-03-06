@@ -10,7 +10,6 @@ export const createItem = createAsyncThunk(
 	"item/createItem",
 	async (newItem) => {
 		const response = await MyAxios.post("/item/items", newItem);
-		console.log("create item", response);
 		return response;
 	}
 );
@@ -24,7 +23,6 @@ export const getItemsByFormateur = createAsyncThunk(
 );
 
 export const updateItem = createAsyncThunk("item/updateItem", async (item) => {
-	console.log("update item", item);
 	const response = await MyAxios.put(`/item/items/${item._id}`, item);
 	return response;
 });
@@ -105,7 +103,6 @@ const itemReducer = createSlice({
 			// })
 			// .addCase(updateItem.fulfilled, (state, action) => {
 			// 	state.status = "succeeded";
-			// 	console.log(action.payload);
 			// 	state.items = state.items.map((item) =>
 			// 		item._id === action.payload._id ? action.payload : item
 			// 	);
@@ -119,7 +116,6 @@ const itemReducer = createSlice({
 			})
 			.addCase(deleteItem.fulfilled, (state, action) => {
 				state.status = "succeeded";
-				console.log(action.payload);
 				state.items = state.items.filter((item) => item._id !== action.payload._id);
 				state.selectedItems = state.selectedItems.filter(
 					(_id) => _id !== action.payload._id
