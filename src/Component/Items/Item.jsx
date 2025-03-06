@@ -20,6 +20,7 @@ const Item = ({ item, color, columns, activeBoard }) => {
 	const dispatch = useDispatch();
 
 	const handleDelete = (columnKey) => {
+		console.log("delete", columnKey);
 		const newEditedItem = {
 			...editedItem,
 			columns: {
@@ -27,6 +28,7 @@ const Item = ({ item, color, columns, activeBoard }) => {
 				[columnKey]: null,
 			},
 		};
+		console.log("newEditedItem", newEditedItem);
 		setEditedItem(newEditedItem);
 		dispatch(updateItem(newEditedItem));
 	};
@@ -52,10 +54,8 @@ const Item = ({ item, color, columns, activeBoard }) => {
 			response = await MyAxios.post("/item/upload", formData, {
 				headers: { "Content-Type": "multipart/form-data" },
 			});
-			console.log("response 1", response.fileUrl);
 			const fileUrl = response.fileUrl;
 
-			console.log("newEditedItem", editedItem);
 			const newEditedItem = {
 				...editedItem,
 				columns: {

@@ -79,9 +79,6 @@ const FileCpnt = ({ item, handleDelete, handleFileUpload, uploading, key }) => {
 
 	const isMdFile = item?.value?.endsWith(".md");
 
-	// 📂 Gestion de l'upload et mise à jour de fichier
-
-
 	const Raffraichir = async () => {
 		try {
 			// Forcer la récupération du contenu hors cache
