@@ -30,6 +30,7 @@ const Login = () => {
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
 						required
+						className='text-black'
 					/>
 				</div>
 				<div>
@@ -39,6 +40,7 @@ const Login = () => {
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
 						required
+						className='text-black'
 					/>
 				</div>
 				<button type="submit">Login</button>
