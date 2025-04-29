@@ -1,78 +1,117 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateFilteredItems, updateView } from '../../Redux/BoardReducer';
+import { updateView } from '../../Redux/ViewReducer';
+
+const defaultColors = [
+	'red', 'blue', 'green', 'purple', 'orange', 'pink', 'teal', 'invisible'
+];
 
 const FilterModal = ({ close }) => {
 	const dispatch = useDispatch();
 	const activeBoard = useSelector((state) => state.board.activeBoard);
-	const activeView = useSelector((state) => state.board.selectedView);
+	const activeView = useSelector((state) => state.view.selectedView);
 
-	const [selectedColumn, setSelectedColumn] = useState('');
-	const [selectedOperator, setSelectedOperator] = useState('');
-	const [filterValue, setFilterValue] = useState('');
+	const [filters, setFilters] = useState(activeView?.filters || []);
 
-	const handleColumnChange = (e) => setSelectedColumn(e.target.value);
-	const handleOperatorChange = (e) => setSelectedOperator(e.target.value);
-	const handleValueChange = (e) => setFilterValue(e.target.value);
+	const addFilter = () => {
+		setFilters([
+			...filters,
+			{ column: '', operator: '', value: '', color: 'invisible' }
+		]);
+	};
 
-	const applyFilter = () => {
-		dispatch(updateView({ ...activeView, filters: [{ column: selectedColumn, operator: selectedOperator, value: filterValue }] }));
-		// dispatch(updateFilteredItems(filteredItems));
+	const updateFilter = (index, key, value) => {
+		const newFilters = [...filters];
+		newFilters[index][key] = value;
+		setFilters(newFilters);
+	};
+
+	const removeFilter = (index) => {
+		const newFilters = [...filters];
+		newFilters.splice(index, 1);
+		setFilters(newFilters);
+	};
+
+	const applyFilters = () => {
+		dispatch(updateView({ ...activeView, filters }));
+		close();
+	};
+
+	const getColumnType = (columnId) => {
+		return activeBoard?.columns?.find((col) => col._id === columnId)?.type;
+	};
+
+	const getColumnOptions = (columnId) => {
+		return activeBoard?.columns?.find((col) => col._id === columnId)?.possibleValues || {};
 	};
 
 	return (
-		<div className='options-modal'>
-			<div className='filtering'>
-				<h2>Filtrer les éléments</h2>
-				<div>
-					<label>Colonne : </label>
-					<select value={selectedColumn} onChange={handleColumnChange}>
-						<option value="">Sélectionner une colonne</option>
-						{activeBoard &&
-							Object.keys(activeBoard.columns).map((key, index) => (
-								<option key={index} value={key}>
-									{activeBoard.columns[key].value}
-								</option>
-							))}
-					</select>
+		<div className="options-modal">
+			<div className="filtering">
+				<h2>Gestion des Filtres</h2>
+				{filters.map((filter, index) => (
+					<div key={index} className="filter-item" style={{ borderLeft: `4px solid ${filter.color !== 'invisible' ? filter.color : 'transparent'}`, paddingLeft: '8px', marginBottom: '12px' }}>
+						<div>
+							<label>Colonne : </label>
+							<select value={filter.column} onChange={(e) => updateFilter(index, 'column', e.target.value)}>
+								<option value="">-- Sélectionner --</option>
+								{activeBoard && activeBoard.columns.map((col) => (
+									<option key={col._id} value={col._id}>{col.name}</option>
+								))}
+							</select>
+						</div>
+
+						<div>
+							<label>Opérateur : </label>
+							<select value={filter.operator} onChange={(e) => updateFilter(index, 'operator', e.target.value)}>
+								<option value="">-- Sélectionner --</option>
+								<option value="egal">égal</option>
+								<option value="différent">différent</option>
+								<option value="contient">contient</option>
+								<option value="sup">supérieur</option>
+								<option value="inf">inférieur</option>
+							</select>
+						</div>
+
+						<div>
+							<label>Valeur : </label>
+							{getColumnType(filter.column) === 'text' && (
+								<input type="text" value={filter.value} onChange={(e) => updateFilter(index, 'value', e.target.value)} />
+							)}
+							{getColumnType(filter.column) === 'number' && (
+								<input type="number" value={filter.value} onChange={(e) => updateFilter(index, 'value', e.target.value)} />
+							)}
+							{getColumnType(filter.column) === 'date' && (
+								<input type="date" value={filter.value} onChange={(e) => updateFilter(index, 'value', e.target.value)} />
+							)}
+							{getColumnType(filter.column) === 'enum' && (
+								<select value={filter.value} onChange={(e) => updateFilter(index, 'value', e.target.value)}>
+									<option value="">-- Choisir --</option>
+									{Object.entries(getColumnOptions(filter.column)).map(([key, val]) => (
+										<option key={key} value={key}>{val.label}</option>
+									))}
+								</select>
+							)}
+						</div>
+
+						<div>
+							<label>Couleur : </label>
+							<select value={filter.color} onChange={(e) => updateFilter(index, 'color', e.target.value)}>
+								{defaultColors.map((color, idx) => (
+									<option key={idx} value={color}>{color}</option>
+								))}
+							</select>
+						</div>
+
+						<button onClick={() => removeFilter(index)} style={{ marginTop: '5px', backgroundColor: 'tomato', color: 'white' }}>Supprimer</button>
+					</div>
+				))}
+
+				<div className="actions">
+					<button onClick={addFilter}>Ajouter un filtre</button>
+					<button onClick={applyFilters}>Appliquer</button>
+					<button onClick={close}>Annuler</button>
 				</div>
-				<div>
-					<label>Opérateur : </label>
-					<select value={selectedOperator} onChange={handleOperatorChange}>
-						<option value="">Sélectionner un opérateur</option>
-						<option value="égal">égal</option>
-						<option value="contient">contient</option>
-						<option value="supérieur">supérieur</option>
-						<option value="inférieur">inférieur</option>
-					</select>
-				</div>
-				<div>
-					<label>Valeur : </label>
-					{activeBoard.columns[selectedColumn]?.type === 'text' && (
-						<input type="text" value={filterValue} onChange={handleValueChange} />
-					)}
-					{activeBoard.columns[selectedColumn]?.type === 'number' && (
-						<input type="number" value={filterValue} onChange={handleValueChange} />
-					)}
-					{activeBoard.columns[selectedColumn]?.type === 'date' && (
-						<input type="date" value={filterValue} onChange={handleValueChange} />
-					)}
-					{activeBoard.columns[selectedColumn]?.type === 'enum' && (
-						<select value={filterValue} onChange={handleValueChange}>
-							<option value="">Sélectionner une valeur</option>
-							{Object.keys(activeBoard.columns[selectedColumn]?.values || {}).map((key, index) => (
-								<option key={index} value={key}>
-									{key}
-								</option>
-							))}
-						</select>
-					)}
-					{activeBoard.columns[selectedColumn]?.type === 'formula' && (
-						<input type="text" value={filterValue} onChange={handleValueChange} disabled />
-					)}
-				</div>
-				<button onClick={applyFilter}>Appliquer</button>
-				<button onClick={close} >annuler</button>
 			</div>
 		</div>
 	);

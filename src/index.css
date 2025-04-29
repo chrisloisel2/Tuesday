@@ -159,19 +159,9 @@ display: none;
   width: 98%;
   gap: 20px;
   padding: var(--padding-small);
+
 }
 
-button {
-  color: var(--font-color);
-  border: none;
-  padding: var(--padding-small);
-  background-color: var(--background-color);
-  cursor: pointer;
-}
-
-.view-switcher button:hover {
-  background-color: var(--main-color);
-}
 
 .active {
   background-color: var(--main-color);
@@ -286,12 +276,6 @@ th {
 	border-right: 1px solid black;
   }
 
-  .menu {
-	width: 150px;
-	background-color: #292f4c;
-	display: flex;
-	flex-direction: column;
-  }
 
 
 /* Le modal enum */

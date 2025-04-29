@@ -2,26 +2,24 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { updateColumns } from "../../Redux/BoardReducer";
 
-const ResizeHandle = ({ columnKey, activeBoard, columns, setColumns }) => {
+const ResizeHandle = ({ columnKey, column }) => {
 	const dispatch = useDispatch();
+	const [columns, setColumns] = useState(column);
 
 	const handleResizeMouseDown = (col) => (event) => {
 		const startX = event.clientX;
-		const startWidth = columns[col]?.width || 100;
+		const startWidth = column.width || 100;
 
 		const onMouseMove = (e) => {
 			const newWidth = Math.max(50, startWidth + (e.clientX - startX));
 			setColumns((prevColumns) => ({
 				...prevColumns,
-				[col]: {
-					...prevColumns[col],
-					width: newWidth,
-				},
+				width: newWidth,
 			}));
 		};
 
 		const onMouseUp = () => {
-			dispatch(updateColumns({ id: activeBoard._id, data: { ...columns } }));
+			dispatch(updateColumns(columns));
 			document.removeEventListener("mousemove", onMouseMove);
 			document.removeEventListener("mouseup", onMouseUp);
 		};

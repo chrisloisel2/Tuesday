@@ -1,42 +1,40 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { createCell, updateCell } from '../../Redux/cellReducer';
 
-const EditableCell = ({ columnKey, item, handleUpdate, handleDelete }) => {
-	const [showIcon, setShowIcon] = useState(false);
-	const [showDeleteModal, setShowDeleteModal] = useState(false);
-	const cellRef = useRef(null); // Référence pour capturer le contenu
+const EditableCell = ({ itemId, columnKey }) => {
+	const dispatch = useDispatch();
+	const cellRef = useRef(null);
+	const selectedItems = useSelector((state) => state.items.selectedItems);
+	const cell = useSelector((state) => state.cell.cells[`${itemId}-${columnKey}`]);
 
-	const handleChange = () => {
-		const newValue = cellRef.current.innerText; // Récupérer le texte via la référence
-		const newEditedItem = {
-			...item,
-			columns: {
-				...item.columns,
-				[columnKey]: {
-					...item.columns[columnKey],
-					value: newValue,
-				},
-			},
-		};
-		handleUpdate(newEditedItem);
-	};
+	const handleBlur = () => {
+		const newValue = cellRef.current?.textContent?.trim() || "";
 
-	const toggleDeleteModal = () => {
-		setShowDeleteModal(!showDeleteModal);
-	};
+		if (selectedItems.length > 1) {
+			console.log("selectedItems superieur à 1");
+			selectedItems.forEach((item) => {
+				console.log("item", item);
+				dispatch(createCell({ itemId: item, columnId: columnKey, value: newValue }));
+			});
+			return;
+		}
+		else {
+			dispatch(createCell({ itemId, columnId: columnKey, value: newValue }));
+		}
+	}
 
 	return (
 		<td
-			ref={cellRef} // Associer la référence
+			ref={cellRef}
 			id={columnKey}
 			contentEditable
 			suppressContentEditableWarning={true}
-			onBlur={handleChange}
 			spellCheck="false"
-			onMouseEnter={() => setShowIcon(true)}
-			onMouseLeave={() => setShowIcon(false)}
+			onBlur={handleBlur}
 			style={{ position: 'relative' }}
 		>
-			{item.columns[columnKey]?.value}
+			{cell?.value || ""}
 		</td>
 	);
 };

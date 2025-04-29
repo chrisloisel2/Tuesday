@@ -4,9 +4,11 @@ import BoardReducer from "./BoardReducer";
 import UserReducer from "./UserReducer";
 import ItemReducer from "./ItemReducer";
 import FrontReducer from "./FrontReducer";
+import ViewReducer from "./ViewReducer";
+import TableReducer from "./TablesReducer";
+import CellReducer from "./cellReducer";
 
 
-// Middleware pour sauvegarder l'état dans localStorage
 const saveToLocalStorage = (state) => {
 	try {
 		const serializedState = JSON.stringify(state);
@@ -16,7 +18,6 @@ const saveToLocalStorage = (state) => {
 	}
 };
 
-// Middleware pour gérer la sauvegarde de l'état
 const localStorageMiddleware = (store) => (next) => (action) => {
 	const result = next(action);
 	saveToLocalStorage(store.getState());
@@ -43,6 +44,9 @@ const store = configureStore({
 		users: UserReducer,
 		items: ItemReducer,
 		front: FrontReducer,
+		view: ViewReducer,
+		table: TableReducer,
+		cell: CellReducer,
 	},
 	preloadedState,
 	middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(localStorageMiddleware),

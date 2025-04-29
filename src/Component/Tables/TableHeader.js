@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import ColorPicker from "../ChromePicker/ChromePicker";
 import ResizeHandle from "./ResizeHandle";
 import { BsThreeDots } from "react-icons/bs";
-import { GetBoards, updateColumns } from "../../Redux/BoardReducer";
+import { deleteColumn, GetBoards, updateColumns } from "../../Redux/BoardReducer";
 import { useDispatch, useSelector } from "react-redux";
+import { selectAll, selectItems } from "../../Redux/ItemReducer";
 
 
 const ContextMenu = ({ columnId, onClose, onDelete }) => {
-
 	return (
 		<div className="context-menu"
 			style={{
@@ -29,20 +29,17 @@ const ContextMenu = ({ columnId, onClose, onDelete }) => {
 };
 
 
-const TableHeader = ({ table, activeBoard, setCreateModal, handleSelectAll, selectedItems, months }) => {
+const TableHeader = ({ table, setCreateModal, selectedItems, months }) => {
 	const dispatch = useDispatch();
-	const view = useSelector((state) => state.board.selectedView);
+	const activeBoard = useSelector((state) => state.board.activeBoard);
+	const columns = useSelector((state) => state.board.activeBoard.columns);
 	const [seeTable, setSeeTable] = useState(null);
 	const [activeColumn, setActiveColumn] = useState(null);
-	const [columns, setColumns] = useState(activeBoard.columns);
+	const view = useSelector((state) => state.view.selectedView);
 
 
 	const handleDeleteColumn = (columnId) => {
-		const newColumns = { ...columns, [columnId]: null };
-		delete newColumns[columnId];
-		setColumns(newColumns);
-		dispatch(updateColumns({ id: activeBoard._id, data: newColumns }));
-		dispatch(GetBoards(activeBoard._id));
+		dispatch(deleteColumn({ boardID: activeBoard._id, columnID: columnId }));
 	};
 
 
@@ -59,7 +56,7 @@ const TableHeader = ({ table, activeBoard, setCreateModal, handleSelectAll, sele
 	}
 
 	const closeMenu = () => {
-		setActiveColumn(null); // Ferme la modale
+		setActiveColumn(null);
 	};
 
 	return (
@@ -69,36 +66,30 @@ const TableHeader = ({ table, activeBoard, setCreateModal, handleSelectAll, sele
 					<th style={{ width: `40px` }}>
 						<input
 							type="checkbox"
-							onChange={(e) => handleSelectAll(e.target.checked)}
+							onChange={(e) => dispatch(selectItems(table.content))}
 							checked={selectedItems.length === table.content.length}
 						/>
 					</th>
-					{Object.entries(columns)
-						.sort(([, a], [, b]) => a.order - b.order)
-						.filter(([key, value]) => view.hiddenColumns?.includes(key) === false)
-						.map(([key, value]) => (
-							<th key={key} style={{ width: `${columns[key].width}px` }}
-								onMouseEnter={() => seebuttonTable(key)}
-								onMouseLeave={() => hidebuttonTable(key)}
+					{[...columns]
+						.sort((a, b) => {
+							const order = view.orderColumns || [];
+							return order.indexOf(a._id) - order.indexOf(b._id);
+						})
+						.filter(column => !view.hiddenColumns?.includes(column._id))
+						?.map(column => (
+							<th key={column._id} style={{ width: `${column.width}px` }}
+								onMouseEnter={() => seebuttonTable(column._id)}
+								onMouseLeave={() => hidebuttonTable(column._id)}
 								contentEditable={true}
 								suppressContentEditableWarning={true}
 								spellCheck="false"
-								onBlur={(e) => {
-									e.stopPropagation();
-									const newColumns = { ...columns, [key]: { ...columns[key], value: e.target.innerText } };
-									if (newColumns[key].value !== columns[key].value) {
-										setColumns(newColumns);
-										dispatch(updateColumns({ id: activeBoard._id, data: newColumns }));
-									}
-								}
-								}
 							>
-								{activeBoard.columns[key].value}
+								{column.name}
 								{
-									seeTable === key && (
+									seeTable === column._id && (
 										<BsThreeDots onClick={(e) => {
 											e.stopPropagation();
-											openMenu(key)
+											openMenu(column._id)
 										}}
 											style={{
 												cursor: "pointer",
@@ -109,8 +100,8 @@ const TableHeader = ({ table, activeBoard, setCreateModal, handleSelectAll, sele
 										/>
 									)
 								}
-								{activeColumn === key && <ContextMenu columnId={key} onClose={closeMenu} onDelete={handleDeleteColumn} />}
-								<ResizeHandle columnKey={key} activeBoard={activeBoard} columns={columns} setColumns={setColumns} />
+								{activeColumn === column._id && <ContextMenu columnId={column._id} onClose={closeMenu} onDelete={handleDeleteColumn} />}
+								<ResizeHandle columnKey={column._id} column={column} />
 							</th>
 						))}
 					<th style={{ width: "40px" }}>

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { creteView, updateView } from '../../Redux/BoardReducer';
+import { creteView, updateView } from '../../Redux/ViewReducer';
 
 const HideModal = ({ close }) => {
 	const activeBoard = useSelector((state) => state.board.activeBoard);
-	const activeView = useSelector((state) => state.board.selectedView);
+	const activeView = useSelector((state) => state.view.selectedView);
 	const dispatch = useDispatch();
 	const [hiddenColumns, setHiddenColumns] = useState(activeView.hiddenColumns);
 
@@ -12,27 +12,27 @@ const HideModal = ({ close }) => {
 		close();
 		dispatch(updateView(
 			{
-				...activeView,
-				BoardId: activeBoard._id,
+				_id: activeView._id,
 				hiddenColumns: hiddenColumns
 			}
 		));
 	}
 
 	return (
-		<div className='modal'>
+		<div className='modal flex flex-col gap-2 items-start justify-center'>
 			{activeBoard && Object.keys(activeBoard.columns).map((key, index) => (
 				<div key={index}>
 					<input type='checkbox' onClick={
 						() => {
-							if (hiddenColumns.includes(key)) {
-								setHiddenColumns(hiddenColumns.filter((item) => item !== key));
+							if (hiddenColumns.includes(activeBoard.columns[key]._id)) {
+								setHiddenColumns(hiddenColumns.filter((item) => item !== activeBoard.columns[key]._id));
 							} else {
-								setHiddenColumns([...hiddenColumns, key]);
+								setHiddenColumns([...hiddenColumns, activeBoard.columns[key]._id]);
 							}
 						}
-					} checked={hiddenColumns.includes(key) ? true : false} />
-					<label>{activeBoard.columns[key].value}</label>
+					}
+						checked={hiddenColumns.includes(activeBoard.columns[key]._id) ? true : false} />
+					<label>{activeBoard.columns[key].name}</label>
 				</div>
 			))}
 			<button onClick={handleClick}>Valider</button>

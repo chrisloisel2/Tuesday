@@ -3,16 +3,23 @@ import MyAxios from "../Interceptor/MyAxios";
 import { createItem, deleteItem, updateItem } from "./ItemReducer";
 
 
-export const updateViewSharing = createAsyncThunk(
-	"board/updateViewSharing",
+
+
+export const GetBoards = createAsyncThunk("board/getAll", async (data) => {
+	const response = await MyAxios.get("/board/", data);
+	return response;
+});
+
+export const DeleteBoard = createAsyncThunk(
+	"board/deleteBoard",
 	async (data) => {
-		const response = await MyAxios.put("/view/sharing/" + data._id, data);
+		const response = await MyAxios.delete("/board/" + data);
 		return response;
 	}
 );
 
-export const GetBoards = createAsyncThunk("board/getAll", async (data) => {
-	const response = await MyAxios.get("/board/", data);
+export const GetBoardFromUser = createAsyncThunk("board/getAllFromUser", async (data) => {
+	const response = await MyAxios.get("/board/user/" + data);
 	return response;
 });
 
@@ -39,32 +46,41 @@ export const UpdateBoard = createAsyncThunk(
 
 export const updateColumns = createAsyncThunk(
 	"board/updateColumns",
-	async ({ id, data }) => {
-		const response = await MyAxios.put("/board/column/" + id, data);
+	async (data) => {
+		const response = await MyAxios.put("/board/column/" + data._id, data);
 		return response;
 	}
 );
 
-// const response = await MyAxios.put("/item/upload", formData, {
-// 	headers: { "Content-Type": "multipart/form-data" },
-// });
-
-export const updateFile = createAsyncThunk(
-	"board/updateFile",
+export const deleteColumn = createAsyncThunk(
+	"board/deleteColumn",
 	async (data) => {
-		const response = await MyAxios.put("/item/upload", data, {
-			headers: { "Content-Type": "multipart/form-data" },
-		});
+		const response = await MyAxios.delete(`/board/${data.boardID}/column/${data.columnID}`);
 		return response;
+	}
+);
+
+export const createColumn = createAsyncThunk(
+	"board/createColumn",
+	async ({ data, id }) => {
+		const response = await MyAxios.post("/board/column/" + id, data);
+		return response;
+	}
+);
+
+export const uploadFile = createAsyncThunk("board/uploadFile", async (data) => {
+	const response = await MyAxios.post("/item/upload", data, {
+		headers: { "Content-Type": "multipart/form-data" },
 	});
+	return response;
+});
 
-export const DeleteBoard = createAsyncThunk(
-	"board/deleteBoard",
-	async (data) => {
-		const response = await MyAxios.delete("/board/" + data);
-		return response;
-	}
-);
+export const updateFile = createAsyncThunk("board/updateFile", async (data) => {
+	const response = await MyAxios.put("/item/upload", data, {
+		headers: { "Content-Type": "multipart/form-data" },
+	});
+	return response;
+});
 
 export const ArchiveBoard = createAsyncThunk(
 	"board/archiveBoard",
@@ -82,50 +98,11 @@ export const toggleFavoriteBoard = createAsyncThunk(
 	}
 );
 
-export const creteView = createAsyncThunk("board/createView", async (data) => {
-	const response = await MyAxios.post("/view/view", data);
-	return response;
+export const getBoard = createAsyncThunk("board/getBoard", async (boardId) => {
+	const response = await MyAxios.get(`/api/board/${boardId}`);
+	return response.data;
 });
 
-export const updateView = createAsyncThunk("board/updateView", async (data) => {
-	const response = await MyAxios.put("/view/view/" + data._id, data);
-	return response;
-});
-
-export const deleteView = createAsyncThunk("board/deleteView", async (data) => {
-	const response = await MyAxios.delete("/view/view/" + data);
-	return response;
-});
-
-export const getViews = createAsyncThunk("board/getViews", async (data) => {
-	const response = await MyAxios.get("/board/view/" + data);
-	return response;
-});
-
-export const createTable = createAsyncThunk(
-	"board/createTable",
-	async (data) => {
-		const response = await MyAxios.post("/table/table", { boardId: data });
-		return response;
-	}
-);
-
-export const updateTable = createAsyncThunk(
-	"table/updateTable",
-	async (data) => {
-		const response = await MyAxios.put("/table/table/" + data._id, data);
-		return response;
-	}
-);
-
-
-export const deleteTable = createAsyncThunk(
-	"board/deleteTable",
-	async (data) => {
-		const response = await MyAxios.delete("/board/table/" + data);
-		return response;
-	}
-);
 
 const BoardReducer = createSlice({
 	name: "board",
@@ -165,6 +142,29 @@ const BoardReducer = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder
+			.addCase(createColumn.pending, (state) => {
+				// la fonction createColumn en attente
+				state.status = "loading";
+			})
+			.addCase(createColumn.fulfilled, (state, action) => {
+				state.status = "succeeded";
+				state.activeBoard.columns.push(action.payload);
+			})
+			.addCase(createColumn.rejected, (state, action) => {
+				state.status = "failed";
+				state.error = action.error.message;
+			})
+			.addCase(GetBoardFromUser.pending, (state) => {
+				state.status = "loading";
+			})
+			.addCase(GetBoardFromUser.fulfilled, (state, action) => {
+				state.status = "succeeded";
+				state.board = action.payload;
+			})
+			.addCase(GetBoardFromUser.rejected, (state, action) => {
+				state.status = "failed";
+				state.error = action.error.message;
+			})
 			.addCase(GetBoards.pending, (state) => {
 				// la fonction GetBoards en attente
 				state.status = "loading";
@@ -263,158 +263,6 @@ const BoardReducer = createSlice({
 				state.status = "failed";
 				state.error = action.error.message;
 			})
-			.addCase(creteView.pending, (state) => {
-				state.status = "loading";
-			})
-			.addCase(creteView.fulfilled, (state, action) => {
-				state.status = "succeeded";
-				state.activeBoard.view.push(action.payload);
-			})
-			.addCase(creteView.rejected, (state, action) => {
-				state.status = "failed";
-				state.error = action.error.message;
-			})
-			.addCase(updateView.pending, (state) => {
-				// la fonction register en attente
-				state.status = "loading";
-			})
-			.addCase(updateView.fulfilled, (state, action) => {
-				// la fonction register réussie
-				state.status = "succeeded";
-				state.activeBoard.view = state.activeBoard.view.map((item) => {
-					if (item._id === action.payload._id) {
-						return action.payload;
-					}
-					return item;
-				});
-				state.selectedView = action.payload;
-				state.isConnected = true;
-			})
-			.addCase(updateView.rejected, (state, action) => {
-				// la fonction register échouée
-				state.status = "failed";
-				state.error = action.error.message;
-			})
-			.addCase(deleteView.pending, (state) => {
-				// la fonction register en attente
-				state.status = "loading";
-			})
-			.addCase(deleteView.fulfilled, (state, action) => {
-				state.status = "succeeded";
-				state.activeBoard.view = state.activeBoard.view.filter((item) => item._id !== action.payload._id);
-				state.selectedView = state.activeBoard.view[0];
-				state.isConnected = true;
-			})
-			.addCase(deleteView.rejected, (state, action) => {
-				state.status = "failed";
-				state.error = action.error.message;
-			})
-			.addCase(getViews.pending, (state) => {
-				state.status = "loading";
-			})
-			.addCase(getViews.fulfilled, (state, action) => {
-				state.status = "succeeded";
-				state.board = state.board.map((item) => {
-					if (item._id === action.payload._id) {
-						return action.payload;
-					}
-					return item;
-				});
-				state.isConnected = true;
-			})
-			.addCase(getViews.rejected, (state, action) => {
-				// la fonction register échouée
-				state.status = "failed";
-				state.error = action.error.message;
-			})
-			.addCase(createTable.pending, (state) => {
-				// la fonction register en attente
-				state.status = "loading";
-			})
-			.addCase(createTable.fulfilled, (state, action) => {
-				// la fonction register réussie
-				state.status = "succeeded";
-				state.activeBoard = action.payload;
-				state.isConnected = true;
-			})
-			.addCase(createTable.rejected, (state, action) => {
-				// la fonction register échouée
-				state.status = "failed";
-				state.error = action.error.message;
-			})
-			.addCase(updateTable.pending, (state) => {
-				// la fonction register en attente
-				state.status = "loading";
-			})
-			.addCase(updateTable.fulfilled, (state, action) => {
-				// la fonction register réussie
-				state.status = "succeeded";
-				state.activeBoard.content = state.activeBoard.content.map((item) => {
-					if (item._id === action.payload._id) {
-						return action.payload;
-					}
-					return item;
-				});
-			})
-			.addCase(updateTable.rejected, (state, action) => {
-				// la fonction register échouée
-				state.status = "failed";
-				state.error = action.error.message;
-			})
-			.addCase(deleteTable.pending, (state) => {
-				// la fonction register en attente
-				state.status = "loading";
-			})
-			.addCase(deleteTable.fulfilled, (state, action) => {
-				// la fonction register réussie
-				state.status = "succeeded";
-				state.board = state.board.map((item) => {
-					if (item._id === action.payload._id) {
-						return action.payload;
-					}
-					return item;
-				});
-				state.isConnected = true;
-			})
-			.addCase(deleteTable.rejected, (state, action) => {
-				state.status = "failed";
-				state.error = action.error.message;
-			})
-			.addCase(updateColumns.pending, (state) => {
-				state.status = "loading";
-			})
-			.addCase(updateColumns.fulfilled, (state, action) => {
-				state.status = "succeeded";
-				state.activeBoard.columns = action.payload.columns;
-				state.isConnected = true;
-			})
-			.addCase(updateColumns.rejected, (state, action) => {
-				state.status = "failed";
-				state.error = action.error.message;
-			})
-			.addCase(updateItem.pending, (state) => {
-				state.status = "loading";
-			})
-			.addCase(updateItem.fulfilled, (state, action) => {
-				state.status = "succeeded";
-				state.activeBoard.content = state.activeBoard.content.map((item) => {
-					if (item._id === action.payload.table) {
-						// Mise à jour des colonnes et recherche de l'élément à modifier
-						item.content = item.content.map((innerItem) => {
-							if (innerItem._id === action.payload._id) {
-								return { ...innerItem, ...action.payload }; // Fusionne l'élément avec les nouvelles données
-							}
-							return innerItem;
-						});
-						item.columns = action.payload.columns; // Met à jour les colonnes si nécessaire
-					}
-					return item;
-				});
-			})
-			.addCase(updateItem.rejected, (state, action) => {
-				state.status = "failed";
-				state.error = action.error.message;
-			})
 			.addCase(GetBoard.pending, (state) => {
 				state.status = "loading";
 			})
@@ -426,65 +274,20 @@ const BoardReducer = createSlice({
 				state.status = "failed";
 				state.error = action.error.message;
 			})
-			.addCase(updateViewSharing.pending, (state) => {
+			.addCase(deleteColumn.pending, (state) => {
 				state.status = "loading";
 			})
-			.addCase(updateViewSharing.fulfilled, (state, action) => {
+			.addCase(deleteColumn.fulfilled, (state, action) => {
 				state.status = "succeeded";
-				state.board = state.activeBoard.view.map((item) => {
-					if (item._id === action.payload._id) {
-						return action.payload;
-					}
-					return item;
-				});
-				state.selectedView = action.payload;
+				state.activeBoard.columns = state.activeBoard.columns.filter((item) => item._id !== action.payload);
 			})
-			.addCase(updateViewSharing.rejected, (state, action) => {
-				state.status = "failed";
-				state.error = action.error.message;
-			})
-			.addCase(createItem.pending, (state) => {
-				state.status = "loading";
-			})
-			.addCase(createItem.fulfilled, (state, action) => {
-				state.status = "succeeded";
-				state.activeBoard.content = state.activeBoard.content.map((item) => {
-					if (item._id === action.payload.table) {
-						item.content.push(action.payload);
-					}
-					return item;
-				}
-				);
-			})
-			.addCase(createItem.rejected, (state, action) => {
-				state.status = "failed";
-				state.error = action.error.message;
-			})
-			.addCase(deleteItem.fulfilled, (state, action) => {
-				state.activeBoard.content = state.activeBoard.content.map((item) => {
-					if (item._id === action.payload.table) {
-						item.content = item.content.filter((innerItem) => innerItem._id !== action.payload._id);
-					}
-					return item;
-				});
-			})
-			.addCase(deleteItem.rejected, (state, action) => {
-				state.status = "failed";
-				state.error = action.error.message;
-			})
-			.addCase(updateFile.pending, (state) => {
-				state.status = "loading";
-			})
-			.addCase(updateFile.fulfilled, (state, action) => {
-				state.status = "succeeded";
-			})
-			.addCase(updateFile.rejected, (state, action) => {
+			.addCase(deleteColumn.rejected, (state, action) => {
 				state.status = "failed";
 				state.error = action.error.message;
 			});
 	},
 });
 
-export const { selectBoard, resetBoard, setOpenTable, SelectedView, getItemById } = BoardReducer.actions;
+export const { selectBoard, resetBoard, setOpenTable, getItemById } = BoardReducer.actions;
 
 export default BoardReducer.reducer;

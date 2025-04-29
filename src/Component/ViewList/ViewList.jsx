@@ -3,25 +3,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
 	creteView,
 	deleteView,
-	GetBoards,
-	SelectedView,
+	selectedView,
 	updateView,
-	updateViewSharing, // Nouvelle action pour gérer le partage
-} from '../../Redux/BoardReducer';
+	updateViewSharing,
+} from '../../Redux/ViewReducer';
 import FilterModal from './FilterModal';
 import OrderModal from './OrderModal';
 import HideModal from './HideModal';
-import { AiOutlineEllipsis } from "react-icons/ai";
 import './ViewList.css';
 import { getAllUsers } from '../../Redux/UserReducer';
+import { AiOutlineEllipsis } from 'react-icons/ai';
 
 const ViewList = () => {
 	const dispatch = useDispatch();
 	const users = useSelector((state) => state.users.users);
 	const user = useSelector((state) => state.auth.user);
-
 	const activeBoard = useSelector((state) => state.board.activeBoard);
-	const activeView = useSelector((state) => state.board.selectedView);
+	const activeView = useSelector((state) => state.view.selectedView);
+	const views = useSelector((state) => state.view.viewList);
 
 	const [viewName, setViewName] = useState(activeView?.name);
 	const [filterModal, setFilterModal] = useState(false);
@@ -58,10 +57,8 @@ const ViewList = () => {
 	const toggleShare = (userId) => {
 		if (!activeView) return;
 
-		// Vérifie si l'utilisateur est déjà partagé
 		const isShared = activeView.sharedWith?.includes(userId);
 
-		// Action Redux pour mettre à jour le partage
 		dispatch(
 			updateViewSharing({
 				...activeView,
@@ -74,18 +71,19 @@ const ViewList = () => {
 	return (
 		<div className="view-list">
 			<div className="view-switcher">
-				{activeBoard?.view?.filter((item) => {
-					return (
-						item.owner.includes(user._id) ||
-						item.sharedWith.includes(user._id) ||
-						user.role == "admin"
-					);
-				})
-					.map((item) => (
+				{views?.
+					filter((item) => {
+						return (
+							item.owner?.includes(user._id) ||
+							item.sharedWith?.includes(user._id) ||
+							user.role == "admin"
+						);
+					}).
+					map((item) => (
 						<div
 							key={item._id}
 							className={activeView?._id === item._id ? "view-active" : "view"}
-							onClick={() => dispatch(SelectedView(item))}
+							onClick={() => dispatch(selectedView(item))}
 						>
 							{item.name}
 							{activeView?._id === item._id && (
@@ -122,6 +120,7 @@ const ViewList = () => {
 									checked={activeView?.sharedWith?.includes(user._id) || false}
 									onChange={() => toggleShare(user._id)}
 								/>
+
 								<nobr>{user.name[0].toUpperCase() + user.name.slice(1)}</nobr>
 							</div>
 						))}
@@ -135,22 +134,24 @@ const ViewList = () => {
 
 			<hr />
 
-			{activeView && activeView.owner.includes(user._id) && (
-				<div className="view-content">
-					<input type="text" placeholder="Search or filter..." />
-					<button
-						onClick={() => setFilterModal(!filterModal)}
-						className={filterModal ? "active" : ""}
-					>
-						Filter
-					</button>
-					{filterModal && <FilterModal close={() => setFilterModal(false)} />}
-					<button onClick={() => setOrderModal(!orderModal)}>Order</button>
-					{orderModal && <OrderModal />}
-					<button onClick={() => setHideModal(!hideModal)}>Hide</button>
-					{hideModal && <HideModal close={() => setHideModal(false)} />}
-				</div>
-			)
+			{activeView && (activeView.owner.includes(user._id)
+				|| user.role == "admin")
+				&& (
+					<div className="view-content">
+						<input type="text" placeholder="Search or filter..." />
+						<button
+							onClick={() => setFilterModal(!filterModal)}
+							className={filterModal ? "active" : ""}
+						>
+							Filter
+						</button>
+						{filterModal && <FilterModal close={() => setFilterModal(false)} />}
+						<button onClick={() => setOrderModal(!orderModal)}>Order</button>
+						{orderModal && <OrderModal setModal={setOrderModal} />}
+						<button onClick={() => setHideModal(!hideModal)}>Hide</button>
+						{hideModal && <HideModal close={() => setHideModal(false)} />}
+					</div>
+				)
 			}
 		</div >
 	);
