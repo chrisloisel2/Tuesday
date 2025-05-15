@@ -33,7 +33,6 @@ const doesItemMatchFilters = (item, filters, columns, cells) => {
 			case 'inférieur':
 				return !isNaN(itemValue) && !isNaN(filter.value) && Number(itemValue) < Number(filter.value);
 			default:
-				console.log("default", itemValue, filterValue);
 				return false;
 		}
 	});
@@ -161,8 +160,13 @@ const Item = ({ itemId, color, columns }) => {
 									/>
 								);
 							case 'diapo':
-								const url = item.columns[value?.diapo]?.value?.split('/')[4];
-								const link = `/cours/${url}/${item.columns[value?.template]?.value}`;
+								const cell = cells[`${item._id}-${value.options[0]}`];
+								const cell1 = cells[`${item._id}-${value.options[1]}`];
+								const url = cell?.value?.split('/')[4];
+								const link = `/cours/${url}/${cell1?.value?.label}`;
+								console.log("link", link);
+								console.log("url", url);
+								console.log("item", item);
 								return (
 									<td key={value._id}>
 										{url ? (

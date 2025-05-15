@@ -1,11 +1,10 @@
 import { motion } from "framer-motion";
 import { Button } from "../ui/button";
 import logo from "../../assets/logo.png";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useNavigation } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 function NavigationBar() {
-	const navigate = useNavigate();
 	const [isScrolled, setIsScrolled] = useState(false);
 
 	useEffect(() => {
@@ -26,42 +25,46 @@ function NavigationBar() {
 				: "bg-transparent"
 				}`}
 		>
-			<h1
+			<a
 				className="text-2xl font-bold text-[#AEEFFF] flex items-center cursor-pointer"
-				onClick={() => navigate("/")}
+				href="/"
 			>
 				<img src={logo} className="h-12" alt="Logo" />
 				Skylonis
-			</h1>
+			</a>
 			<ul className="flex space-x-8 text-lg">
-				<li
+				<Link
 					className="hover:text-[#AEEFFF] transition cursor-pointer"
-					onClick={() => navigate("/formations")}
+					// onClick={() => navigate("/formations")}
+					to="/formations"
 				>
 					Formations
-				</li>
-				<li
+				</Link>
+				<Link
 					className="hover:text-[#AEEFFF] transition cursor-pointer"
-					onClick={() => navigate("/cursus")}
+					// onClick={() => navigate("/cursus")}
+					to="/cursus"
 				>
 					Cursus
-				</li>
-				<li
+				</Link>
+				<Link
 					className="hover:text-[#AEEFFF] transition cursor-pointer"
-					onClick={() => navigate("/about")}
+					// onClick={() => navigate("/about")}
+					to="/about"
 				>
 					A propos
-				</li>
-				<li
+				</Link>
+				<Link
 					className="hover:text-[#AEEFFF] transition cursor-pointer"
-					onClick={() => navigate("/contact")}
+					// onClick={() => navigate("/contact")}
+					to="/contact"
 				>
 					Contact
-				</li>
+				</Link>
 			</ul>
 			<Button
 				className="bg-[#AEEFFF] text-[#1A2B3C] px-6 py-2 rounded-xl hover:bg-[#E8F9FF] transition"
-				onClick={() => navigate("/login")}
+				onClick={() => window.location.href = "/login"}
 			>
 				Connexion
 			</Button>

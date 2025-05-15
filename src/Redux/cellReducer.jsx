@@ -39,10 +39,12 @@ export const getcellsByFormateur = createAsyncThunk(
 );
 
 export const updateCell = createAsyncThunk("cell/updateCell", async (cell) => {
-	console.log("updateCell", cell);
+	console.log("Bite de cheval");
+	console.log("Aled", cell);
 	const columnId = cell.columnId._id ? cell.columnId._id : cell.columnId;
 	console.log("updateCell", cell);
 	const response = await MyAxios.put(`/cell/${cell.itemId}/${columnId}`, cell);
+	console.log("updateCell response", response);
 	return response;
 });
 

@@ -61,6 +61,42 @@ export default function PresentationPage() {
 }
 
 function HeroSection() {
+
+	const sujets = [
+		"Développement Mobile",
+		"Blockchain",
+		"Développement Frontend",
+		"Data Science",
+		"Développement Backend",
+		"Cybersécurité",
+		"Développement Web",
+		"Exploitation de Données",
+		"Visualisation de Données",
+		"Big Data",
+		"Data Engineering",
+		"Data Mining",
+		"Web Scraping",
+		"Cyber Intelligence",
+		"Machine Learning",
+		"Deep Learning",
+		"Power BI",
+		"DevOps",
+		"DevSecOps",
+		"Developement Cloud",
+	];
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			const input = document.querySelector("input");
+			if (input) {
+				input.placeholder = `Devenez un expert en ${sujets[Math.floor(Math.random() * sujets.length)]}`;
+			}
+		}, 1000);
+
+		return () => clearInterval(interval);
+	}
+		, []);
+
 	return (
 		<>
 			<motion.section
@@ -70,7 +106,7 @@ function HeroSection() {
 			>
 				<BackgroundNeuralNetwork />
 				<div
-					className="min-h-screen flex flex-col justify-center items-center text-center space-y-8 pt-40 relative z-10">
+					className="min-h-screen flex flex-col justify-center items-center text-center space-y-8 pt-40 relative z-10 w-full">
 
 					<motion.h1
 						initial={{ y: -50 }}
@@ -83,11 +119,12 @@ function HeroSection() {
 					<p className="text-xl text-[#E8F9FF] max-w-3xl">
 						Skylonis propose des cursus innovants avec une pédagogie personnalisée, adaptée aux enjeux du numérique.
 					</p>
-					<motion.div whileHover={{ scale: 1.1 }}>
-						<Button className="bg-[#AEEFFF] text-[#1A2B3C] rounded-3xl px-12 py-5 text-xl shadow-xl hover:bg-[#E8F9FF] transition z-100 cursor-pointer">
-							Explorer Maintenant
-						</Button>
-					</motion.div>
+					<input
+						type="text"
+						placeholder="Devenez un expert en Intelligence Artificielle"
+						onFocus={(e) => e.target.placeholder = ""}
+						className="bg-[transparent] text-center rounded-3xl px-12 py-5 text-xl shadow-xl  transition w-full max-w-2xl  border-2 border-[#AEEFFF] focus:outline-none focus:text-left focus:ring-2 focus:ring-[#AEEFFF] text-[#E8F9FF]"
+					/>
 				</div>
 			</motion.section >
 		</>
@@ -99,7 +136,8 @@ function BackgroundNeuralNetwork() {
 		x: Math.random() * 100 + "%",
 		y: Math.random() * 100 + "%",
 		color: COLORS[Math.floor(Math.random() * COLORS.length)],
-	}));
+	}
+	));
 
 	const filteredConnections = [];
 	points.forEach((pointA, indexA) => {
@@ -167,6 +205,7 @@ function CoursesSection() {
 							description={course.description}
 							skills={course.skills}
 							rating={course.rating}
+							onClick={() => window.open(`/cursus/${course._id}`, "_self")}
 						/>
 					))}
 			</div>
@@ -174,36 +213,68 @@ function CoursesSection() {
 	);
 }
 
-function GlassCard({ title, icon, description, skills = [], rating, onClick }) {
+export function GlassCard({
+	title,
+	description,
+	skills = [],
+	rating = 0,
+	onClick,
+}) {
 	return (
-		<motion.div
-			whileHover={{ scale: 1.05 }}
-			whileTap={{ scale: 0.95 }}
-			className="bg-[#6B8BA4] bg-opacity-30 rounded-2xl shadow-lg p-8 flex flex-col items-center text-center transition-transform cursor-pointer"
+		<motion.article
 			onClick={onClick}
+			whileHover={{ y: -4 }}
+			transition={{ type: "spring", stiffness: 260, damping: 22 }}
+			className="
+		  relative isolate overflow-hidden rounded-3xl cursor-pointer
+		  grid
+		  grid-rows-[max-content_max-content_auto_max-content_max-content] /* titre | description | filler | skills | stars */
+		  justify-items-center text-center gap-6
+		  bg-gradient-to-br from-[#101B2B]/70 to-[#0C141E]/70 backdrop-blur-md
+		  ring-1 ring-white/10 shadow-xl shadow-black/40
+		  hover:ring-2 hover:ring-cyan-400/70 hover:shadow-cyan-500/20
+		  p-10
+		"
 		>
-			{icon}
-			<h3 className="text-2xl font-semibold mt-6 text-[#E8F9FF]">{title}</h3>
-			<p className="text-[#E8F9FF] mt-4 text-sm leading-relaxed">{description}</p>
-			<div className="flex flex-wrap justify-center gap-2 mt-4">
-				{skills.map((skill, idx) => (
-					<span
-						key={idx}
-						className="bg-[#1A2B3C] bg-opacity-40 px-3 py-1 text-xs text-[#E8F9FF] rounded-full"
-					>
-						{skill}
-					</span>
-				))}
-			</div>
-			<div className="flex mt-6 space-x-1">
+			<span className="pointer-events-none absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-[radial-gradient(ellipse_at_center,rgba(0,179,255,0.25),transparent_70%)]" />
+
+			<h3 className="text-3xl font-semibold tracking-tight text-cyan-300">
+				{title}
+			</h3>
+
+			{/* Description */}
+			<p className="text-sm leading-relaxed text-slate-300 max-w-xs">
+				{description}
+			</p>
+
+			{/* Push automatique des éléments du bas si besoin */}
+			<div className="w-full" />
+
+			{/* Badges compétences */}
+			{skills.length > 0 && (
+				<ul className="flex flex-wrap justify-center gap-2">
+					{skills.map((skill) => (
+						<li
+							key={skill}
+							className="px-3 py-1 text-xs rounded-full bg-white/10 text-slate-200 backdrop-blur-sm"
+						>
+							{skill}
+						</li>
+					))}
+				</ul>
+			)}
+
+			{/* Étoiles */}
+			<div className="flex space-x-1">
 				{[...Array(5)].map((_, i) => (
 					<FaStar
 						key={i}
-						className={`text-xl ${i < rating ? "text-yellow-400" : "text-gray-400"}`}
+						className={`text-lg ${i < rating ? "text-amber-400" : "text-slate-600"
+							}`}
 					/>
 				))}
 			</div>
-		</motion.div>
+		</motion.article>
 	);
 }
 
@@ -237,7 +308,7 @@ function TeachingMethodsSection() {
 					initial={{ opacity: 0, scale: 0.8 }}
 					animate={{ opacity: 1, scale: 1 }}
 					transition={{ duration: 1, delay: 0.5 }}
-					className="w-full lg:w-1/2 h-96"
+					className="w-full h-96"
 				>
 					<ResponsiveContainer width="100%" height="100%">
 						<PieChart>

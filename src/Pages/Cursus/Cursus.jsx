@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { FaCode } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCursus } from "../../Redux/FrontReducer";
+import { useNavigate } from "react-router-dom";
 
 echarts.use([SunburstChart, TooltipComponent, CanvasRenderer]);
 
@@ -102,11 +103,11 @@ function CursusOverview({ title, description, icon: Icon, onClick }) {
 	);
 }
 
-function CursusPage() {
+function Cursus() {
 	const dispatch = useDispatch();
-	const [selectedCursus, setSelectedCursus] = useState(null);
 	const [searchTerm, setSearchTerm] = useState("");
 	const cursus = useSelector((state) => state.front.cursus.data);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		dispatch(fetchCursus());
@@ -118,72 +119,100 @@ function CursusPage() {
 
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white overflow-y-auto px-12 pt-12 flex flex-col items-center justify-center space-y-8 font-sans">
-			{!selectedCursus ? (
-				<div className="flex flex-col md:flex-row gap-12 w-full h-full max-w-[85vw]">
-					<motion.div
-						className="flex flex-col gap-12 p-12 w-full  h-full md:w-2/5 bg-[#1A2B3C] scrollbar-thin scrollbar-thumb-[#AEEFFF] scrollbar-track-[#1A2B3C] rounded-3xl shadow-2xl overflow-y-auto max-h-[80vh]"
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						transition={{ duration: 1 }}
-					>
-						<h2 className="text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#AEEFFF] to-[#4AB3E2]">
-							Cherchez le cursus qui vous convient
-						</h2>
-						<input
-							type="text"
-							placeholder="Rechercher un cursus"
-							value={searchTerm}
-							onChange={(e) => setSearchTerm(e.target.value)}
-							className="p-4 text-[black] rounded-lg placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#AEEFFF] transition w-full"
-						/>
-						<p className="text-lg leading-relaxed text-gray-300">
-							Découvrez notre large gamme de cursus, classés selon leur domaine
-							d'expertise.
-						</p>
-						<ul className="flex flex-col gap-4 text-lg font-medium text-[#AEEFFF]">
-							<li>🌟 Développement Web</li>
-							<li>🌟 Intelligence Artificielle</li>
-							<li>🌟 Big Data</li>
-							<li>🌟 DevOps</li>
-							<li>🌟 Sécurité Informatique</li>
-						</ul>
-					</motion.div>
-
-					<div className="flex flex-col gap-12 bg-[#1A2B3C]  h-full p-12 scrollbar-thin scrollbar-thumb-[#AEEFFF] scrollbar-track-[#1A2B3C] rounded-3xl shadow-2xl overflow-y-auto max-h-[80vh] w-full md:w-4/5">
-						{filteredCursus.map((cursus) => (
-							<CursusOverview
-								key={cursus.id}
-								title={cursus.title}
-								description={cursus.description}
-								icon={FaCode}
-								onClick={() => setSelectedCursus(cursus)}
-							/>
-						))}
-					</div>
-				</div>
-			) : (
+			<div className="flex flex-col md:flex-row gap-10 w-full h-full max-w-[85vw]">
 				<motion.div
-					initial={{ opacity: 0, y: 50 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.8 }}
-					className="w-full max-w-7xl"
+					className="flex flex-col gap-12 p-12 w-full md:w-2/5 bg-[#1A2B3C] scrollbar-thin scrollbar-thumb-[#AEEFFF] scrollbar-track-[#1A2B3C] rounded-3xl shadow-2xl overflow-y-auto h-[85vh]"
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					transition={{ duration: 1 }}
 				>
-					<div className="flex flex-row items-center gap-12 fade-in pt-12">
+					<h2 className="text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#AEEFFF] to-[#4AB3E2]">
+						Cherchez le cursus qui vous convient
+					</h2>
+					<input
+						type="text"
+						placeholder="Rechercher un cursus"
+						value={searchTerm}
+						onChange={(e) => setSearchTerm(e.target.value)}
+						className="p-4 text-[black] rounded-lg placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#AEEFFF] transition w-full"
+					/>
+					<p className="text-lg leading-relaxed text-gray-300">
+						Découvrez notre large gamme de cursus, classés selon leur domaine
+						d'expertise.
+					</p>
+					<ul className="flex flex-col gap-5 text-lg font-medium text-[#AEEFFF]">
 						<button
+							onClick={
+								() => {
+									if (searchTerm === "Développement Web")
+										setSearchTerm("")
+									else
+										setSearchTerm("Développement Web")
+								}
+							}
 							className="bg-[#AEEFFF] text-gray-900 rounded-3xl px-8 py-3 text-lg shadow-xl hover:bg-[#E8F9FF] transition"
-							onClick={() => setSelectedCursus(null)}
-						>
-							Retour
-						</button>
-						<h2 className="text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#AEEFFF] to-[#4AB3E2]">
-							{selectedCursus.title}
-						</h2>
-					</div>
-					<SunburstDiagram id={selectedCursus.id} data={selectedCursus.data} />
+						>Développement Web</button>
+						<button
+							onClick={
+								() => {
+									if (searchTerm === "Intelligence Artificielle")
+										setSearchTerm("")
+									else
+										setSearchTerm("Intelligence Artificielle")
+								}
+							}
+							className="bg-[#AEEFFF] text-gray-900 rounded-3xl px-8 py-3 text-lg shadow-xl hover:bg-[#E8F9FF] transition"
+						>Intelligence Artificielle</button>
+						<button
+							onClick={
+								() => {
+									if (searchTerm === "Big Data")
+										setSearchTerm("")
+									else
+										setSearchTerm("Big Data")
+								}
+							}
+							className="bg-[#AEEFFF] text-gray-900 rounded-3xl px-8 py-3 text-lg shadow-xl hover:bg-[#E8F9FF] transition"
+						>Big Data</button>
+						<button
+							onClick={
+								() => {
+									if (searchTerm === "DevOps")
+										setSearchTerm("")
+									else
+										setSearchTerm("DevOps")
+								}
+							}
+							className="bg-[#AEEFFF] text-gray-900 rounded-3xl px-8 py-3 text-lg shadow-xl hover:bg-[#E8F9FF] transition"
+						>DevOps</button>
+						<button
+							onClick={
+								() => {
+									if (searchTerm === "Cybersécurité")
+										setSearchTerm("")
+									else
+										setSearchTerm("Cybersécurité")
+								}
+							}
+							className="bg-[#AEEFFF] text-gray-900 rounded-3xl px-8 py-3 text-lg shadow-xl hover:bg-[#E8F9FF] transition"
+						>Cybersécurité</button>
+					</ul>
 				</motion.div>
-			)}
+
+				<div className="flex flex-col gap-12 bg-[#1A2B3C]   p-12 scrollbar-thin scrollbar-thumb-[#AEEFFF] scrollbar-track-[#1A2B3C] rounded-3xl shadow-2xl overflow-y-auto h-[85vh] w-full md:w-4/5">
+					{filteredCursus.map((cursus) => (
+						<CursusOverview
+							key={cursus.id}
+							title={cursus.title}
+							description={cursus.description}
+							icon={FaCode}
+							onClick={() => navigate(`/cursus/${cursus._id}`)}
+						/>
+					))}
+				</div>
+			</div>
 		</div>
 	);
 }
 
-export default CursusPage;
+export default Cursus;

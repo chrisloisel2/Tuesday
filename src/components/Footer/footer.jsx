@@ -44,7 +44,7 @@ function FooterSection() {
 			<div className="space-y-6 text-center">
 				<h3 className="text-2xl font-semibold text-[#AEEFFF]">Réseaux Sociaux</h3>
 				<motion.a
-					href="https://www.linkedin.com"
+					href="https://www.linkedin.com/showcase/skylonis/"
 					target="_blank"
 					rel="noopener noreferrer"
 					whileHover={{ scale: 1.2 }}

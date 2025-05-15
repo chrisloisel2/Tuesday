@@ -69,7 +69,7 @@ const ViewList = () => {
 	};
 
 	return (
-		<div className="view-list">
+		<div className="view-list pl-5">
 			<div className="view-switcher">
 				{views?.
 					filter((item) => {

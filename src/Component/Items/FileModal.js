@@ -24,19 +24,27 @@ const FileUpload = ({ onFileUpload, uploading }) => {
 	);
 };
 
-const FilePopover = ({ onClose, onDelete, onView, onEdit, isMdFile }) => (
+const FilePopover = ({ onClose, onDelete, onView, onEdit, onDownload, isMdFile }) => (
 	<div className="absolute top-10 left-0 bg-[#2c2f38] shadow-lg rounded-lg p-3 z-50 w-48">
 		<div className="modal-arrow" />
 		<div className="flex flex-col space-y-2">
 			{isMdFile ? (
-				<button onClick={onEdit} className="text-yellow-500 hover:text-yellow-600 bg-white py-1 rounded">
-					Modifier
-				</button>
+				<>
+					<button onClick={onEdit} className="text-yellow-500 hover:text-yellow-600 bg-white py-1 rounded">
+						Modifier
+					</button>
+					<button onClick={onView} className="text-blue-500 hover:text-blue-600 bg-white py-1 rounded">
+						Voir
+					</button>
+				</>
 			) : (
 				<button onClick={onView} className="text-blue-500 hover:text-blue-600 bg-white py-1 rounded">
 					Voir
 				</button>
 			)}
+			<button onClick={onDownload} className="text-green-500 hover:text-green-600 bg-white py-1 rounded">
+				Télécharger
+			</button>
 			<button onClick={onDelete} className="text-red-500 hover:text-red-600 bg-white py-1 rounded">
 				Supprimer
 			</button>
@@ -156,6 +164,7 @@ const FileCpnt = ({ item, columnId }) => {
 							fileUrl={cell.value}
 							onClose={() => setPopoverOpen(false)}
 							onDelete={handleDelete}
+							onDownload={() => window.open(cell.value, "_blank")}
 							onView={() => setShowPdf(true)}
 							onEdit={openEditor}
 							isMdFile={isMdFile}
