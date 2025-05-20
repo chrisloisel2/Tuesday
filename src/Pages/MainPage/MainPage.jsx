@@ -200,11 +200,10 @@ function CoursesSection() {
 					map((course, index) => (
 						<GlassCard
 							key={index}
-							title={course.title}
-							icon={course.icon}
-							description={course.description}
-							skills={course.skills}
-							rating={course.rating}
+							title={course.Title}
+							description={course.Description}
+							skills={course.Skills}
+							rating={course.Rating}
 							onClick={() => window.open(`/cursus/${course._id}`, "_self")}
 						/>
 					))}
@@ -365,17 +364,19 @@ function FormationsSection() {
 		<section className="space-y-16  pb-8">
 			<SectionHeader title="Nos Formations" description="Explorez nos modules de formation conçus pour tous les niveaux." />
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 ">
-				{formations.map((formation, index) => (
-					<GlassCard
-						key={index}
-						title={formation.title}
-						description={formation.description}
-						skills={formation.skills}
-						rating={formation.rating}
-						icon={<FaChalkboardTeacher className="text-6xl text-yellow-400" />}
-						onClick={() => window.open(`/formation/${formation.customId}`, "_self")}
-					/>
-				))}
+				{formations
+					.slice(0, 6)
+					.map((formation, index) => (
+						<GlassCard
+							key={index}
+							title={formation.title}
+							description={formation.description}
+							skills={formation.skills}
+							rating={formation.rating}
+							icon={<FaChalkboardTeacher className="text-6xl text-yellow-400" />}
+							onClick={() => window.open(`/formation/${formation.customId}`, "_self")}
+						/>
+					))}
 			</div>
 		</section>
 	);

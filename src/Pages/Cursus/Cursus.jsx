@@ -114,7 +114,7 @@ function Cursus() {
 	}, [dispatch]);
 
 	const filteredCursus = cursus.filter((c) =>
-		c.title.toLowerCase().includes(searchTerm.toLowerCase())
+		c.Title.toLowerCase().includes(searchTerm.toLowerCase())
 	);
 
 	return (
@@ -202,9 +202,9 @@ function Cursus() {
 				<div className="flex flex-col gap-12 bg-[#1A2B3C]   p-12 scrollbar-thin scrollbar-thumb-[#AEEFFF] scrollbar-track-[#1A2B3C] rounded-3xl shadow-2xl overflow-y-auto h-[85vh] w-full md:w-4/5">
 					{filteredCursus.map((cursus) => (
 						<CursusOverview
-							key={cursus.id}
-							title={cursus.title}
-							description={cursus.description}
+							key={cursus._id}
+							title={cursus.Title}
+							description={cursus.Description}
 							icon={FaCode}
 							onClick={() => navigate(`/cursus/${cursus._id}`)}
 						/>

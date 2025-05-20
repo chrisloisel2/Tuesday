@@ -1,193 +1,257 @@
-import React from "react";
-import { useParams, Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { motion } from "framer-motion";
-import { FaStar, FaFilePdf, FaArrowLeft } from "react-icons/fa";
-import { usePDF } from "react-to-pdf";
+import BookingPage from "../Booking/BookingPage";
 
-function flattenSkills(nodes = []) {
-	const list = [];
-	nodes.forEach((n) => {
-		if (n.name) list.push(n.name);
-		if (Array.isArray(n.children)) list.push(...flattenSkills(n.children));
-	});
-	return list;
+const LoadingSkeleton = () => (
+	<div className="container mx-auto flex flex-col items-center justify-center h-[60vh] space-y-3 animate-pulse">
+		<div className="h-8 w-1/3 bg-gray-200 dark:bg-gray-700 rounded-md" />
+		<div className="h-60 w-full max-w-3xl bg-gray-200 dark:bg-gray-700 rounded-lg" />
+		<div className="h-4 w-1/2 bg-gray-200 dark:bg-gray-700 rounded-md" />
+		<div className="h-12 w-full max-w-sm bg-gray-200 dark:bg-gray-700 rounded-md" />
+	</div>
+);
+
+const SkillAccordion = ({ programme }) => {
+	if (!programme || programme.length === 0) return null;
+	return (
+		<div className="space-y-3">
+			{programme.map((module, idx) => (
+				<details
+					key={`${module.title}-${idx}`}
+					className="group border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800/40 [&_summary::-webkit-details-marker]:hidden"
+				>
+					<summary className="cursor-pointer select-none p-3 flex items-center justify-between font-medium">
+						<span className="text-blue-600">
+							{module.title}
+							{module.duration && (
+								<span className="text-gray-500 dark:text-gray-400"> ({module.duration})</span>
+							)}
+						</span>
+						<span className="transition-transform group-open:rotate-180">▼</span>
+					</summary>
+
+					<div className="pl-4 pr-2 pb-3 pt-1 space-y-4 text-sm text-gray-700 dark:text-gray-300">
+						{module.objectives && (
+							<div>
+								<h3 className="font-medium">Objectifs :</h3>
+								<ul className="list-disc list-inside space-y-1">
+									{module.objectives.map((obj, i) => (
+										<li key={i}>{obj}</li>
+									))}
+								</ul>
+							</div>
+						)}
+						{
+							console.log(module)
+						}
+						{module.programme && (
+							<div>
+								<h3 className="font-medium">programme :</h3>
+								<ul className="list-disc list-inside space-y-1">
+									{module.programme?.map((module) =>
+										module?.exercises?.map((submodule, i) => (
+											<li key={i}>
+												{module.title}
+											</li>
+										))
+									)}
+								</ul>
+								<h3 className="font-medium">exercices :</h3>
+								<ul className="list-disc list-inside space-y-1">
+									{module.programme?.map((module) =>
+										module?.exercises?.map((submodule, i) => (
+											<li key={i}>
+												{module.exercises}
+											</li>
+										))
+									)}
+								</ul>
+							</div>
+						)}
+						{module.exercises && (
+							<div>
+								<h3 className="font-medium">Exercices :</h3>
+								<ul className="list-disc list-inside space-y-1">
+									{module.exercises.map((ex, j) => (
+										<li key={j}>{ex}</li>
+									))}
+								</ul>
+							</div>
+						)}
+					</div>
+				</details>
+			))}
+		</div>
+	);
+};
+
+const Section = ({ title, children }) => (
+	<section className="space-y-4">
+		<h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">{title}</h2>
+		{children}
+	</section>
+);
+
+function normalizeAndEncodeUrl(url) {
+	const decomposed = url.normalize('NFD');
+	return encodeURI(decomposed);
 }
 
-export default function CursusPage() {
+const CursusDetailPage = () => {
 	const { id } = useParams();
-	const { toPDF, targetRef } = usePDF({ filename: "programme-formation.pdf" });
-	const { data = [], loading, error } = useSelector((state) => state.front.cursus);
-	const cursus = data.find((c) => c._id === id);
+	const dispatch = useDispatch();
+	const cursus = useSelector((state) => state.front.cursus.data).find(
+		(formation) => {
+			return formation._id === id;
+		}
+	);
+	const [booking, setBooking] = useState(false);
 
-	if (loading)
-		return (
-			<section className="min-h-screen flex items-center justify-center bg-[#0B1220] text-slate-300">
-				<p>Chargement du cursus…</p>
-			</section>
-		);
 
-	if (error)
-		return (
-			<section className="min-h-screen flex items-center justify-center bg-[#0B1220] text-red-400">
-				<p>Erreur : {error}</p>
-			</section>
-		);
 
-	if (!cursus)
-		return (
-			<section className="min-h-screen flex items-center justify-center bg-[#0B1220] text-slate-300">
-				<p>Cursus introuvable.</p>
-			</section>
-		);
+
+	if (!cursus) return <LoadingSkeleton />;
 
 	const {
-		title,
-		description,
-		rating = 0,
-		data: { children: modules = [] } = {},
+		Title: title,
+		tagline,
+		Description: description,
+		Rating: rating = 0,
+		Objectifs: objectives = [],
+		Prérequis: prerequisites = [],
+		Modalités: modalities,
+		Content: programme = [],
+		Image: image,
 	} = cursus;
 
-	const skills = flattenSkills(modules);
+	const pdcLink = `https://wavefilesystem.s3.eu-west-3.amazonaws.com/cours/${id}.pdf`;
 
 	return (
-		<section className="min-h-screen bg-[#0B1220] text-slate-200 py-12 px-4 sm:px-6">
-			<div className="max-w-5xl mx-auto grid gap-8">
-				{/* Bouton retour */}
-				<motion.div
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
-					transition={{ delay: 0.2 }}
+		<motion.main
+			initial={{ opacity: 0, y: 24 }}
+			animate={{ opacity: 1, y: 0 }}
+			transition={{ duration: 0.4 }}
+			className="pb-24"
+		>
+			{booking && (
+				<div
+					className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+					onClick={() => setBooking(false)}
 				>
-					<Link
-						to="/formations"
-						className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors"
-					>
-						<FaArrowLeft className="text-sm" />
-						<span>Retour aux formations</span>
-					</Link>
-				</motion.div>
+					<BookingPage formation={cursus} setBooking={setBooking} />
+				</div>
+			)}
 
-				{/* HEADER */}
-				<motion.header
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.6 }}
-					className="text-center"
-					ref={targetRef}
-				>
-					<h1 className="text-3xl sm:text-4xl font-bold text-cyan-400 mb-4">
+			{/* HERO */}
+			<div className="relative w-full h-64 md:h-96 overflow-hidden">
+				{image && (
+					<img
+						src={image}
+						alt={title}
+						className="absolute inset-0 w-full h-full object-cover"
+					/>
+				)}
+				<div className="absolute inset-0 bg-black/50" />
+				<div className="relative z-10 max-w-6xl mx-auto px-4 h-full flex flex-col justify-center">
+					<h1 className="text-3xl md:text-5xl font-extrabold text-white mb-2 drop-shadow-lg">
 						{title}
 					</h1>
-					<p className="mx-auto max-w-3xl text-base sm:text-lg leading-relaxed text-slate-300 mb-6">
-						{description}
-					</p>
+					{tagline && <p className="text-lg md:text-xl text-gray-200 max-w-2xl">{tagline}</p>}
+					<div className="mt-6 flex flex-wrap gap-4 text-sm md:text-base text-gray-200">
+						<span className="px-3 py-1 bg-white/20 rounded-full backdrop-blur-sm">
+							⭐ {rating}/5
+						</span>
+					</div>
+				</div>
+			</div>
 
-					<div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-						{skills.length > 0 && (
-							<ul className="flex flex-wrap justify-center gap-2">
-								{skills.slice(0, 5).map((skill) => (
-									<li
-										key={skill}
-										className="px-3 py-1 text-xs rounded-full bg-white/10 text-slate-200 backdrop-blur-sm"
-									>
-										{skill}
-									</li>
+			{/* BREADCRUMB */}
+			<nav className="max-w-7xl mx-auto px-4 mt-6 text-sm text-gray-500 dark:text-gray-400">
+				<ol className="flex items-center space-x-2">
+					<li>
+						<Link to="/cursus" className="hover:text-blue-600 dark:hover:text-blue-400">
+							Cursus
+						</Link>
+					</li>
+					<li>/</li>
+					<li className="text-gray-800 dark:text-gray-200 font-medium">{title}</li>
+				</ol>
+			</nav>
+
+			<div className="max-w-7xl mx-auto px-4 mt-12 flex flex-col lg:flex-row gap-12">
+				{/* MAIN COLUMN */}
+				<div className="flex-1 space-y-12">
+					<Section title="Description">
+						<p className="leading-relaxed text-gray-700 dark:text-gray-300 whitespace-pre-line">
+							{description}
+						</p>
+					</Section>
+
+					{objectives.length > 0 && (
+						<Section title="Objectifs pédagogiques">
+							<ul className="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
+								{objectives.map((obj, idx) => (
+									<li key={idx}>{obj}</li>
 								))}
 							</ul>
-						)}
+						</Section>
+					)}
 
-						<div className="flex items-center gap-4">
-							<div className="flex space-x-1">
-								{[...Array(5)].map((_, i) => (
-									<FaStar
-										key={i}
-										className={`text-lg ${i < rating ? "text-amber-400" : "text-slate-600"}`}
-									/>
+					{prerequisites.length > 0 && (
+						<Section title="Prérequis">
+							<ul className="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
+								{prerequisites.map((pre, idx) => (
+									<li key={idx}>{pre}</li>
 								))}
-							</div>
-							<button
-								onClick={toPDF}
-								className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors text-sm"
+							</ul>
+						</Section>
+					)}
+
+					<Section title="Programme détaillé">
+						{programme.length ? <SkillAccordion programme={programme} /> : <p className="text-gray-500">Programme à venir…</p>}
+					</Section>
+
+					{modalities && (
+						<Section title="Modalités, méthodes et moyens pédagogiques">
+							<p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">
+								{modalities}
+							</p>
+						</Section>
+					)}
+				</div>
+
+				{/* SIDEBAR */}
+				<aside className="w-full lg:w-80 space-y-6 lg:sticky lg:top-24 self-start">
+					<div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-900 shadow-sm space-y-6">
+						<div className="flex items-center space-x-2 text-lg">
+							<span role="img" aria-label="star" className="text-yellow-500">
+								⭐
+							</span>
+							<span className="font-medium text-gray-900 dark:text-gray-100">{rating}/5</span>
+						</div>
+						<button
+							onClick={() => setBooking(true)}
+							className="block w-full text-center py-3 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors cursor-pointer"
+						>
+							S'inscrire maintenant
+						</button>
+						{pdcLink && (
+							<a
+								href={normalizeAndEncodeUrl(pdcLink)}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="block w-full text-center py-2 rounded-md border border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-sm font-medium transition-colors"
 							>
-								<FaFilePdf className="text-cyan-400" />
-								<span>Exporter le programme</span>
-							</button>
-						</div>
+								Télécharger le programme (PDF)
+							</a>
+						)}
 					</div>
-				</motion.header>
-
-				{/* PROGRAMME DÉTAILLÉ */}
-				{modules.length > 0 && (
-					<section className="mt-8">
-						<h2 className="text-2xl font-semibold text-cyan-300 mb-6">
-							Programme détaillé
-						</h2>
-
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-							{modules.map((mod, idx) => (
-								<motion.div
-									key={mod._id?.$oid ?? idx}
-									initial={{ opacity: 0, y: 20 }}
-									whileInView={{ opacity: 1, y: 0 }}
-									transition={{ delay: idx * 0.05 }}
-									viewport={{ once: true }}
-									className="bg-slate-800/50 rounded-xl p-5 backdrop-blur-sm border border-slate-700/50"
-								>
-									<h3 className="text-lg font-semibold text-slate-100 mb-3 flex items-center gap-2">
-										<span className="text-cyan-400 font-mono text-sm">
-											{String(idx + 1).padStart(2, "0")}.
-										</span>
-										{mod.name}
-									</h3>
-
-									{Array.isArray(mod.children) && (
-										<ul className="space-y-2">
-											{mod.children.map((sub) => (
-												<li
-													key={sub._id?.$oid ?? sub.name}
-													className="text-sm text-slate-300 pl-6 relative"
-												>
-													<div className="absolute left-2 top-2 w-1.5 h-1.5 rounded-full bg-cyan-400"></div>
-													{sub.name}
-													{sub.children && (
-														<ul className="mt-2 space-y-1 pl-4">
-															{sub.children.map((subsub) => (
-																<li
-																	key={subsub._id?.$oid ?? subsub.name}
-																	className="text-xs text-slate-400 pl-4 relative before:absolute before:left-0 before:top-2 before:w-2 before:h-px before:bg-slate-500"
-																>
-																	{subsub.name}
-																</li>
-															))}
-														</ul>
-													)}
-												</li>
-											))}
-										</ul>
-									)}
-								</motion.div>
-							))}
-						</div>
-					</section>
-				)}
-
-				{/* CTA */}
-				<motion.div
-					initial={{ scale: 0.9, opacity: 0 }}
-					whileInView={{ scale: 1, opacity: 1 }}
-					transition={{ type: "spring", stiffness: 200, damping: 15 }}
-					viewport={{ once: true }}
-					className="mt-12 text-center"
-				>
-					<Link
-						to={`/inscription/${id}`}
-						className="inline-flex items-center gap-3 px-8 py-3 rounded-full bg-cyan-500 text-slate-900 font-semibold shadow-lg hover:bg-cyan-400 transition hover:shadow-cyan-500/20"
-					>
-						S'inscrire maintenant
-					</Link>
-				</motion.div>
+				</aside>
 			</div>
-		</section>
+		</motion.main>
 	);
-}
+};
+
+export default CursusDetailPage;

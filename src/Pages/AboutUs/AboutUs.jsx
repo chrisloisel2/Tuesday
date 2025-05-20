@@ -5,6 +5,7 @@ import ReactECharts from "echarts-for-react";
 import { useEffect } from "react";
 import * as echarts from "echarts";
 import vision from "../../assets/vision.svg";
+import { Link } from "react-router-dom";
 
 function AboutUs() {
 	return (
@@ -16,12 +17,11 @@ function AboutUs() {
 			className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white overflow-y-auto flex flex-col item-center justify-center pl-12 pr-12"
 		>
 			<MethodologySection />
-			<div className="flex flex-col items-center justify-center space-y-20 pb-12">
+			<div className="flex flex-col items-center justify-center pb-12 gap-20 space-y-12">
 				<IntroductionSection />
 				<VisionSection />
 				<MissionSection />
 				<SatisfactionSection />
-				<QualitySection />
 				<JourneySection />
 			</div>
 		</motion.section>
@@ -33,12 +33,12 @@ const IntroductionSection = () => (
 		initial={{ opacity: 0, y: 30 }}
 		animate={{ opacity: 1, y: 0 }}
 		transition={{ duration: 1 }}
-		className="text-center space-y-8"
+		className="text-center space-y-12"
 	>
 		<h2 className="text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#AEEFFF] to-[#4AB3E2]">
 			Qui Sommes-Nous ?
 		</h2>
-		<p className="text-xl max-w-5xl mx-auto">
+		<p className="text-xl max-w-7xl mx-auto">
 			Chez Skylonis, nous sommes passionnés par l'innovation, la technologie et la transmission du savoir. Notre équipe est composée d'experts issus de différents horizons, tous animés par une vision commune : rendre la formation accessible, pertinente et inspirante pour tous. Nous croyons fermement que l'apprentissage ne se limite pas aux salles de classe, mais se vit à travers des projets, des collaborations et des expériences enrichissantes.
 		</p>
 
@@ -177,29 +177,12 @@ const MethodologySection = () => {
 	);
 };
 
-const QualitySection = () => (
-	<motion.div
-		initial={{ opacity: 0, y: 30 }}
-		animate={{ opacity: 1, y: 0 }}
-		transition={{ duration: 1, delay: 0.5 }}
-		className="text-center space-y-8"
-	>
-		<h2 className="text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#AEEFFF] to-[#4AB3E2]">
-			Nos Gages de Qualité
-		</h2>
-		<p className="text-xl max-w-5xl mx-auto">
-			Skylonis est certifié <strong>Qualiopi</strong>, garantissant la conformité et l'efficacité de nos processus de formation. Cette certification témoigne de notre engagement envers la qualité, la transparence et la satisfaction de nos apprenants.
-		</p>
-		<img src="/images/qualiopi-badge.png" alt="Certification Qualiopi" className="w-24 mx-auto" />
-	</motion.div>
-);
-
 const JourneySection = () => (
 	<motion.div
 		initial={{ opacity: 0, y: 30 }}
 		animate={{ opacity: 1, y: 0 }}
 		transition={{ duration: 1, delay: 0.7 }}
-		className="text-center space-y-8"
+		className="text-center  flex flex-col items-center justify-center gap-12"
 	>
 		<h2 className="text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#AEEFFF] to-[#4AB3E2]">
 			Notre Parcours
@@ -207,9 +190,11 @@ const JourneySection = () => (
 		<p className="text-xl max-w-5xl mx-auto">
 			Notre aventure a commencé à l'école 42, où nous avons appris à résoudre des problèmes complexes en autonomie. Cette expérience unique a façonné notre vision de la formation : accessible, pratique et orientée résultats. Depuis, nous avons formé des centaines de professionnels, développé des programmes innovants et contribué à la montée en compétences de nombreuses entreprises.
 		</p>
-		<Button className="bg-[#AEEFFF] text-[#1A2B3C] rounded-3xl px-16 py-5 text-xl shadow-2xl hover:bg-[#E8F9FF] transition">
-			Rejoignez-Nous
-		</Button>
+		<Link to="/contact"
+			className="text-lg font-semibold text-[#AEEFFF] hover:text-[#4AB3E2] transition duration-300 border-2 border-[#AEEFFF] hover:border-[#4AB3E2] px-4 py-2 rounded-lg"
+		>
+			Nous contacter
+		</Link>
 	</motion.div>
 );
 

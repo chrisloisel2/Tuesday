@@ -20,7 +20,7 @@ function ContactSection() {
 		}
 
 		try {
-			const response = await axios.post("https://skylonis.com/contact", {
+			const response = await axios.post("https://hook.eu1.make.com/d2cn2xk3u764pqk95wg4uyn26wkwd89s", {
 				name,
 				email,
 				subject,
@@ -132,14 +132,18 @@ function ContactSection() {
 						className="p-4 rounded-lg bg-[#1A2B3C] text-[#E8F9FF] placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#AEEFFF] transition"
 					></textarea>
 				</motion.div>
-				<motion.div whileHover={{ scale: 1.1 }}>
-					<Button className="bg-[#AEEFFF] text-[#1A2B3C] rounded-3xl px-16 py-5 text-xl shadow-2xl hover:bg-[#E8F9FF] transition">
-						Envoyer
-					</Button>
-				</motion.div>
+				<div className="flex justify-center">
+					<input
+						type="button"
+						value="Envoyer"
+						onFocus={(e) => e.target.placeholder = ""}
+						onClick={handleSubmit}
+						className="bg-[transparent] text-center rounded-3xl px-12 py-5 text-l shadow-xl  transition border-2 border-[#AEEFFF] focus:outline-none focus:text-center focus:ring-2 focus:ring-[#AEEFFF] text-[#E8F9FF] cursor-pointer"
+					/>
+				</div>
 				{status && <p className="text-center mt-4">{status}</p>}
 			</motion.form>
-		</motion.section>
+		</motion.section >
 	);
 }
 

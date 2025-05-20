@@ -25,13 +25,14 @@ function NavigationBar() {
 				: "bg-transparent"
 				}`}
 		>
-			<a
+
+			<Link
 				className="text-2xl font-bold text-[#AEEFFF] flex items-center cursor-pointer"
-				href="/"
+				to="/"
 			>
 				<img src={logo} className="h-12" alt="Logo" />
 				Skylonis
-			</a>
+			</Link>
 			<ul className="flex space-x-8 text-lg">
 				<Link
 					className="hover:text-[#AEEFFF] transition cursor-pointer"
@@ -68,7 +69,7 @@ function NavigationBar() {
 			>
 				Connexion
 			</Button>
-		</motion.nav>
+		</motion.nav >
 	);
 }
 

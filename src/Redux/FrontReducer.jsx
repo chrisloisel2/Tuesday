@@ -45,7 +45,12 @@ const FrontReducer = createSlice({
 			state.formations.selectedFormation = state.formations.data.find(
 				(formation) => formation.customId === action.payload
 			);
-		}
+		},
+		getCursusByCustomId: (state, action) => {
+			state.cursus.selectedCursus = state.cursus.data.find(
+				(cursus) => cursus.customId === action.payload
+			);
+		},
 	},
 	extraReducers: (builder) => {
 		builder
