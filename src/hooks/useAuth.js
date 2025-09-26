@@ -39,13 +39,17 @@ export function AuthProvider({ children }) {
                 }
         }, [user]);
 
-        const login = useCallback((username, password) => {
+        const login = useCallback((username, password, overrides = {}) => {
                 const match = authorizedUsers.find(
                         (allowedUser) => allowedUser.username === username && allowedUser.password === password,
                 );
 
                 if (match) {
-                        const authenticatedUser = { username: match.username };
+                        const authenticatedUser = {
+                                username: match.username,
+                                boardUrl: overrides.boardUrl ?? match.boardUrl ?? null,
+                                boardLabel: overrides.boardLabel ?? match.boardLabel ?? null,
+                        };
                         setUser(authenticatedUser);
                         return { success: true, user: authenticatedUser };
                 }
