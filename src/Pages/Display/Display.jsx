@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
 import { unwrapArray } from "../../services/catalogAdapters";
+import { useAuth } from "../../hooks/useAuth";
 import "./Display.css";
 
 const parseBoards = (raw) => {
@@ -55,7 +57,18 @@ const FALLBACK_BOARDS = [
 ];
 
 const Display = () => {
-        const envBoards = useMemo(() => parseBoards(process.env.REACT_APP_MONDAY_BOARDS), []);
+        const { user: currentUser } = useAuth();
+        const userBoard = useMemo(() => {
+                if (!currentUser?.boardUrl) {
+                        return null;
+                }
+
+                return {
+                        name: currentUser.boardLabel ?? "Tableau Monday",
+                        url: currentUser.boardUrl,
+                };
+        }, [currentUser]);
+        const envBoards = useMemo(() => (userBoard ? [] : parseBoards(process.env.REACT_APP_MONDAY_BOARDS)), [userBoard]);
         const [boards, setBoards] = useState([]);
         const [activeBoard, setActiveBoard] = useState(null);
         const [loading, setLoading] = useState(true);
@@ -63,6 +76,34 @@ const Display = () => {
         const [error, setError] = useState("");
 
         useEffect(() => {
+                if (!currentUser) {
+                        setBoards([]);
+                        setActiveBoard(null);
+                        setStatusMessage("");
+                        setError("");
+                        setLoading(false);
+                        return;
+                }
+
+                if (userBoard) {
+                        setBoards((existingBoards) => {
+                                if (existingBoards.length === 1 && existingBoards[0].url === userBoard.url) {
+                                        return existingBoards;
+                                }
+                                return [userBoard];
+                        });
+                        setActiveBoard((current) => {
+                                if (current && current.url === userBoard.url) {
+                                        return current;
+                                }
+                                return userBoard;
+                        });
+                        setStatusMessage("");
+                        setError("");
+                        setLoading(false);
+                        return;
+                }
+
                 const controller = new AbortController();
                 const endpoint = process.env.REACT_APP_MAKE_DISPLAY_URL;
 
@@ -109,7 +150,7 @@ const Display = () => {
                 return () => {
                         controller.abort();
                 };
-        }, [envBoards]);
+        }, [currentUser, envBoards, userBoard]);
 
         useEffect(() => {
                 if (!boards.length) {
@@ -124,7 +165,21 @@ const Display = () => {
                 });
         }, [boards]);
 
-        if (!activeBoard && !loading) {
+        if (!currentUser) {
+                return (
+                        <div className="display-empty">
+                                <MdOutlineDashboardCustomize size={56} />
+                                <p>Vous devez être connecté pour consulter vos tableaux Monday.</p>
+                                <p>
+                                        <Link to="/login" className="display-board-button active" style={{ maxWidth: "240px" }}>
+                                                Se connecter
+                                        </Link>
+                                </p>
+                        </div>
+                );
+        }
+
+        if (!activeBoard && !loading && !userBoard) {
                 return (
                         <div className="display-empty">
                                 <MdOutlineDashboardCustomize size={56} />
@@ -137,31 +192,33 @@ const Display = () => {
 
         return (
                 <div className="display-layout">
-                        <aside className="display-sidebar">
-                                <h2>Tableaux Monday</h2>
-                                {loading && (
-                                        <p className="display-status">Chargement des tableaux…</p>
-                                )}
-                                {error && <p className="display-error">{error}</p>}
-                                {statusMessage && <p className="display-status">{statusMessage}</p>}
-                                <ul>
-                                        {boards.map((board) => (
-                                                <li key={board.url}>
-                                                        <button
-                                                                type="button"
-                                                                onClick={() => setActiveBoard(board)}
-                                                                className={
-                                                                        activeBoard && activeBoard.url === board.url
-                                                                                ? "display-board-button active"
-                                                                                : "display-board-button"
-                                                                }
-                                                        >
-                                                                {board.name}
-                                                        </button>
-                                                </li>
-                                        ))}
-                                </ul>
-                        </aside>
+                        {!userBoard && (
+                                <aside className="display-sidebar">
+                                        <h2>Tableaux Monday</h2>
+                                        {loading && (
+                                                <p className="display-status">Chargement des tableaux…</p>
+                                        )}
+                                        {error && <p className="display-error">{error}</p>}
+                                        {statusMessage && <p className="display-status">{statusMessage}</p>}
+                                        <ul>
+                                                {boards.map((board) => (
+                                                        <li key={board.url}>
+                                                                <button
+                                                                        type="button"
+                                                                        onClick={() => setActiveBoard(board)}
+                                                                        className={
+                                                                                activeBoard && activeBoard.url === board.url
+                                                                                        ? "display-board-button active"
+                                                                                        : "display-board-button"
+                                                                        }
+                                                                >
+                                                                        {board.name}
+                                                                </button>
+                                                        </li>
+                                                ))}
+                                        </ul>
+                                </aside>
+                        )}
                         <main className="display-content">
                                 {activeBoard ? (
                                         <motion.div
@@ -178,6 +235,15 @@ const Display = () => {
                                                         loading="lazy"
                                                 />
                                         </motion.div>
+                                ) : userBoard ? (
+                                        <div className="display-empty">
+                                                <MdOutlineDashboardCustomize size={56} />
+                                                <p>
+                                                        {loading
+                                                                ? "Chargement de votre tableau Monday…"
+                                                                : "Impossible de charger votre tableau Monday personnel pour le moment."}
+                                                </p>
+                                        </div>
                                 ) : (
                                         <div className="display-empty">
                                                 <MdOutlineDashboardCustomize size={56} />

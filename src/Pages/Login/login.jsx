@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Button } from "../../components/ui/button";
 import { useAuth } from "../../hooks/useAuth";
+import { authorizedUsers } from "../../data/users";
 
 function LoginPage() {
         const navigate = useNavigate();
@@ -23,7 +24,20 @@ function LoginPage() {
 
         const handleSubmit = (event) => {
                 event.preventDefault();
-                const result = login(credentials.username, credentials.password);
+                const matchedUser = authorizedUsers.find(
+                        (candidate) =>
+                                candidate.username === credentials.username &&
+                                candidate.password === credentials.password,
+                );
+
+                const boardOverrides = matchedUser
+                        ? {
+                                  boardUrl: matchedUser.boardUrl,
+                                  boardLabel: matchedUser.boardLabel,
+                          }
+                        : undefined;
+
+                const result = login(credentials.username, credentials.password, boardOverrides);
 
                 if (result.success) {
                         setError("");
