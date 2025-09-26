@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
 import { Button } from "../ui/button";
 import logo from "../../assets/logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 function NavigationBar() {
-	const [isScrolled, setIsScrolled] = useState(false);
+        const navigate = useNavigate();
+        const [isScrolled, setIsScrolled] = useState(false);
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -65,7 +66,7 @@ function NavigationBar() {
 			</ul>
                         <Button
                                 className="bg-[#AEEFFF] text-[#1A2B3C] px-6 py-2 rounded-xl hover:bg-[#E8F9FF] transition"
-                                onClick={() => window.location.href = "/display"}
+                                onClick={() => navigate("/login")}
                         >
                                 Tableau Monday
                         </Button>

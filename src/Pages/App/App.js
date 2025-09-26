@@ -9,6 +9,7 @@ import Display from "../Display/Display";
 import FormationDetailPage from "../Formations/formationDetail";
 import FormationPage from "../Formations/formations";
 import PresentationPage from "../MainPage/MainPage";
+import LoginPage from "../Login/login";
 import NavigationBar from "../../components/NavigationBar/NavigationBar";
 import FooterSection from "../../components/Footer/footer";
 
@@ -35,6 +36,7 @@ function App() {
                                 <Route path="/cursus/:id" element={<CursusPage />} />
                                 <Route path="/about" element={<AboutUs />} />
                                 <Route path="/formations" element={<FormationPage />} />
+                                <Route path="/login" element={<LoginPage />} />
                                 <Route path="/display" element={<Display />} />
                         </Routes>
                         <FooterSection />
