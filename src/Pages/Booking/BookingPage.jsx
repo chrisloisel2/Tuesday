@@ -15,7 +15,6 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { fr } from "date-fns/locale";
 import { motion } from "framer-motion";
-import MyAxios from "../../Interceptor/MyAxios";
 import axios from "axios";
 
 export default function PreTrainingBooking({ formation, setBooking }) {
@@ -24,7 +23,6 @@ export default function PreTrainingBooking({ formation, setBooking }) {
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [company, setCompany] = useState("");
-	const [position, setPosition] = useState("");
 	const [goals, setGoals] = useState("");
 	const [format, setFormat] = useState("");
 	const [status, setStatus] = useState("idle");

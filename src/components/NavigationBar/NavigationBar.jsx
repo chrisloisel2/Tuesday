@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Button } from "../ui/button";
 import logo from "../../assets/logo.png";
-import { Link, useNavigate, useNavigation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 function NavigationBar() {
@@ -63,14 +63,14 @@ function NavigationBar() {
 					Contact
 				</Link>
 			</ul>
-			<Button
-				className="bg-[#AEEFFF] text-[#1A2B3C] px-6 py-2 rounded-xl hover:bg-[#E8F9FF] transition"
-				onClick={() => window.location.href = "/login"}
-			>
-				Connexion
-			</Button>
-		</motion.nav >
-	);
+                        <Button
+                                className="bg-[#AEEFFF] text-[#1A2B3C] px-6 py-2 rounded-xl hover:bg-[#E8F9FF] transition"
+                                onClick={() => window.location.href = "/display"}
+                        >
+                                Tableau Monday
+                        </Button>
+                </motion.nav >
+        );
 }
 
 export default NavigationBar;

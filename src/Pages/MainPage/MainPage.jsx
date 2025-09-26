@@ -1,101 +1,81 @@
 import { motion } from "framer-motion";
 import {
-	FaMobile,
-	FaStar,
-	FaUniversity,
-	FaChalkboardTeacher,
-	FaAward,
-	FaLaptopCode,
-	FaRobot,
-	FaChartLine,
-	FaBookOpen,
-	FaLightbulb,
-	FaHandsHelping,
-	FaProjectDiagram,
-	FaChartPie,
+        FaStar,
+        FaUniversity,
+        FaChalkboardTeacher,
+        FaAward,
+        FaLaptopCode,
+        FaBookOpen,
+        FaLightbulb,
+        FaHandsHelping,
+        FaProjectDiagram,
+        FaChartPie,
 } from "react-icons/fa";
-import { helix } from 'ldrs'
 import { Button } from "../../components/ui/button";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchCursus, fetchFormation, resetAll } from "../../Redux/FrontReducer";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { formations as formationsData, cursusList } from "../../data/content";
 
 const COLORS = ["#AEEFFF", "#4AB3E2", "#1A2B3C", "#E8F9FF", "#6B8BA4"];
 
 const teachingData = [
-	{ name: "Apprentissage Pratique", value: 45, icon: <FaHandsHelping />, color: "#AE0E40" },
-	{ name: "Projets Concrets", value: 25, icon: <FaProjectDiagram />, color: "#9A031E" },
-	{ name: "Approfondissement Théorique", value: 15, icon: <FaBookOpen />, color: "#FB8B24" },
-	{ name: "Innovation et Créativité", value: 10, icon: <FaLightbulb />, color: "#E36414" },
-	{ name: "Suivi Personnalisé", value: 5, icon: <FaChartPie />, color: "#0F4C5C" },
+        { name: "Apprentissage Pratique", value: 45, icon: <FaHandsHelping />, color: "#AE0E40" },
+        { name: "Projets Concrets", value: 25, icon: <FaProjectDiagram />, color: "#9A031E" },
+        { name: "Approfondissement Théorique", value: 15, icon: <FaBookOpen />, color: "#FB8B24" },
+        { name: "Innovation et Créativité", value: 10, icon: <FaLightbulb />, color: "#E36414" },
+        { name: "Suivi Personnalisé", value: 5, icon: <FaChartPie />, color: "#0F4C5C" },
+];
+
+const HERO_TOPICS = [
+        "Développement Mobile",
+        "Blockchain",
+        "Développement Frontend",
+        "Data Science",
+        "Développement Backend",
+        "Cybersécurité",
+        "Développement Web",
+        "Exploitation de Données",
+        "Visualisation de Données",
+        "Big Data",
+        "Data Engineering",
+        "Data Mining",
+        "Web Scraping",
+        "Cyber Intelligence",
+        "Machine Learning",
+        "Deep Learning",
+        "Power BI",
+        "DevOps",
+        "DevSecOps",
+        "Developement Cloud",
 ];
 
 export default function PresentationPage() {
-	const dispatch = useDispatch();
-	const formationStatus = useSelector((state) => state.front.formations.status);
-	const cursusStatus = useSelector((state) => state.front.cursus.status);
-	useEffect(() => {
-		if (formationStatus === "idle") {
-			dispatch(fetchFormation());
-		}
-		if (cursusStatus === "idle") {
-			dispatch(fetchCursus());
-		}
-	}, [dispatch, formationStatus]);
-
-
-	return (
-		<>
-			<div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white overflow-y-auto space-y-40 pl-12 pr-12  pb-20">
-				<HeroSection />
-				<CoursesSection />
-				<TeachingMethodsSection />
-				<FormationsSection />
-				<AboutSection />
-				<ContactSection />
-			</div>
-		</>
-	);
+        return (
+                <>
+                        <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white overflow-y-auto space-y-40 pl-12 pr-12  pb-20">
+                                <HeroSection />
+                                <CoursesSection cursus={cursusList} />
+                                <TeachingMethodsSection />
+                                <FormationsSection formations={formationsData} />
+                                <AboutSection />
+                                <ContactSection />
+                        </div>
+                </>
+        );
 }
 
 function HeroSection() {
+        useEffect(() => {
+                const interval = setInterval(() => {
+                        const input = document.querySelector("input");
+                        if (input) {
+                                input.placeholder = `Devenez un expert en ${HERO_TOPICS[Math.floor(Math.random() * HERO_TOPICS.length)]}`;
+                        }
+                }, 1000);
 
-	const sujets = [
-		"Développement Mobile",
-		"Blockchain",
-		"Développement Frontend",
-		"Data Science",
-		"Développement Backend",
-		"Cybersécurité",
-		"Développement Web",
-		"Exploitation de Données",
-		"Visualisation de Données",
-		"Big Data",
-		"Data Engineering",
-		"Data Mining",
-		"Web Scraping",
-		"Cyber Intelligence",
-		"Machine Learning",
-		"Deep Learning",
-		"Power BI",
-		"DevOps",
-		"DevSecOps",
-		"Developement Cloud",
-	];
-
-	useEffect(() => {
-		const interval = setInterval(() => {
-			const input = document.querySelector("input");
-			if (input) {
-				input.placeholder = `Devenez un expert en ${sujets[Math.floor(Math.random() * sujets.length)]}`;
-			}
-		}, 1000);
-
-		return () => clearInterval(interval);
-	}
-		, []);
+                return () => clearInterval(interval);
+        }, []);
 
 	return (
 		<>
@@ -187,29 +167,27 @@ function BackgroundNeuralNetwork() {
 	);
 }
 
-function CoursesSection() {
-	const formations = useSelector((state) => state.front.cursus.data);
-	return (
-		<section className="space-y-16 pb-8">
-			<SectionHeader
-				title="Nos Cursus"
-				description="Des parcours complets pour devenir expert dans votre domaine. Démarrez de zéro et atteignez vos objectifs professionels en un temps record."
-			/>
-			<div className="grid grid-cols-1 md:grid-cols-4 gap-12 z-1">
-				{formations.slice(0, 4).
-					map((course, index) => (
-						<GlassCard
-							key={index}
-							title={course.Title}
-							description={course.Description}
-							skills={course.Skills}
-							rating={course.Rating}
-							onClick={() => window.open(`/cursus/${course._id}`, "_self")}
-						/>
-					))}
-			</div>
-		</section>
-	);
+function CoursesSection({ cursus }) {
+        return (
+                <section className="space-y-16 pb-8">
+                        <SectionHeader
+                                title="Nos Cursus"
+                                description="Des parcours complets pour devenir expert dans votre domaine. Démarrez de zéro et atteignez vos objectifs professionels en un temps record."
+                        />
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 z-1">
+                                {cursus.slice(0, 4).map((course, index) => (
+                                                <GlassCard
+                                                        key={index}
+                                                        title={course.Title}
+                                                        description={course.Description}
+                                                        skills={course.Skills}
+                                                        rating={course.Rating}
+                                                        onClick={() => window.open(`/cursus/${course._id}`, "_self")}
+                                                />
+                                        ))}
+                        </div>
+                </section>
+        );
 }
 
 export function GlassCard({
@@ -356,17 +334,14 @@ function TeachingMethodsSection() {
 	);
 }
 
-function FormationsSection() {
-
-	const formations = useSelector((state) => state.front.formations.data);
-
-	return (
-		<section className="space-y-16  pb-8">
-			<SectionHeader title="Nos Formations" description="Explorez nos modules de formation conçus pour tous les niveaux." />
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 ">
-				{formations
-					.slice(0, 6)
-					.map((formation, index) => (
+function FormationsSection({ formations }) {
+        return (
+                <section className="space-y-16  pb-8">
+                        <SectionHeader title="Nos Formations" description="Explorez nos modules de formation conçus pour tous les niveaux." />
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 ">
+                                {formations
+                                        .slice(0, 6)
+                                        .map((formation, index) => (
 						<GlassCard
 							key={index}
 							title={formation.title}
@@ -458,11 +433,6 @@ function ContactSection() {
 			className="text-center space-y-8  pb-8"
 		>
 			<h2 className="text-4xl font-bold">Prêt à commencer ?</h2>
-			<l-helix
-				size="45"
-				speed="2.5"
-				color="black"
-			></l-helix>
 			<motion.div whileHover={{ scale: 1.1 }}>
 				<Button className="bg-yellow-500 text-gray-900 rounded-3xl px-12 py-5 text-xl shadow-xl hover:bg-yellow-400 transition"
 					onClick={() => navigate("/contact")}>
