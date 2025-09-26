@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { FaEnvelope, FaUser, FaCommentDots } from "react-icons/fa";
-import { Button } from "../../components/ui/button";
 import axios from "axios";
 
 function ContactSection() {

@@ -1,9 +1,6 @@
 import { motion } from "framer-motion";
-import { FaUsers, FaBrain, FaLaptopCode, FaStar, FaStarHalf } from "react-icons/fa";
-import { Button } from "../../components/ui/button";
+import { FaStar, FaStarHalf } from "react-icons/fa";
 import ReactECharts from "echarts-for-react";
-import { useEffect } from "react";
-import * as echarts from "echarts";
 import vision from "../../assets/vision.svg";
 import { Link } from "react-router-dom";
 
