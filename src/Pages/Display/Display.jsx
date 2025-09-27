@@ -194,7 +194,7 @@ const Display = () => {
                                 <MdOutlineDashboardCustomize size={56} />
                                 <p>Vous devez être connecté pour consulter vos tableaux Monday.</p>
                                 <p>
-                                        <Link to="/login" className="display-board-button active" style={{ maxWidth: "240px" }}>
+                                        <Link to="/login" className="display-button display-button--primary">
                                                 Se connecter
                                         </Link>
                                 </p>
@@ -202,89 +202,118 @@ const Display = () => {
                 );
         }
 
+        const showSidebar = !userBoard;
+        const showStatus = Boolean(statusMessage || error);
+
         if (!activeBoard && !loading && !userBoard) {
                 return (
                         <div className="display-empty">
                                 <MdOutlineDashboardCustomize size={56} />
                                 <p>Aucun tableau Monday n'est disponible pour le moment.</p>
                                 {statusMessage && <p>{statusMessage}</p>}
-                                {error && <p className="error">{error}</p>}
+                                {error && <p className="display-text-error">{error}</p>}
                         </div>
                 );
         }
 
         return (
-                <div className="display-layout">
-                        {!userBoard && (
-                                <aside className="display-sidebar">
-                                        <h2>Tableaux Monday</h2>
-                                        {loading && (
-                                                <p className="display-status">Chargement des tableaux…</p>
-                                        )}
-                                        {error && <p className="display-error">{error}</p>}
-                                        {statusMessage && <p className="display-status">{statusMessage}</p>}
-                                        <ul>
-                                                {boards.map((board) => (
-                                                        <li key={board.url}>
-                                                                <button
-                                                                        type="button"
-                                                                        onClick={() => setActiveBoard(board)}
-                                                                        className={
-                                                                                activeBoard && activeBoard.url === board.url
-                                                                                        ? "display-board-button active"
-                                                                                        : "display-board-button"
-                                                                        }
-                                                                >
-                                                                        {board.name}
-                                                                </button>
-                                                        </li>
-                                                ))}
-                                        </ul>
-                                </aside>
-                        )}
-                        <main className="display-content">
-                                <header className="display-header">
-                                        <div className="display-user">
-                                                <span className="display-user-avatar" aria-hidden="true">
-                                                        {userInitials}
-                                                </span>
-                                                <div>
-                                                        <p className="display-user-label">Connecté en tant que</p>
-                                                        <p className="display-user-name">{currentUser.username}</p>
-                                                        {userBoard?.name && (
-                                                                <p className="display-user-board">{userBoard.name}</p>
-                                                        )}
-                                                </div>
+                <div className="display-page">
+                        <header className="display-topbar">
+                                <div className="display-topbar__identity">
+                                        <span className="display-avatar" aria-hidden="true">
+                                                {userInitials}
+                                        </span>
+                                        <div className="display-topbar__identity-text">
+                                                <span className="display-topbar__hint">Connecté</span>
+                                                <span className="display-topbar__name">{currentUser.username}</span>
+                                                {userBoard?.name && (
+                                                        <span className="display-topbar__board">{userBoard.name}</span>
+                                                )}
                                         </div>
-                                        <button type="button" className="display-logout-button" onClick={handleLogout}>
-                                                <FiLogOut aria-hidden="true" />
-                                                <span>Se déconnecter</span>
-                                        </button>
-                                </header>
-                                <div className="display-main-area">
-                                        {(statusMessage || error) && (
-                                                <div className="display-alerts">
-                                                        {statusMessage && <span className="display-chip">{statusMessage}</span>}
-                                                        {error && <span className="display-chip error">{error}</span>}
+                                </div>
+                                <button type="button" className="display-button display-button--ghost" onClick={handleLogout}>
+                                        <FiLogOut aria-hidden="true" />
+                                        <span>Se déconnecter</span>
+                                </button>
+                        </header>
+
+                        <div className="display-shell">
+                                {showSidebar && (
+                                        <aside className="display-shell__sidebar" aria-label="Tableaux disponibles">
+                                                <div className="display-panel">
+                                                        <div className="display-panel__header">
+                                                                <h2>Tableaux Monday</h2>
+                                                                {loading && <span className="display-tag">Chargement…</span>}
+                                                        </div>
+                                                        {showStatus && (
+                                                                <div className="display-panel__alerts">
+                                                                        {statusMessage && (
+                                                                                <span className="display-tag display-tag--info">{statusMessage}</span>
+                                                                        )}
+                                                                        {error && (
+                                                                                <span className="display-tag display-tag--danger">{error}</span>
+                                                                        )}
+                                                                </div>
+                                                        )}
+                                                        <ul className="display-board-list">
+                                                                {boards.map((board) => {
+                                                                        const isActive = activeBoard && activeBoard.url === board.url;
+
+                                                                        return (
+                                                                                <li key={board.url}>
+                                                                                        <button
+                                                                                                type="button"
+                                                                                                onClick={() => setActiveBoard(board)}
+                                                                                                className={
+                                                                                                        isActive
+                                                                                                                ? "display-button display-button--primary"
+                                                                                                                : "display-button"
+                                                                                                }
+                                                                                        >
+                                                                                                {board.name}
+                                                                                        </button>
+                                                                                </li>
+                                                                        );
+                                                                })}
+                                                        </ul>
                                                 </div>
-                                        )}
-                                        {activeBoard ? (
-                                                <>
-                                                        <div className="display-board-meta">
-                                                                <span className="display-board-label">Tableau actif</span>
-                                                                <h1 className="display-board-title">{activeBoard.name}</h1>
-                                                                {!userBoard && boards.length > 1 && (
-                                                                        <p className="display-board-count">
-                                                                                {boards.length} tableaux disponibles
-                                                                        </p>
+                                        </aside>
+                                )}
+
+                                <main className="display-shell__content">
+                                        <section className="display-panel display-panel--stretch">
+                                                <header className="display-panel__header display-panel__header--content">
+                                                        <div>
+                                                                <p className="display-subtitle">Tableau actif</p>
+                                                                <h1 className="display-title">
+                                                                        {activeBoard?.name ?? userBoard?.name ?? "Tableau Monday"}
+                                                                </h1>
+                                                        </div>
+                                                        {!userBoard && boards.length > 1 && (
+                                                                <span className="display-tag display-tag--neutral">
+                                                                        {boards.length} tableaux
+                                                                </span>
+                                                        )}
+                                                </header>
+
+                                                {showStatus && userBoard && (
+                                                        <div className="display-panel__alerts">
+                                                                {statusMessage && (
+                                                                        <span className="display-tag display-tag--info">{statusMessage}</span>
+                                                                )}
+                                                                {error && (
+                                                                        <span className="display-tag display-tag--danger">{error}</span>
                                                                 )}
                                                         </div>
+                                                )}
+
+                                                {activeBoard ? (
                                                         <motion.div
                                                                 key={activeBoard.url}
-                                                                initial={{ opacity: 0, y: 20 }}
+                                                                initial={{ opacity: 0, y: 16 }}
                                                                 animate={{ opacity: 1, y: 0 }}
-                                                                transition={{ duration: 0.4 }}
-                                                                className="display-iframe-wrapper"
+                                                                transition={{ duration: 0.35 }}
+                                                                className="display-frame"
                                                         >
                                                                 <iframe
                                                                         src={activeBoard.url}
@@ -293,24 +322,19 @@ const Display = () => {
                                                                         loading="lazy"
                                                                 />
                                                         </motion.div>
-                                                </>
-                                        ) : userBoard ? (
-                                                <div className="display-placeholder">
-                                                        <MdOutlineDashboardCustomize size={56} />
-                                                        <p>
-                                                                {loading
-                                                                        ? "Chargement de votre tableau Monday…"
-                                                                        : "Impossible de charger votre tableau Monday personnel pour le moment."}
-                                                        </p>
-                                                </div>
-                                        ) : (
-                                                <div className="display-placeholder">
-                                                        <MdOutlineDashboardCustomize size={56} />
-                                                        <p>Veuillez sélectionner un tableau Monday.</p>
-                                                </div>
-                                        )}
-                                </div>
-                        </main>
+                                                ) : (
+                                                        <div className="display-placeholder">
+                                                                <MdOutlineDashboardCustomize size={56} />
+                                                                <p>
+                                                                        {loading
+                                                                                ? "Chargement de votre tableau Monday…"
+                                                                                : "Impossible de charger un tableau Monday pour le moment."}
+                                                                </p>
+                                                        </div>
+                                                )}
+                                        </section>
+                                </main>
+                        </div>
                 </div>
         );
 };
