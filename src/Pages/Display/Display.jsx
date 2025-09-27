@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
+import { FiLogOut } from "react-icons/fi";
 import { unwrapArray } from "../../services/catalogAdapters";
 import { useAuth } from "../../hooks/useAuth";
 import "./Display.css";
@@ -57,7 +58,8 @@ const FALLBACK_BOARDS = [
 ];
 
 const Display = () => {
-        const { user: currentUser } = useAuth();
+        const navigate = useNavigate();
+        const { user: currentUser, logout } = useAuth();
         const userBoard = useMemo(() => {
                 if (!currentUser?.boardUrl) {
                         return null;
@@ -74,6 +76,27 @@ const Display = () => {
         const [loading, setLoading] = useState(true);
         const [statusMessage, setStatusMessage] = useState("");
         const [error, setError] = useState("");
+        const userInitials = useMemo(() => {
+                if (!currentUser?.username) {
+                        return "US";
+                }
+
+                const sanitized = currentUser.username.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9]+/g, " ").trim();
+                if (!sanitized) {
+                        return currentUser.username.slice(0, 2).toUpperCase();
+                }
+
+                const tokens = sanitized.split(/\s+/u);
+                const first = tokens[0]?.[0] ?? "U";
+                const lastToken = tokens[tokens.length - 1] ?? tokens[0];
+                const second = lastToken?.[tokens.length > 1 ? 0 : 1] ?? lastToken?.[0] ?? "S";
+
+                return `${first}${second}`.toUpperCase();
+        }, [currentUser]);
+        const handleLogout = useCallback(() => {
+                logout();
+                navigate("/login");
+        }, [logout, navigate]);
 
         useEffect(() => {
                 if (!currentUser) {
@@ -220,36 +243,73 @@ const Display = () => {
                                 </aside>
                         )}
                         <main className="display-content">
-                                {activeBoard ? (
-                                        <motion.div
-                                                key={activeBoard.url}
-                                                initial={{ opacity: 0, y: 20 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                transition={{ duration: 0.4 }}
-                                                className="display-iframe-wrapper"
-                                        >
-                                                <iframe
-                                                        src={activeBoard.url}
-                                                        title={activeBoard.name}
-                                                        allow="fullscreen"
-                                                        loading="lazy"
-                                                />
-                                        </motion.div>
-                                ) : userBoard ? (
-                                        <div className="display-empty">
-                                                <MdOutlineDashboardCustomize size={56} />
-                                                <p>
-                                                        {loading
-                                                                ? "Chargement de votre tableau Monday…"
-                                                                : "Impossible de charger votre tableau Monday personnel pour le moment."}
-                                                </p>
+                                <header className="display-header">
+                                        <div className="display-user">
+                                                <span className="display-user-avatar" aria-hidden="true">
+                                                        {userInitials}
+                                                </span>
+                                                <div>
+                                                        <p className="display-user-label">Connecté en tant que</p>
+                                                        <p className="display-user-name">{currentUser.username}</p>
+                                                        {userBoard?.name && (
+                                                                <p className="display-user-board">{userBoard.name}</p>
+                                                        )}
+                                                </div>
                                         </div>
-                                ) : (
-                                        <div className="display-empty">
-                                                <MdOutlineDashboardCustomize size={56} />
-                                                <p>Veuillez sélectionner un tableau Monday.</p>
-                                        </div>
-                                )}
+                                        <button type="button" className="display-logout-button" onClick={handleLogout}>
+                                                <FiLogOut aria-hidden="true" />
+                                                <span>Se déconnecter</span>
+                                        </button>
+                                </header>
+                                <div className="display-main-area">
+                                        {(statusMessage || error) && (
+                                                <div className="display-alerts">
+                                                        {statusMessage && <span className="display-chip">{statusMessage}</span>}
+                                                        {error && <span className="display-chip error">{error}</span>}
+                                                </div>
+                                        )}
+                                        {activeBoard ? (
+                                                <>
+                                                        <div className="display-board-meta">
+                                                                <span className="display-board-label">Tableau actif</span>
+                                                                <h1 className="display-board-title">{activeBoard.name}</h1>
+                                                                {!userBoard && boards.length > 1 && (
+                                                                        <p className="display-board-count">
+                                                                                {boards.length} tableaux disponibles
+                                                                        </p>
+                                                                )}
+                                                        </div>
+                                                        <motion.div
+                                                                key={activeBoard.url}
+                                                                initial={{ opacity: 0, y: 20 }}
+                                                                animate={{ opacity: 1, y: 0 }}
+                                                                transition={{ duration: 0.4 }}
+                                                                className="display-iframe-wrapper"
+                                                        >
+                                                                <iframe
+                                                                        src={activeBoard.url}
+                                                                        title={activeBoard.name}
+                                                                        allow="fullscreen"
+                                                                        loading="lazy"
+                                                                />
+                                                        </motion.div>
+                                                </>
+                                        ) : userBoard ? (
+                                                <div className="display-placeholder">
+                                                        <MdOutlineDashboardCustomize size={56} />
+                                                        <p>
+                                                                {loading
+                                                                        ? "Chargement de votre tableau Monday…"
+                                                                        : "Impossible de charger votre tableau Monday personnel pour le moment."}
+                                                        </p>
+                                                </div>
+                                        ) : (
+                                                <div className="display-placeholder">
+                                                        <MdOutlineDashboardCustomize size={56} />
+                                                        <p>Veuillez sélectionner un tableau Monday.</p>
+                                                </div>
+                                        )}
+                                </div>
                         </main>
                 </div>
         );
