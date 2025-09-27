@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
 import { unwrapArray } from "../../services/catalogAdapters";
 import { useAuth } from "../../hooks/useAuth";
@@ -57,7 +57,8 @@ const FALLBACK_BOARDS = [
 ];
 
 const Display = () => {
-        const { user: currentUser } = useAuth();
+        const navigate = useNavigate();
+        const { user: currentUser, logout } = useAuth();
         const userBoard = useMemo(() => {
                 if (!currentUser?.boardUrl) {
                         return null;
@@ -74,6 +75,11 @@ const Display = () => {
         const [loading, setLoading] = useState(true);
         const [statusMessage, setStatusMessage] = useState("");
         const [error, setError] = useState("");
+
+        const handleLogout = useCallback(() => {
+                logout();
+                navigate("/login");
+        }, [logout, navigate]);
 
         useEffect(() => {
                 if (!currentUser) {
@@ -192,6 +198,9 @@ const Display = () => {
 
         return (
                 <div className="display-layout">
+                        <button type="button" className="display-logout-button" onClick={handleLogout}>
+                                Se déconnecter
+                        </button>
                         {!userBoard && (
                                 <aside className="display-sidebar">
                                         <h2>Tableaux Monday</h2>
