@@ -1,3 +1,4 @@
+
 :root {
         --display-bg: #f5f6fb;
         --display-surface: #ffffff;
@@ -27,39 +28,34 @@ body {
         color: var(--display-text);
 }
 
-.display-topbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 20px 28px;
-        background: var(--display-surface);
-        border-radius: var(--display-radius);
-        box-shadow: var(--display-shadow);
-        border: 1px solid var(--display-border);
-        gap: 24px;
+.display-logout-button {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        padding: 0.6rem 1.25rem;
+        border-radius: 9999px;
+        border: 1px solid rgba(56, 189, 248, 0.8);
+        background: rgba(15, 23, 42, 0.85);
+        color: #e0f2fe;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.35);
 }
 
-.display-topbar__identity {
-        display: flex;
-        align-items: center;
-        gap: 16px;
+.display-logout-button:hover {
+        background: rgba(56, 189, 248, 0.2);
+        transform: translateY(-1px);
 }
 
-.display-avatar {
-        width: 56px;
-        height: 56px;
-        border-radius: 18px;
-        background: linear-gradient(135deg, var(--display-primary), var(--display-primary-strong));
-        color: #fff;
-        font-weight: 700;
-        font-size: 1.25rem;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        letter-spacing: 0.05em;
-}
+.display-sidebar {
+        width: 280px;
+        padding: 2rem 1.5rem;
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(12px);
+        border-right: 1px solid rgba(148, 163, 184, 0.3);
 
-.display-topbar__identity-text {
         display: flex;
         flex-direction: column;
         gap: 2px;
@@ -320,18 +316,19 @@ body {
                 align-items: flex-start;
         }
 
-        .display-avatar {
-                width: 48px;
-                height: 48px;
+        .display-logout-button {
+                top: 1rem;
+                right: 1rem;
         }
 
-        .display-panel {
-                padding: 22px;
-        }
+        .display-sidebar {
+                width: 100%;
+                flex-direction: row;
+                align-items: center;
+                justify-content: flex-start;
+                overflow-x: auto;
+                gap: 0.75rem;
 
-        .display-frame,
-        .display-placeholder {
-                min-height: clamp(320px, 50vh, 600px);
         }
 }
 

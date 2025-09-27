@@ -98,6 +98,11 @@ const Display = () => {
                 navigate("/login");
         }, [logout, navigate]);
 
+        const handleLogout = useCallback(() => {
+                logout();
+                navigate("/login");
+        }, [logout, navigate]);
+
         useEffect(() => {
                 if (!currentUser) {
                         setBoards([]);
@@ -217,18 +222,67 @@ const Display = () => {
         }
 
         return (
-                <div className="display-page">
-                        <header className="display-topbar">
-                                <div className="display-topbar__identity">
-                                        <span className="display-avatar" aria-hidden="true">
-                                                {userInitials}
-                                        </span>
-                                        <div className="display-topbar__identity-text">
-                                                <span className="display-topbar__hint">Connecté</span>
-                                                <span className="display-topbar__name">{currentUser.username}</span>
-                                                {userBoard?.name && (
-                                                        <span className="display-topbar__board">{userBoard.name}</span>
-                                                )}
+                <div className="display-layout">
+                        <button type="button" className="display-logout-button" onClick={handleLogout}>
+                                Se déconnecter
+                        </button>
+                        {!userBoard && (
+                                <aside className="display-sidebar">
+                                        <h2>Tableaux Monday</h2>
+                                        {loading && (
+                                                <p className="display-status">Chargement des tableaux…</p>
+                                        )}
+                                        {error && <p className="display-error">{error}</p>}
+                                        {statusMessage && <p className="display-status">{statusMessage}</p>}
+                                        <ul>
+                                                {boards.map((board) => (
+                                                        <li key={board.url}>
+                                                                <button
+                                                                        type="button"
+                                                                        onClick={() => setActiveBoard(board)}
+                                                                        className={
+                                                                                activeBoard && activeBoard.url === board.url
+                                                                                        ? "display-board-button active"
+                                                                                        : "display-board-button"
+                                                                        }
+                                                                >
+                                                                        {board.name}
+                                                                </button>
+                                                        </li>
+                                                ))}
+                                        </ul>
+                                </aside>
+                        )}
+                        <main className="display-content">
+                                {activeBoard ? (
+                                        <motion.div
+                                                key={activeBoard.url}
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ duration: 0.4 }}
+                                                className="display-iframe-wrapper"
+                                        >
+                                                <iframe
+                                                        src={activeBoard.url}
+                                                        title={activeBoard.name}
+                                                        allow="fullscreen"
+                                                        loading="lazy"
+                                                />
+                                        </motion.div>
+                                ) : userBoard ? (
+                                        <div className="display-empty">
+                                                <MdOutlineDashboardCustomize size={56} />
+                                                <p>
+                                                        {loading
+                                                                ? "Chargement de votre tableau Monday…"
+                                                                : "Impossible de charger votre tableau Monday personnel pour le moment."}
+                                                </p>
+                                        </div>
+                                ) : (
+                                        <div className="display-empty">
+                                                <MdOutlineDashboardCustomize size={56} />
+                                                <p>Veuillez sélectionner un tableau Monday.</p>
+
                                         </div>
                                 </div>
                                 <button type="button" className="display-button display-button--ghost" onClick={handleLogout}>
