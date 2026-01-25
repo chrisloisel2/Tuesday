@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 
 import { Button } from "../../components/ui/button";
 import { useAuth } from "../../hooks/useAuth";
-import { authorizedUsers } from "../../data/users";
 
 function LoginPage() {
         const navigate = useNavigate();
         const { login, user } = useAuth();
         const [credentials, setCredentials] = useState({ username: "", password: "" });
         const [error, setError] = useState("");
+        const [loading, setLoading] = useState(false);
 
         useEffect(() => {
                 if (user) {
@@ -22,28 +22,17 @@ function LoginPage() {
                 setCredentials((previous) => ({ ...previous, [name]: value }));
         };
 
-        const handleSubmit = (event) => {
+        const handleSubmit = async (event) => {
                 event.preventDefault();
-                const matchedUser = authorizedUsers.find(
-                        (candidate) =>
-                                candidate.username === credentials.username &&
-                                candidate.password === credentials.password,
-                );
-
-                const boardOverrides = matchedUser
-                        ? {
-                                  boardUrl: matchedUser.boardUrl,
-                                  boardLabel: matchedUser.boardLabel,
-                          }
-                        : undefined;
-
-                const result = login(credentials.username, credentials.password, boardOverrides);
+                setLoading(true);
+                const result = await login(credentials.username, credentials.password);
+                setLoading(false);
 
                 if (result.success) {
                         setError("");
                         navigate("/display");
                 } else {
-                        setError(result.error ?? "Identifiants invalides.");
+                        setError(result.error);
                 }
         };
 
@@ -94,8 +83,8 @@ function LoginPage() {
                                         </p>
                                 ) : null}
 
-                                <Button type="submit" className="w-full bg-[#AEEFFF] text-[#0F1C2E] font-semibold hover:bg-[#E8F9FF]">
-                                        Se connecter
+                                <Button type="submit" disabled={loading} className="w-full bg-[#AEEFFF] text-[#0F1C2E] font-semibold hover:bg-[#E8F9FF]">
+                                        {loading ? "Connexion..." : "Se connecter"}
                                 </Button>
                         </form>
                 </div>

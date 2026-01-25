@@ -4,8 +4,10 @@ WORKDIR /app
 
 COPY . /app
 
-RUN ["npm", "install"]
+RUN npm install && cd backend && npm install
 
-EXPOSE 3000
+EXPOSE 3000 3001
 
-CMD ["npm", "start"]
+ENV MONGO_URI=mongodb+srv://christoloisel:rose@cluster0.ppyauvl.mongodb.net/Tuesday
+
+CMD sh -c "cd /app/backend && npm start & cd /app && npm start"

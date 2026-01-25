@@ -1,25 +1,15 @@
 import { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
+import axios from "axios";
 
-import { authorizedUsers } from "../data/users";
-
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
 const AuthContext = createContext(undefined);
 const AUTH_STORAGE_KEY = "skylonis-auth-user";
 
 const readStoredUser = () => {
-        if (typeof window === "undefined") {
-                return null;
-        }
-
-        const storedValue = window.localStorage.getItem(AUTH_STORAGE_KEY);
-
-        if (!storedValue) {
-                return null;
-        }
-
+        if (typeof window === "undefined") return null;
         try {
-                return JSON.parse(storedValue);
-        } catch (error) {
-                console.warn("Impossible de lire l'utilisateur stocké", error);
+                return JSON.parse(window.localStorage.getItem(AUTH_STORAGE_KEY));
+        } catch {
                 return null;
         }
 };
@@ -28,10 +18,6 @@ export function AuthProvider({ children }) {
         const [user, setUser] = useState(() => readStoredUser());
 
         useEffect(() => {
-                if (typeof window === "undefined") {
-                        return;
-                }
-
                 if (user) {
                         window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
                 } else {
@@ -39,36 +25,22 @@ export function AuthProvider({ children }) {
                 }
         }, [user]);
 
-        const login = useCallback((username, password, overrides = {}) => {
-                const match = authorizedUsers.find(
-                        (allowedUser) => allowedUser.username === username && allowedUser.password === password,
-                );
-
-                if (match) {
-                        const authenticatedUser = {
-                                username: match.username,
-                                boardUrl: overrides.boardUrl ?? match.boardUrl ?? null,
-                                boardLabel: overrides.boardLabel ?? match.boardLabel ?? null,
-                        };
-                        setUser(authenticatedUser);
-                        return { success: true, user: authenticatedUser };
+        const login = useCallback(async (username, password) => {
+                try {
+                        const { data } = await axios.post(`${API_URL}/login`, { username, password });
+                        if (data.success) {
+                                setUser(data.user);
+                                return { success: true, user: data.user };
+                        }
+                        return { success: false, error: "Identifiants incorrects." };
+                } catch {
+                        return { success: false, error: "Identifiants incorrects." };
                 }
-
-                return { success: false, error: "Identifiants incorrects. Veuillez réessayer." };
         }, []);
 
-        const logout = useCallback(() => {
-                setUser(null);
-        }, []);
+        const logout = useCallback(() => setUser(null), []);
 
-        const value = useMemo(
-                () => ({
-                        user,
-                        login,
-                        logout,
-                }),
-                [user, login, logout],
-        );
+        const value = useMemo(() => ({ user, login, logout }), [user, login, logout]);
 
         return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

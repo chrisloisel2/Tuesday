@@ -29,4 +29,28 @@ export const authorizedUsers = [
 		boardUrl: "https://view.monday.com/2005977860-1351be764db46e3c1dfcc5be9843a46e?r=euc1",
 		boardLabel: "Pilotage - Jalal",
 	},
+	{
+		username: "jalal",
+		password: "password123",
+		boardUrl: "https://view.monday.com/2005977860-1351be764db46e3c1dfcc5be9843a46e?r=euc1",
+		boardLabel: "Pilotage - Jalal",
+	},
+	{
+		username: "jalal",
+		password: "password123",
+		boardUrl: "https://view.monday.com/2005977860-1351be764db46e3c1dfcc5be9843a46e?r=euc1",
+		boardLabel: "Pilotage - Jalal",
+	},
+	{
+		username: "jalal",
+		password: "password123",
+		boardUrl: "https://view.monday.com/2005977860-1351be764db46e3c1dfcc5be9843a46e?r=euc1",
+		boardLabel: "Pilotage - Jalal",
+	},
+	{
+		username: "jalal",
+		password: "password123",
+		boardUrl: "https://view.monday.com/2005977860-1351be764db46e3c1dfcc5be9843a46e?r=euc1",
+		boardLabel: "Pilotage - Jalal",
+	},
 ];
