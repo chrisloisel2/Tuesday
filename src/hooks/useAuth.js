@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
 import axios from "axios";
 
-const API_URL = "https://skylonis.com";
+const API_URL = "https://skylonis.com/api";
 const AuthContext = createContext(undefined);
 const AUTH_STORAGE_KEY = "skylonis-auth-user";
 

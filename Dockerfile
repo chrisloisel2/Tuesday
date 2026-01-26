@@ -1,13 +1,30 @@
-FROM node:22
+FROM node:22 AS build
 
 WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
 
-COPY . /app
+FROM nginx:alpine
 
-RUN npm install && cd backend && npm install
+# Copier le build React
+COPY --from=build /app/build /app/build
 
-EXPOSE 3000 3001
+# Copier la config nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Installer Node pour le backend
+RUN apk add --no-cache nodejs npm
+
+# Copier le backend
+COPY backend /app/backend
+WORKDIR /app/backend
+RUN npm install
+
+EXPOSE 3000
 
 ENV MONGO_URI=mongodb+srv://christoloisel:rose@cluster0.ppyauvl.mongodb.net/Tuesday
 
-CMD sh -c "cd /app/backend && npm start & cd /app && npm start"
+# Lancer nginx et le backend
+CMD sh -c "node /app/backend/index.js & nginx -g 'daemon off;'"
